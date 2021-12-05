@@ -1,0 +1,10 @@
+<div class="post-date-header" language="$language$">
+  $if(lang-es)$
+    <span>Iniciado en <time datetime="$startDate$">$startDate$</time>.</span>
+    $-if(endDate)$ <span>Terminado en <time datetime="$endDate$">$endDate$</time>.</span>$endif$
+  </div>
+  $else$
+    <span>Started on <time datetime="$startDate$">$startDate$</time>.</span>
+    $-if(endDate)$ <span>Finished <time datetime="$endDate$">$endDate$</time>.</span>$endif$
+  $endif$
+</div>

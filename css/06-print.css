@@ -1,0 +1,28 @@
+/* Print */
+@media print   {
+  body {
+    font: 90%/1.5 var(--font-sans);
+    color:black;
+  }
+
+  h1,h2,h3,h4,h5,h6 { break-after: avoid;  }
+  table, figure, img, svg { break-inside: avoid; }
+  body { widows: 2; display: block !important;}
+
+  .site-header {display: block; color: black; background: none;}
+  .site-header svg {fill:var(--color-main)}
+
+  .site-header nav,
+  .site-footer {display:none}
+
+  .main-article  {padding: 0 1em;max-width:none;margin:0 auto;font-size:1em;}
+  .main-article > div  { column-count:2; column-fill: auto; height:100%}
+  .main-article a[href^=http]::after { content: " [" attr(href) "] "; }
+
+  .site-header svg, .site-header svg * {fill: var(--color-main-light);}
+
+  .social-contact {display:block !important;}
+  .social-contact a {align-items: flex-end;}
+  .social-contact a::after {padding-left:1em}
+}
+
