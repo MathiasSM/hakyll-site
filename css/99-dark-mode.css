@@ -1,0 +1,29 @@
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:           hsla(210,75%,15%,1);
+    --color-main-black:   hsla(210, 75%, 98%, 1);
+    --color-main-dark:   hsla(210, 75%, 75%, 1);
+    --color-main:         hsla(210, 75%, 50%, 1);
+    --color-main-light:    hsla(210, 75%, 30%, 1);
+    --color-main-white:   hsla(210, 75%, 15%, 1);
+    --color-accent-black: hsla(30, 75%, 98%, 1);
+    --color-accent-dark: hsla(30, 75%, 75%, 1);
+    --color-accent:       hsla(30, 75%, 40%, 1);
+    --color-accent-light:  hsla(30, 75%, 30%, 1);
+    --color-accent-white: hsla(30, 75%, 15%, 1);
+  }
+
+  thead,tfoot {background: var(--color-accent-white)}
+  tbody tr:nth-child(odd) {background:var(--color-accent-light);}
+  tbody tr:nth-child(even) {background:var(--color-accent);}
+
+  a {color: var(--color-main-dark);}
+  .main-article div a[href^=http]::after {
+    content: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z'/%3E%3C/svg%3E%0A");
+    opacity: .8;
+  }
+  .main-article div a:hover[href^=http]::after,
+  .main-article div a:active[href^=http]::after {
+    opacity: 1;
+  }
+}

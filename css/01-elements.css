@@ -1,0 +1,53 @@
+/* Resets */
+* {box-sizing: border-box}
+html {
+    height:100%;
+    width: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%
+}
+body {
+    margin: 0;
+    font: 120%/1.5 var(--font-sans);
+    font-weight: 400;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    background: var(--color-bg);
+    color: var(--color-main-black);
+}
+img, iframe {border: none; max-width:100%;}
+
+/* headers */
+h1,h2,h3,h4,h5,h6 {margin: 0.6em 0; font-weight: normal}
+h1 {font-size: 2.5em; margin-bottom:0}
+h2 {font-size: 1.6em; }
+h3 {font-size: 1.3em;}
+h4 {font-size: 1.2em;}
+h5,h6 {font-size: 1em; font-weight:bold}
+
+/* tables */
+table {border-collapse: collapse;border-spacing: 0; margin: 1em 0}
+th, td {text-align: left;vertical-align: top; border: none; padding:0.4em}
+thead,tfoot {background: var(--color-accent-light)}
+tbody tr:nth-child(odd) {background:var(--color-accent-white);}
+
+/* corners */
+pre,code,input,select,textarea,button,img {border-radius: var(--round-corners)}
+
+/* links */
+a {color: var(--color-main); text-decoration:none}
+a:hover,a:active {color: var(--color-accent);}
+
+/* code */
+pre, code, kbd, var {font: 1em/1.6 var(--font-mono);background: var(--color-accent-white); padding: .2em .4em;}
+pre code {padding: 0}
+pre {padding: 1em; overflow-x: auto}
+
+/* quotes */
+blockquote {position:relative; border-left: 5px solid var(--color-accent-light); padding: 1em 1.5em; margin: 0}
+
+/* other elements */
+hr {border:0; border-bottom: 1px solid var(--color-main-dark); width:90%; margin: 1em auto;}
+
+svg, svg * {fill:currentcolor;}

@@ -1,0 +1,70 @@
+/* general initial layout */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height:100vh;
+}
+main { flex:1; }
+
+@media (min-width: 340px) { .site-description {font-size: 1.2em;} }
+@media (min-width: 340px) { .site-header nav {flex-direction: row;} }
+
+@media (min-width: 500px) {
+  .social-contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .social-contact li {flex: 0 0 45%; margin:1.2em .2em;}
+}
+@media (min-width: 730px) { .social-contact li {flex: 0 0 30%;} }
+@media (min-width: 1000px) { .social-contact li {flex: 0 0 45%;} }
+@media (min-width: 1500px) { .social-contact li {flex: 0 0 30%;} }
+
+/* Desktop layout */
+@media (min-width: 1000px) and (min-height: 600px) {
+  body {
+    display: grid;
+    grid-template-areas:
+      "header main"
+      "footer main";
+    grid-template-columns: auto 1fr;
+    grid-auto-rows: 1fr min-content;
+    width:100%;
+    height:100%;
+  }
+  .site-header {grid-area: header; min-width:20em; padding:0 1em;}
+  main {grid-area: main; overflow-y:scroll;scroll-behavior:smooth}
+  .site-footer {grid-area: footer}
+  .site-header > a {
+    flex-direction:column;
+    margin: 4rem 0 0;
+    padding-top:0
+  }
+  .site-header > a > svg {width: 40%; height: auto;}
+  .site-header > a > div {margin-left: 0;}
+  .site-header nav {flex-direction: column;margin:1em 0;}
+  .site-header nav a { padding: .5em;}
+  .main-article  {margin:4rem auto 1rem 4em}
+}
+@media (min-width: 1200px) and (min-height: 600px) {
+  .site-header {min-width:30rem;padding:0 2em;}
+}
+@media (min-width: 1400px) and (min-height: 600px) {
+  .site-header {min-width:40rem;padding:0 2em;}
+}
+@media (min-width: 1000px) and (min-height: 830px) {
+  .site-header nav a { padding: 1em;}
+}
+@media (min-width: 1200px) and (min-height: 830px) {
+  .site-header nav a { padding: .5em;}
+}
+@media (min-width: 1400px) and (min-height: 830px) {
+  .site-header nav a { padding: .5em;}
+}
+@media (min-width: 1000px) and (min-height: 1000px) {
+  .site-header nav{margin:5em 0;font-size:1.3em;}
+}
+@media (min-width: 1000px) and (min-height: 1200px) {
+  .site-header nav{margin:5em 0;font-size:1.5em;}
+}
