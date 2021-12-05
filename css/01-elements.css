@@ -8,7 +8,7 @@ html {
 }
 body {
     margin: 0;
-    font: 120%/1.5 var(--font-sans);
+    font: 100%/1.5 var(--font-sans);
     font-weight: 400;
     font-style: normal;
     text-rendering: optimizeLegibility;
