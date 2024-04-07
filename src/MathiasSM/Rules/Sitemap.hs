@@ -2,11 +2,19 @@
 
 module MathiasSM.Rules.Sitemap (processSitemap) where
 
-import Data.String (fromString)
 import Hakyll
-import MathiasSM.CleanURL
-import MathiasSM.Compile
-import MathiasSM.Context
+    ( Rules,
+      makeItem,
+      loadAll,
+      idRoute,
+      compile,
+      create,
+      route,
+      listField,
+      loadAndApplyTemplate,
+      recentFirst )
+import MathiasSM.CleanURL ( cleanIndexHtmls )
+import MathiasSM.Context ( minimalCtx )
 
 processSitemap :: Rules ()
 processSitemap = create ["sitemap.xml"] $ do

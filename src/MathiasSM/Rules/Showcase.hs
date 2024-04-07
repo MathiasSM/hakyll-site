@@ -2,13 +2,26 @@
 
 module MathiasSM.Rules.Showcase (processShowcase) where
 
-import Data.List (sortOn)
 import Data.String (fromString)
 import Hakyll
-import MathiasSM.CleanURL
-import MathiasSM.Compile
-import MathiasSM.Context
-import MathiasSM.Metadata
+    ( Rules,
+      Metadata,
+      Context,
+      Compiler,
+      getResourceString,
+      saveSnapshot,
+      loadAllSnapshots,
+      composeRoutes,
+      constRoute,
+      compile,
+      match,
+      matchMetadata,
+      route,
+      listField,
+      loadAndApplyTemplate )
+import MathiasSM.CleanURL ( cleanRoute )
+import MathiasSM.Compile ( runPandoc, finish )
+import MathiasSM.Context ( minimalCtx, navStateContext )
 
 -- | Processes a group: its index page and all the item pages
 processShowcase :: String -> Rules ()
@@ -42,8 +55,11 @@ processShowcaseItems name =
           getResourceString >>= runPandoc >>= saveSnapshot groupSnapshot
 
 -- | Checks if item has all needed metadata
+-- |
+-- | Should be  something like:
+-- | all (\f -> f m) [hasTitle, hasHref, hasStatus, hasStartDate, hasDescription]
 hasMinimalMetadata :: Metadata -> Bool
-hasMinimalMetadata m = True -- all (\f -> f m) [hasTitle, hasHref, hasStatus, hasStartDate, hasDescriptions]
+hasMinimalMetadata _ = True
 
 -- | Build context for archive page
 getCtx :: String -> Compiler (Context String)

@@ -3,11 +3,19 @@
 module MathiasSM.Rules.SinglePages (processSinglePage, processContactPage, process404, processTestPage) where
 
 import Data.String (fromString)
-import Hakyll
-import MathiasSM.CleanURL
-import MathiasSM.Compile
-import MathiasSM.Context
-import MathiasSM.Metadata
+import Hakyll (
+  Rules,
+  compile,
+  composeRoutes,
+  constRoute,
+  getResourceString,
+  loadAndApplyTemplate,
+  match,
+  route,
+ )
+import MathiasSM.CleanURL (cleanRoute)
+import MathiasSM.Compile (finish, runPandoc)
+import MathiasSM.Context (minimalCtx, navStateContext)
 
 -- | Configures which page is to be HOME (and placed in /index.html)
 homePageName :: String

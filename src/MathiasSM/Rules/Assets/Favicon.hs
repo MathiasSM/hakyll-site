@@ -3,6 +3,16 @@
 module MathiasSM.Rules.Assets.Favicon (faviconRules) where
 
 import Hakyll
+    ( Pattern,
+      Rules,
+      getResourceLBS,
+      withItemBody,
+      customRoute,
+      compile,
+      match,
+      route,
+      version,
+      unixFilterLBS )
 
 data Favicon = Svg | Ico | IOS | Png Int Int
 
@@ -13,7 +23,7 @@ faviconPath :: Favicon -> FilePath
 faviconPath Ico = "favicon.ico"
 faviconPath IOS = "apple-touch-icon.png"
 faviconPath Svg = "favicon.svg"
-faviconPath (Png size padding) = "favicon-" ++ show size ++ ".png"
+faviconPath (Png size _padding) = "favicon-" ++ show size ++ ".png"
 
 faviconRules :: Pattern -> Rules ()
 faviconRules ptn = match ptn $ mapM_ processFavicon favicons

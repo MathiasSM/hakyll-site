@@ -3,7 +3,27 @@
 module MathiasSM.Rules.Assets (processAssets) where
 
 import Hakyll
-import MathiasSM.Rules.Assets.Favicon
+    ( Pattern,
+      Rules,
+      Item(itemBody),
+      Routes,
+      getResourceLBS,
+      makeItem,
+      loadAll,
+      copyFileCompiler,
+      (.||.),
+      gsubRoute,
+      idRoute,
+      setExtension,
+      compile,
+      create,
+      match,
+      route,
+      version,
+      unixFilterLBS,
+      compressCssCompiler,
+      templateBodyCompiler )
+import MathiasSM.Rules.Assets.Favicon ( faviconRules )
 
 -- | Processes all assets (images or otherwise) into final site
 processAssets :: Rules ()
@@ -33,8 +53,8 @@ processCss = do
   create ["styles.css"] $ do
     route idRoute
     compile $ do
-      csses <- loadAll "css/*.css"
-      makeItem $ unlines $ map itemBody csses
+      css <- loadAll "css/*.css"
+      makeItem $ unlines $ map itemBody css
 
 {- | Uses unix external filter (dot) to compile them as png
 TODO: Test
@@ -45,13 +65,14 @@ processDotImages = match "images/*.dot" $ do
   route $ setExtension "png"
   compile $ getResourceLBS >>= traverse (unixFilterLBS "dot" ["-Tpng"])
 
-{- | Compiles SVG into context, usable by templates to include directly into HTML
+{- | Compiles SVG into context, usable by templates to include directly in HTML
 TODO: Figure out how to also output svg version
 TODO: Figure out how to also output png versions for icons
 -}
 processSvgImages :: Rules ()
 processSvgImages = do
-  match "images/*.svg" $ compile templateBodyCompiler -- Allows including directly in html
+  -- Allows including directly in html
+  match "images/*.svg" $ compile templateBodyCompiler
   -- Allows importing as img with src="<...>.svg"
   match "images/*.svg" $
     version "svg" $ do
