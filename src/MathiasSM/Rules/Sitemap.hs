@@ -8,7 +8,6 @@ import MathiasSM.CleanURL
 import MathiasSM.Compile
 import MathiasSM.Context
 
--- |
 processSitemap :: Rules ()
 processSitemap = create ["sitemap.xml"] $ do
   route idRoute

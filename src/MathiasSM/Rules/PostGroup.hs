@@ -23,7 +23,8 @@ processPostGroupIndex groupName =
         route $ constRoute groupName `composeRoutes` cleanRoute
         compile $ do
           ctx <- getCtx groupName
-          getResourceString >>= runPandoc
+          getResourceString
+            >>= runPandoc
             >>= loadAndApplyTemplate "templates/minimal.html" ctx
             >>= loadAndApplyTemplate "templates/with-posts.html" ctx
             >>= loadAndApplyTemplate "templates/as-page.html" ctx
@@ -37,7 +38,8 @@ processPostGroupItems groupName =
    in matchMetadata groupItemsPattern hasMinimalMetadata $ do
         route $ metadataRoute getMetadataRoute `composeRoutes` cleanRoute
         compile $
-          getResourceString >>= runPandoc
+          getResourceString
+            >>= runPandoc
             >>= saveSnapshot groupSnapshot
             >>= loadAndApplyTemplate "templates/minimal.html" minimalCtx
             >>= loadAndApplyTemplate "templates/as-post.html" minimalCtx

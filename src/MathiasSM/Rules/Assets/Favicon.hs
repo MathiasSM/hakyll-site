@@ -36,13 +36,13 @@ processIco favicon = version "ico-32" $ do
   route $ customRoute $ \_ -> faviconPath favicon
   let cmd = "convert"
       args =
-        [ "-background",
-          "none",
-          "svg:-",
-          "-define",
-          "icon:auto-resize=32",
-          "+repage",
-          "ico:-"
+        [ "-background"
+        , "none"
+        , "svg:-"
+        , "-define"
+        , "icon:auto-resize=32"
+        , "+repage"
+        , "ico:-"
         ]
   compile $ getResourceLBS >>= withItemBody (unixFilterLBS cmd args)
 
@@ -53,16 +53,16 @@ processPng size padding favicon =
         route $ customRoute $ \_ -> faviconPath favicon
         let cmd = "convert"
             args =
-              [ "-background",
-                "none",
-                "svg:-",
-                "-gravity",
-                "center",
-                "-scale",
-                show (size - padding * 2) ++ "x" ++ show (size - padding * 2),
-                "-extent",
-                show size ++ "x" ++ show size,
-                "+repage",
-                "png:-"
+              [ "-background"
+              , "none"
+              , "svg:-"
+              , "-gravity"
+              , "center"
+              , "-scale"
+              , show (size - padding * 2) ++ "x" ++ show (size - padding * 2)
+              , "-extent"
+              , show size ++ "x" ++ show size
+              , "+repage"
+              , "png:-"
               ]
         compile $ getResourceLBS >>= withItemBody (unixFilterLBS cmd args)
