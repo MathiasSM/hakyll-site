@@ -1,7 +1,7 @@
 ---
 title: "testi Testy"
 description: "Software Development Engineer. Programming Languages, Databases and Artificial Intelligence."
-path: "_test"
+path: "/_test.html"
 
 shareTitle: "Mathias San Miguel - SDE"
 # shareDescription: false
@@ -31,7 +31,7 @@ shareTitle: "Mathias San Miguel - SDE"
 
 
 **Note:** This document is itself written using Markdown; you
-can [see the source for it by adding '.text' to the URL](/projects/markdown/syntax.text).
+can [see the source for it by adding '.text' to the URL](/404.html).
 
 ----
 
