@@ -22,14 +22,15 @@ processShowcaseIndex pageName = match pagePattern $ do
   route $ constRoute pageRoute `composeRoutes` cleanRoute
   compile $ do
     ctx <- getCtx pageName
-    getResourceString >>= runPandoc
+    getResourceString
+      >>= runPandoc
       >>= loadAndApplyTemplate "templates/minimal.html" ctx
       >>= loadAndApplyTemplate "templates/with-projects.html" ctx
       >>= loadAndApplyTemplate "templates/as-page.html" ctx
       >>= finish (navStateContext pageName <> minimalCtx)
-  where
-    pagePattern = fromString $ "data/pages/" ++ pageName ++ ".md"
-    pageRoute = pageName
+ where
+  pagePattern = fromString $ "data/pages/" ++ pageName ++ ".md"
+  pageRoute = pageName
 
 -- | Builds each item/post page
 processShowcaseItems :: String -> Rules ()
@@ -42,7 +43,7 @@ processShowcaseItems name =
 
 -- | Checks if item has all needed metadata
 hasMinimalMetadata :: Metadata -> Bool
-hasMinimalMetadata m = True --all (\f -> f m) [hasTitle, hasHref, hasStatus, hasStartDate, hasDescriptions]
+hasMinimalMetadata m = True -- all (\f -> f m) [hasTitle, hasHref, hasStatus, hasStartDate, hasDescriptions]
 
 -- | Build context for archive page
 getCtx :: String -> Compiler (Context String)

@@ -1,19 +1,19 @@
-module MathiasSM.Metadata
-  ( hasTitle,
-    hasPublishedDate,
-    hasModifiedDate,
-    hasPath,
-    hasTOC,
-    hasStatus,
-    hasHref,
-    hasStartDate,
-    hasDescriptions,
-    metadataPublishedDate,
-    metadataModifiedDate,
-    metadataPath,
-    metadataTOC,
-    metadataLanguage,
-  )
+module MathiasSM.Metadata (
+  hasTitle,
+  hasPublishedDate,
+  hasModifiedDate,
+  hasPath,
+  hasTOC,
+  hasStatus,
+  hasHref,
+  hasStartDate,
+  hasDescriptions,
+  metadataPublishedDate,
+  metadataModifiedDate,
+  metadataPath,
+  metadataTOC,
+  metadataLanguage,
+)
 where
 
 import Data.Maybe (fromJust, isJust)
