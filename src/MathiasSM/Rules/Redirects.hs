@@ -2,7 +2,7 @@
 
 module MathiasSM.Rules.Redirects (processRedirects) where
 
-import Hakyll
+import Hakyll ( Rules, version, createRedirects, Identifier )
 
 -- | Builds all necessary redirections
 processRedirects :: Rules ()

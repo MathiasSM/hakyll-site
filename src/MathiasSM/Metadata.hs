@@ -21,26 +21,37 @@ import Hakyll (Metadata, lookupString, lookupStringList)
 
 type MetadataKey = String
 
+titleKey :: String
 titleKey = "title"
 
+publishedDateKey :: String
 publishedDateKey = "date"
 
+modifiedDateKey :: String
 modifiedDateKey = "lastModifiedAt"
 
+pathKey :: String
 pathKey = "path"
 
+tocKey :: String
 tocKey = "TOC"
 
+languageKey :: String
 languageKey = "language"
 
+hrefKey :: String
 hrefKey = "href"
 
+statusKey :: String
 statusKey = "status"
 
+startDateKey :: String
 startDateKey = "startDate"
 
+shortDescriptionKey :: String
 shortDescriptionKey = "shortDescription"
 
+longDescriptionKey :: String
 longDescriptionKey = "longDescription"
 
 ---
