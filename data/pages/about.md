@@ -8,13 +8,12 @@ shareTitle: "Mathias San Miguel - Software Development Engineer"
 # shareDescription: false
 ---
 
-Hello there! My name is Mathias (with a mute "h"), and I'm a Software Development Engineer, graduated on July 2019 from _Universidad Simón Bolívar_ with a Computer Science degree. I'm currently living in Spain and working for Amazon as an SDE.
+Hello there! My name is Mathias (with a mute "h"), and I'm a Software Development Engineer, graduated on July 2019 from _Universidad Simón Bolívar_ with a Computer Science degree. I'm currently based in Spain.
 
-From the start of my CS studies at USB, I always picked the courses that most interested me. I chose the specializations in Artificial Intelligence, Programming Languages and Databases Design and Architecture. I grew fond of the last two, specially. The rest of my time on the CS world, I've
+From the start of my CS studies at USB, I always picked the courses that most interested me. I chose the specializations in Artificial Intelligence, Programming Languages and Databases Design and Architecture. I grew fond of the last two, specially. The rest of my time on the CS world, I have...
 
-- **Worked for Amazon for 2+ years** mostly improving parts of Search,
+- **Worked at Amazon for ~6 years** improving filters and catalog metadata tooling,
 - **Participated in coding competitions** such as ACM-ICPC and IOI,
-- **Developed automation tools** to make some programming tasks easier,
 - **Worked as a SysAdmin** responsible for my University's network, and
 - **Given classes** to newcomers to Computer Science and Programming
 
