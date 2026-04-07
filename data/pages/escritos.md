@@ -9,7 +9,7 @@ shareTitle: "Escritura Creativa de Mathias San Miguel"
 ---
 
 <details open><summary>**[Español]**</summary>
-  Este es un espacio que cree para escritos varios que hago de vez en cuando que no son parte del blog. Se les podría considerar ejercicios de "escritura creativa" o "abstracta" (o al menos a eso apunto). La mayor parte está en español (mi lengua materna), aunque el resto de este sitio está en inglés, pero no pretendo traducirlos (lo siento). Escritos sobre la vida, las personas y las cosas, porque ¿de qué otra cosa podemos escribir?
+  Este es un espacio que creé para escritos varios que hago de vez en cuando y que no son parte del blog. Se les podría considerar ejercicios de "escritura creativa" o "abstracta" (o al menos a eso apunto). La mayor parte está en español (mi lengua materna), aunque el resto de este sitio está en inglés, pero no pretendo traducirlos (lo siento). Escritos sobre la vida, las personas y las cosas, porque ¿de qué otra cosa podemos escribir?
 </details>
 
 <details lang="en"><summary><strong>[English]</strong></summary>
