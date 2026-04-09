@@ -1,0 +1,59 @@
+{
+  "version": "v1.0.0",
+  "entity": {
+    "type": "individual",
+    "role": "owner",
+    "name": "Mathias San Miguel",
+    "email": "mathiassanmiguel@gmail.com",
+    "phone": "",
+    "description": "Mathias is a Software Developer Engineer.",
+    "webpageUrl": {
+      "url": "https://mathiassm.dev"
+    }
+  },
+  "projects": [
+    {
+      "guid": "mathiassm-website",
+      "name": "MathiasSM.dev (website)",
+      "description": "My personal website. Note: This is just a test of the funding.json manifest.",
+      "webpageUrl": {
+        "url": "https://mathiassm.dev"
+      },
+      "repositoryUrl": {
+        "url": "https://github.com/MathiasSM/hakyll-site",
+        "wellKnown": "https://github.com/MathiasSM/hakyll-site/blob/master/static/.well-known/funding-manifest-urls"
+      },
+      "licenses": [
+        "spdx:GPL-3.0-or-later"
+      ],
+      "tags": [
+        "web-development",
+        "software-engineering",
+        "programming"
+      ]
+    }
+  ],
+  "funding": {
+    "channels": [
+      {
+        "guid": "mybank",
+        "type": "bank",
+        "address": "",
+        "description": "Spanish bank. Can accept direct tranfers. Email me for details"
+      }
+    ],
+    "plans": [
+      {
+        "guid": "custom-eur",
+        "status": "active",
+        "name": "Single Payment",
+        "description": "You may donate any amount you're comfortable with.",
+        "amount": 0,
+        "currency": "EUR",
+        "frequency": "one-time",
+        "channels": [ "mybank" ]
+      }
+    ],
+    "history": []
+  }
+}
