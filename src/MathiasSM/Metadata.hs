@@ -1,18 +1,14 @@
 module MathiasSM.Metadata (
+  HasMetadata,
+  hasDescriptions, hasHref, hasLanguage, hasLongDescription, hasMetadataStringList,
+  hasModifiedDate, hasPath, hasPublishedDate, hasShortDescription, hasStartDate, hasStatus, hasTOC,
   hasTitle,
-  hasPublishedDate,
-  hasModifiedDate,
-  hasPath,
-  hasTOC,
-  hasStatus,
-  hasHref,
-  hasStartDate,
-  hasDescriptions,
-  metadataPublishedDate,
-  metadataModifiedDate,
-  metadataPath,
-  metadataTOC,
-  metadataLanguage,
+  matchesHref, matchesLanguage, matchesLongDescription, matchesMetadataStringList,
+  matchesModifiedDate, matchesPath, matchesPublishedDate, matchesShortDescription,
+  matchesStartDate, matchesStatus, matchesTOC, matchesTitle,
+  metadataHref, metadataLanguage, metadataLongDescription, metadataModifiedDate, metadataPath,
+  metadataPublishedDate, metadataShortDescription, metadataStartDate, metadataStatus,
+  metadataStringList, metadataTOC, metadataTitle,
 )
 where
 
@@ -21,98 +17,102 @@ import Hakyll (Metadata, lookupString, lookupStringList)
 
 type MetadataKey = String
 
-titleKey :: String
-titleKey = "title"
+hrefKey, languageKey, longDescriptionKey, modifiedDateKey, pathKey
+  , publishedDateKey, shortDescriptionKey, startDateKey, statusKey
+  , titleKey, tocKey
+  :: MetadataKey
 
-publishedDateKey :: String
-publishedDateKey = "date"
-
-modifiedDateKey :: String
-modifiedDateKey = "lastModifiedAt"
-
-pathKey :: String
-pathKey = "path"
-
-tocKey :: String
-tocKey = "TOC"
-
-languageKey :: String
-languageKey = "language"
-
-hrefKey :: String
-hrefKey = "href"
-
-statusKey :: String
-statusKey = "status"
-
-startDateKey :: String
-startDateKey = "startDate"
-
-shortDescriptionKey :: String
+hrefKey             = "href"
+languageKey         = "language"
+longDescriptionKey  = "longDescription"
+modifiedDateKey     = "lastModifiedAt"
+pathKey             = "path"
+publishedDateKey    = "date"
 shortDescriptionKey = "shortDescription"
-
-longDescriptionKey :: String
-longDescriptionKey = "longDescription"
+startDateKey        = "startDate"
+statusKey           = "status"
+titleKey            = "title"
+tocKey              = "TOC"
 
 ---
-hasMetadataString :: MetadataKey -> Metadata -> Bool
-hasMetadataString field = isJust . lookupString field
 
-hasMetadataStringList :: MetadataKey -> Metadata -> Bool
-hasMetadataStringList field = isJust . lookupStringList field
 
-metadataString :: MetadataKey -> Metadata -> String
+type GetMetadata a = Metadata -> a
+type HasMetadata = Metadata -> Bool
+type MatchesMetadata a = (a -> Bool) -> Metadata -> Bool
+
+metadataString :: MetadataKey -> GetMetadata String
 metadataString field = fromJust . lookupString field
 
-metadataStringList :: MetadataKey -> Metadata -> [String]
+metadataStringList :: MetadataKey -> GetMetadata [String]
 metadataStringList field = fromJust . lookupStringList field
 
+hasMetadataString :: MetadataKey -> HasMetadata
+hasMetadataString field = isJust . lookupString field
+
+hasMetadataStringList :: MetadataKey -> HasMetadata
+hasMetadataStringList field = isJust . lookupStringList field
+
+matchesMetadataString :: MetadataKey -> MatchesMetadata String
+matchesMetadataString field predicate = maybe False predicate . lookupString field
+
+matchesMetadataStringList :: MetadataKey -> MatchesMetadata [String]
+matchesMetadataStringList field predicate = maybe False predicate . lookupStringList field
+
 ---
 
-type HasMetadataFieldF = Metadata -> Bool
+hasHref, hasLanguage, hasLongDescription, hasModifiedDate, hasPath
+  , hasPublishedDate, hasShortDescription, hasStartDate, hasStatus
+  , hasTitle, hasTOC
+  :: HasMetadata
 
-hasTitle :: HasMetadataFieldF
-hasTitle = hasMetadataString titleKey
+metadataHref, metadataLanguage, metadataLongDescription, metadataModifiedDate, metadataPath
+  , metadataPublishedDate, metadataShortDescription, metadataStartDate, metadataStatus
+  , metadataTitle, metadataTOC
+  :: GetMetadata String
 
-hasPublishedDate :: HasMetadataFieldF
-hasPublishedDate = hasMetadataString publishedDateKey
+matchesHref, matchesLanguage, matchesLongDescription, matchesModifiedDate, matchesPath
+  , matchesPublishedDate, matchesShortDescription, matchesStartDate, matchesStatus
+  , matchesTitle, matchesTOC
+  :: MatchesMetadata String
 
-hasModifiedDate :: HasMetadataFieldF
-hasModifiedDate = hasMetadataString publishedDateKey
+hasHref                  = hasMetadataString hrefKey
+hasLanguage              = hasMetadataString languageKey
+hasLongDescription       = hasMetadataString longDescriptionKey
+hasModifiedDate          = hasMetadataString modifiedDateKey
+hasPath                  = hasMetadataString pathKey
+hasPublishedDate         = hasMetadataString publishedDateKey
+hasShortDescription      = hasMetadataString shortDescriptionKey
+hasStartDate             = hasMetadataString startDateKey
+hasStatus                = hasMetadataString statusKey
+hasTOC                   = hasMetadataString tocKey
+hasTitle                 = hasMetadataString titleKey
 
-hasPath :: HasMetadataFieldF
-hasPath = hasMetadataString pathKey
+metadataHref             = metadataString hrefKey
+metadataLanguage         = metadataString languageKey
+metadataLongDescription  = metadataString longDescriptionKey
+metadataModifiedDate     = metadataString modifiedDateKey
+metadataPath             = metadataString pathKey
+metadataPublishedDate    = metadataString publishedDateKey
+metadataShortDescription = metadataString shortDescriptionKey
+metadataStartDate        = metadataString startDateKey
+metadataStatus           = metadataString statusKey
+metadataTOC              = metadataString tocKey
+metadataTitle            = metadataString titleKey
 
-hasTOC :: HasMetadataFieldF
-hasTOC = hasMetadataString tocKey
+matchesHref              = matchesMetadataString hrefKey
+matchesLanguage          = matchesMetadataString languageKey
+matchesLongDescription   = matchesMetadataString longDescriptionKey
+matchesModifiedDate      = matchesMetadataString modifiedDateKey
+matchesPath              = matchesMetadataString pathKey
+matchesPublishedDate     = matchesMetadataString publishedDateKey
+matchesShortDescription  = matchesMetadataString shortDescriptionKey
+matchesStartDate         = matchesMetadataString startDateKey
+matchesStatus            = matchesMetadataString statusKey
+matchesTOC               = matchesMetadataString tocKey
+matchesTitle             = matchesMetadataString titleKey
 
-hasHref :: HasMetadataFieldF
-hasHref = hasMetadataString hrefKey
+--- Special
 
-hasStartDate :: HasMetadataFieldF
-hasStartDate = hasMetadataString startDateKey
-
-hasStatus :: HasMetadataFieldF
-hasStatus = hasMetadataString statusKey
-
-hasDescriptions :: HasMetadataFieldF
+hasDescriptions :: Metadata -> Bool
 hasDescriptions m = hasMetadataString shortDescriptionKey m && hasMetadataString longDescriptionKey m
-
----
-
-type GetMetadateString = Metadata -> String
-
-metadataLanguage :: GetMetadateString
-metadataLanguage = metadataString languageKey
-
-metadataPublishedDate :: GetMetadateString
-metadataPublishedDate = metadataString publishedDateKey
-
-metadataModifiedDate :: GetMetadateString
-metadataModifiedDate = metadataString modifiedDateKey
-
-metadataPath :: GetMetadateString
-metadataPath = metadataString pathKey
-
-metadataTOC :: GetMetadateString
-metadataTOC = metadataString tocKey

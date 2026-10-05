@@ -1,10 +1,7 @@
 ---
 title: "testi Testy"
-description: "Software Development Engineer. Programming Languages, Databases and Artificial Intelligence."
+description: "Just a test page for previewing transformations"
 path: "/_test.html"
-
-shareTitle: "Mathias San Miguel - SDE"
-# shareDescription: false
 ---
 
 # Markdown: Syntax

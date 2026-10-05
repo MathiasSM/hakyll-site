@@ -1,9 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module MathiasSM.Rules.SinglePages (processSinglePage, processContactPage, process404, processTestPage) where
+module MathiasSM.Rules.SinglePages (processKnownPage, processKnownPage') where
 
 import Data.String (fromString)
 import Hakyll (
+  Compiler,
+  Context,
+  Identifier,
+  Item,
   Rules,
   compile,
   composeRoutes,
@@ -16,74 +20,49 @@ import Hakyll (
 import MathiasSM.CleanURL (cleanRoute)
 import MathiasSM.Compile (finish, runPandoc)
 import MathiasSM.Context (minimalCtx, navStateContext)
+import Control.Monad ((>=>))
 
--- | Configures which page is to be HOME (and placed in /index.html)
-homePageName :: String
-homePageName = "about"
+preTemplates :: [Identifier]
+preTemplates = ["templates/minimal.html"]
 
-{- | Processes a given standalone page
-If pageName is that of homePageName, page is placed under /index.html path
--}
-processSinglePage :: String -> Rules ()
-processSinglePage pageName = match pagePattern $ do
-  route $ constRoute pageRoute `composeRoutes` cleanRoute
-  compile $
+postTemplates :: [Identifier]
+postTemplates = ["templates/as-page.html"]
+
+knownPagePatternString :: String -> String
+knownPagePatternString pageName = "data/pages/" ++ pageName ++ ".*"
+
+-- | Filters named routes
+finalPageRoute :: String -> String
+finalPageRoute "about" = ""
+finalPageRoute "404" = "404.html"
+finalPageRoute pageName = pageName
+
+-- | Chains multiple templates into a single monadic action
+templateSteps :: Context String -> [Identifier] -> [Item String -> Compiler (Item String)]
+templateSteps ctx = map (`loadAndApplyTemplate` ctx)
+
+applyMyTemplates :: Context String -> [Identifier] -> Item String -> Compiler (Item String)
+applyMyTemplates ctx extraTemplates =
+  let templates = concat [preTemplates, extraTemplates, postTemplates]
+      steps = templateSteps ctx templates
+  in foldl (>=>) return steps
+
+-- | Processes a given standalone page
+processKnownPage :: String -> [Identifier] -> Rules ()
+processKnownPage = processKnownPage' True (return minimalCtx)
+
+-- | Processes a given standalone page
+processKnownPage' :: Bool -> Compiler (Context String) -> String -> [Identifier] -> Rules ()
+processKnownPage' mustCleanRoute getCtx pageName extraTemplates = match pagePattern $ do
+  route $ if mustCleanRoute
+            then constRoute pageRoute `composeRoutes` cleanRoute
+            else constRoute pageRoute
+  compile $ do
+    ctx <- getCtx
     getResourceString
       >>= runPandoc
-      >>= loadAndApplyTemplate "templates/minimal.html" minimalCtx
-      >>= loadAndApplyTemplate "templates/as-page.html" minimalCtx
-      >>= finish (navStateContext pageName <> minimalCtx)
+      >>= applyMyTemplates ctx extraTemplates
+      >>= finish (navStateContext pageName <> ctx)
  where
-  pagePattern = fromString $ "data/pages/" ++ pageName ++ ".md"
-  pageRoute = finalRoute pageName
-  finalRoute x
-    | x == homePageName = ""
-    | otherwise = pageName
-
--- pageRoute pageName = metadataRoute
---   where
---     getMetadataHome m = constRoute (metadataHome m) `composeRoutes` gsubRoute "^/" (const "")
-
-{- | Processes a given standalone page
-If pageName is that of homePageName, page is placed under /index.html path
--}
-processContactPage :: String -> Rules ()
-processContactPage pageName = match pagePattern $ do
-  route $ constRoute pageRoute `composeRoutes` cleanRoute
-  compile $
-    getResourceString
-      >>= runPandoc
-      >>= loadAndApplyTemplate "templates/minimal.html" minimalCtx
-      >>= loadAndApplyTemplate "templates/with-social-links.html" minimalCtx
-      >>= loadAndApplyTemplate "templates/as-page.html" minimalCtx
-      >>= finish (navStateContext pageName <> minimalCtx)
- where
-  pagePattern = fromString $ "data/pages/" ++ pageName ++ ".md"
-  pageRoute = finalRoute pageName
-  finalRoute x
-    | x == homePageName = ""
-    | otherwise = pageName
-
--- | Creates a 404.html used by github pages on 404 errors
-process404 :: Rules ()
-process404 = match "data/pages/404.md" $ do
-  route $ constRoute "404.html" -- Do NOT make clean
-  compile $
-    getResourceString
-      >>= runPandoc
-      >>= loadAndApplyTemplate "templates/minimal.html" minimalCtx
-      >>= loadAndApplyTemplate "templates/as-page.html" minimalCtx
-      >>= finish minimalCtx
-
-{- | Not to be used in production, creates a test page from markdown
-TODO: Ensure it's not used in production
--}
-processTestPage :: Rules ()
-processTestPage = match "data/pages/_test.md" $ do
-  route $ constRoute "_test.html" -- Do NOT make clean
-  compile $
-    getResourceString
-      >>= runPandoc
-      >>= loadAndApplyTemplate "templates/minimal.html" minimalCtx
-      >>= loadAndApplyTemplate "templates/as-page.html" minimalCtx
-      >>= finish minimalCtx
+  pagePattern = fromString $ knownPagePatternString pageName
+  pageRoute = finalPageRoute pageName

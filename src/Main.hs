@@ -6,8 +6,9 @@ import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.PostGroup (processPostGroup)
 import MathiasSM.Rules.Redirects (processRedirects)
 import MathiasSM.Rules.Showcase (processShowcase)
-import MathiasSM.Rules.SinglePages (process404, processContactPage, processSinglePage, processTestPage)
+import MathiasSM.Rules.SinglePages (processKnownPage, processKnownPage')
 import MathiasSM.Rules.Sitemap (processSitemap)
+import MathiasSM.Context (minimalCtx)
 
 --------------------------------------------------------------------------------
 
@@ -15,12 +16,12 @@ main :: IO ()
 main = hakyll $ do
   match "templates/*" $ compile templateBodyCompiler
   processAssets
-  processSinglePage "about" -- Places it under /index.html
-  processContactPage "contact"
+  processKnownPage "about" []
+  processKnownPage "contact" ["templates/with-social-links.html"]
+  processKnownPage' False (return minimalCtx) "_test" []
+  processKnownPage' False (return minimalCtx) "404" []
   processShowcase "showcase"
   processPostGroup "blog"
   processPostGroup "escritos"
-  processTestPage -- TODO: Only do on local
-  process404
   processSitemap
   processRedirects

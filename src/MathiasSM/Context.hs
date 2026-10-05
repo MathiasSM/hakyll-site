@@ -55,12 +55,10 @@ siteContext =
     [ constField "site-name" "MathiasSM"
     , constField "site-description" "Software Development Engineer"
     , constField "site-author" "Mathias San Miguel"
-    , constField "site-copyrightYear" ("2013-" ++ show currentYear)
+    , constField "site-copyrightYear" "2013"
     , constField "site-baseUrl" "https://mathiassm.dev"
+    , constField "root" "https://mathiassm.dev"
     ]
- where
-  currentYear :: Int
-  currentYear = 2021 -- TODO: Figure out how to pass this from IO
 
 {- | Sets social media links as part of context (social-<platform>-href)
  TODO: Load from compiled source/md
@@ -98,6 +96,7 @@ languageContext =
     [ field "language" getLanguage
     , field "lang-es" (isLanguage "es")
     , field "lang-en" (isLanguage "en")
+    , field "lang-jp" (isLanguage "jp")
     ]
  where
   getLanguage item = do

@@ -44,9 +44,7 @@ processStaticFiles = do
   justCopy "favicon.ico" idRoute
   justCopy "static/**" rootRoute
 
-{- | Compress all CSS as one file
-TODO: Check if/when not needed with HTTP2 and caches
--}
+{- | Compress all CSS as one file -}
 processCss :: Rules ()
 processCss = do
   match "css/*" $ compile compressCssCompiler
