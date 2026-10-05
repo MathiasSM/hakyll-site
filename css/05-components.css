@@ -1,4 +1,4 @@
-/* site header */
+/* site header ****************************************************************/
 .site-header {
   background: var(--color-main);
   color: var(--color-bg);
@@ -30,9 +30,8 @@
 .site-description::before {content:'[ '}
 .site-description::after {content:' ]'}
 
-/* site header */
+/* site header ****************************************************************/
 .site-header nav {
-  font-size: 1.3em;
   font-weight: bold;
   display: flex;
   justify-content: space-around;
@@ -47,7 +46,7 @@
 .site-header nav mark::before {content:'('}
 .site-header nav mark::after {content:')'}
 
-/* main-article */
+/* main-article ***************************************************************/
 .main-article {padding: 0 1em;max-width:68ch;margin:0 auto; font-size:1.1em}
 .main-article > header {margin-bottom:1em;}
 .main-article > header > div {font-style:italic}
@@ -66,7 +65,59 @@
 .main-article div a:hover[href^=http]::after,
 .main-article div a:active[href^=http]::after { opacity: .8; }
 
-/* postlist */
+/* about *******************************************************************/
+.intro img {
+  width: 5rem;
+  max-width: 30%;
+  height: auto;
+  float: right;
+  margin: 1rem;
+}
+
+.experience ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-auto-rows: 1fr;
+  gap: 1rem;
+}
+.experience li {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 2rem 1fr;
+}
+.experience li > * + * { padding-left: 1rem;}
+.experience li > .icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hobbies ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-evenly;
+}
+.hobbies ul .item {
+  color: inherit;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  align-items: center;
+  padding: .5rem 1rem;
+  box-shadow: 5px 5px 0 var(--color-main);
+}
+.hobbies ul .item:hover { box-shadow: 5px 5px 0 var(--color-accent);}
+.hobbies ul .item > * + * { padding-left: 1rem;}
+.hobbies ul .item > .icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* postlist *******************************************************************/
 .main-list {list-style-type: none;margin: 3em 0 0;padding:0}
 .main-list a {color:currentcolor}
 .main-list a:hover {color:var(--color-accent)}
@@ -83,16 +134,15 @@
 .project .status::before {content:'['}
 .project .status::after {content:']'}
 
-/* site footer */
-.site-footer {background: var(--color-main);text-align:center;}
-.site-footer ul {list-style-type: none;margin:0;padding:.5em 0; display:flex; justify-content: space-around;line-height: 0;}
-.site-footer li {flex:1}
-.site-footer a {display:block;}
-.site-footer svg {height:4em; color: var(--color-main-white);}
-.site-footer li:hover svg,
-.site-footer li:active svg  {color: var(--color-accent)}
+/* site footer ****************************************************************/
+.site-footer {
+  color:var(--color-main-white);
+  background: var(--color-main);
+  text-align:right;
+  padding: .5rem 1rem;
+}
 
-/* social-contact */
+/* social-contact *************************************************************/
 .social-contact {
   list-style-type: none;
   padding:0;
@@ -107,3 +157,6 @@
   display:flex; flex-direction:column; justify-content:center;
 }
 
+/* common *********************************************************************/
+
+.unbreakable {white-space: nowrap;}
