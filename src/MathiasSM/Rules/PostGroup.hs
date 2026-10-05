@@ -18,7 +18,7 @@ processPostGroup groupName = do
 -- | Builds the group index page as an archive page
 processPostGroupIndex :: String -> Rules ()
 processPostGroupIndex groupName =
-  let groupIndexPattern = fromString $ "data/pages/" ++ groupName ++ ".md"
+  let groupIndexPattern = fromString $ "data/pages/" ++ groupName ++ ".*"
    in match groupIndexPattern $ do
         route $ constRoute groupName `composeRoutes` cleanRoute
         compile $ do
