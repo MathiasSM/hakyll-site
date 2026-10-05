@@ -12,21 +12,29 @@ import Hakyll (
   defaultHakyllWriterOptions,
   loadAndApplyTemplate,
   relativizeUrls,
-  renderPandocWith,
-  withTags,
+  withTags, renderPandocWithTransform,
  )
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import Text.HTML.TagSoup (Tag (TagOpen))
 import Text.Pandoc.Options (HTMLMathMethod (MathJax), writerHTMLMathMethod)
+import Text.Pandoc (Inline(Link, Str, RawInline))
+import Text.Pandoc.Walk (walk)
+import qualified Data.Text as T
+
 
 -- | Custom configuration for Pandoc
 runPandoc :: Item String -> Compiler (Item String)
-runPandoc = titleToAlt <=< renderPandocWith defaultHakyllReaderOptions pandocOptions
- where
-  pandocOptions =
-    defaultHakyllWriterOptions
-      { writerHTMLMathMethod = MathJax ""
-      }
+runPandoc = titleToAlt <=< renderPandocWithTransform
+    defaultHakyllReaderOptions
+    writerOptions
+    transforms 
+  where
+    transforms = walk processRubyText
+    writerOptions =
+      defaultHakyllWriterOptions
+        { writerHTMLMathMethod = MathJax ""
+        }
+
 
 -- | Refators away the final common default steps for basically all pages
 finish :: Context String -> Item String -> Compiler (Item String)
@@ -37,6 +45,7 @@ finish context item =
     >>= cleanIndexHtmls
  where
   defaultTemplate = "templates/site.html"
+
 
 {- | Set the @alt@ of each @img@ tag to the text in its @title@ and
 remove the @title@ attribute altogether.
@@ -61,3 +70,20 @@ titleToAlt item = pure $ withTags fixImg <$> item
       Just ("title", t) -> t
       _ -> ""
     oneOf atts (att, _) = att `elem` atts
+
+
+{- | Change special syntax (overloading Links) into ruby-annotated text
+
+Ex. `[飯](-はん)` into `<ruby lang=jp>飯<rt>はん</rt></ruby>`
+
+NOTE: `jp` is hardcoded into the ruby tag "just in case"
+
+NOTE: Uses RawInline since there's no native AST representation
+-}
+processRubyText :: Inline -> Inline
+processRubyText x@(Link _ [Str kanji] (src,_)) =
+  case T.uncons src of
+    Just ('-', ruby) -> RawInline "html" $
+      "<ruby lang=jp>" <> kanji <> "<rp>(</rp><rt>" <> ruby <> "</rt><rp>)</rp></ruby>"
+    _ -> x
+processRubyText x = x
