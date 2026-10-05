@@ -16,7 +16,7 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import Text.HTML.TagSoup (Tag (TagOpen))
-import Text.Pandoc.Options (HTMLMathMethod (MathJax), writerHTMLMathMethod)
+import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
 import Text.Pandoc (Inline(Link, Str, RawInline))
 import Text.Pandoc.Walk (walk)
 import qualified Data.Text as T
@@ -32,7 +32,7 @@ runPandoc = titleToAlt <=< renderPandocWithTransform
     transforms = walk processRubyText
     writerOptions =
       defaultHakyllWriterOptions
-        { writerHTMLMathMethod = MathJax ""
+        { writerMathMethod = MathJax ""
         }
 
 

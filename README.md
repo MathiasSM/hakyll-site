@@ -3,8 +3,8 @@
 ## How to develop?
 
 1. Install ghcup (e.g. using `mise use -g ghcup`)
-2. Use ghcup to install `ghc`, `cabal`.
-3. `cabal v2-build`
+2. Use ghcup to install `ghc`, `cabal`, possibly `hls`.
+3. `cabal build`
 4. (Most) content lives on a different git repo.
   - Clone inside: `git clone git@github.com:MathiasSM/web-writings.git data/posts`
 5. `cabal exec site <CMD>`; these are hakyll commands
