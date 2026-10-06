@@ -148,6 +148,11 @@ projectTests =
     , it "rejects an unknown status" $
         parse (set "status" "wip" sutori)
           ~?= Left ["status: unknown status \"wip\" (expected alpha, finished, ongoing, unmaintained)"]
+    , it "accepts an end date on or after the start date" $
+        fmap projectEnd (parse $ set "endDate" "2018-05-02" sutori) ~?= Right (Just (day 2018 5 2))
+    , it "rejects an end date before the start date" $
+        parse (set "endDate" "2018-05-01" sutori)
+          ~?= Left ["endDate: 2018-05-01 is before startDate 2018-05-02"]
     , it "rejects text that isn't YAML" $
         isLeft (parseProjectYaml "title: [") ~?= True
     ]

@@ -7,7 +7,7 @@ build-type:         Simple
 license-file:       LICENSE.txt
 author:             Mathias San Miguel
 maintainer:         mathiassanmiguel@gmail.com
-homepage:           https://mathiassm.com
+homepage:           https://mathiassm.dev
 
 common shared
   default-language: GHC2024
