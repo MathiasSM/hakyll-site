@@ -1,0 +1,16 @@
+# https://journallist.net/reference-document-for-trust-txt-specifications
+
+# Single member: me.
+member=https://mathiassm.dev
+contact=https://mathiassm.dev/contact
+
+# My socials:
+$-for(socials-all)-$
+social=$href$
+$endfor$
+
+# AI, begone (please):
+datatrainingallowed=no
+
+# Approximate syntax of this file:
+# vim:ft=ini

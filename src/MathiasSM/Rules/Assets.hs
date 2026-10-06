@@ -12,6 +12,7 @@ import Hakyll
       loadAll,
       copyFileCompiler,
       (.||.),
+      getResourceString,
       gsubRoute,
       idRoute,
       setExtension,
@@ -33,6 +34,7 @@ processAssets = do
   processDotImages
   processFavicon
   processStaticFiles
+  processTables
 
 {- | Copies files directly to output folder
 This includes those in `static/`, and final versions of `images/`
@@ -40,9 +42,13 @@ Should NOT include SVGs, and unprocessed images (.dot, etc)
 -}
 processStaticFiles :: Rules ()
 processStaticFiles = do
-  justCopy ("images/*.jpg" .||. "images/*.png" .||. "images/*.gif") idRoute
+  justCopy ("images/**.jpg" .||. "images/**.png" .||. "images/**.gif") idRoute
   justCopy "favicon.ico" idRoute
-  justCopy "static/**" rootRoute
+  justCopy ("static/**/*") rootRoute
+
+-- | Makes tables (TSV) loadable by contexts and rules; they are not routed
+processTables :: Rules ()
+processTables = match "data/*.tsv" $ compile getResourceString
 
 {- | Compress all CSS as one file -}
 processCss :: Rules ()
@@ -59,7 +65,7 @@ TODO: Test
 TODO: Same for other processed styles
 -}
 processDotImages :: Rules ()
-processDotImages = match "images/*.dot" $ do
+processDotImages = match "images/**.dot" $ do
   route $ setExtension "png"
   compile $ getResourceLBS >>= traverse (unixFilterLBS "dot" ["-Tpng"])
 
@@ -70,9 +76,9 @@ TODO: Figure out how to also output png versions for icons
 processSvgImages :: Rules ()
 processSvgImages = do
   -- Allows including directly in html
-  match "images/*.svg" $ compile templateBodyCompiler
+  match "images/**.svg" $ compile templateBodyCompiler
   -- Allows importing as img with src="<...>.svg"
-  match "images/*.svg" $
+  match "images/**.svg" $
     version "svg" $ do
       route $ setExtension "svg"
       compile copyFileCompiler
@@ -91,4 +97,4 @@ justCopy something routes = match something $
 
 -- | Removes `static` prefix from route
 rootRoute :: Routes
-rootRoute = gsubRoute "^/?static/" (const "")
+rootRoute = gsubRoute "^static/" (const "")

@@ -10,6 +10,11 @@ import Hakyll (
   Item,
   Rules,
   compile,
+  applyAsTemplate,
+  composeRoutes,
+  getMetadata,
+  getUnderlying,
+  lookupString,
   composeRoutes,
   constRoute,
   getResourceString,
@@ -59,10 +64,16 @@ processKnownPage' mustCleanRoute getCtx pageName extraTemplates = match pagePatt
             else constRoute pageRoute
   compile $ do
     ctx <- getCtx
+    templated <- isTemplated
     getResourceString
+      >>= (if templated then applyAsTemplate ctx else return)
       >>= runPandoc
       >>= applyMyTemplates ctx extraTemplates
       >>= finish (navStateContext pageName <> ctx)
  where
   pagePattern = fromString $ knownPagePatternString pageName
   pageRoute = finalPageRoute pageName
+  -- Pages with `templated: true` may use template syntax in their body
+  isTemplated = do
+    metadata <- getUnderlying >>= getMetadata
+    return $ lookupString "templated" metadata == Just "true"
