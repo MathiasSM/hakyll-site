@@ -19,6 +19,7 @@ data Key
   | Published
   | -- Keys specific to this site
     Description
+  | Aliases
   | Draft
   | EndDate
   | HideDescription
@@ -48,6 +49,7 @@ keyName key = case key of
   Date -> "date"
   Published -> "published"
   Description -> "description"
+  Aliases -> "aliases"
   Draft -> "draft"
   EndDate -> "endDate"
   HideDescription -> "hideDescription"

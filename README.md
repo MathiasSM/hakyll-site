@@ -45,6 +45,7 @@ Registered by name in `app/Main.hs` (`standalonePages`) and routed by their `pat
 | --- | --- | --- |
 | `title` | yes | Page title. |
 | `path` | yes | Public URL (e.g. `/contact`). |
+| `aliases` | no | Old paths that redirect here (a list like `["/old-name"]`, or a single string). Each must start with `/`; collisions with other pages fail the build. |
 | `description` | no | Summary shown on the page and in `<meta name="description">`. |
 | `type` | no | Kind of page (currently `page`). |
 | `language` | no | `en` (default), `es` or `jp`. |
@@ -62,6 +63,7 @@ Each group `<g>` needs an index page `pages/<g>.md`. Every file in a group is pu
 | `title` | yes | Post title. |
 | `date` | yes | Publication date, `YYYY-MM-DD`. |
 | `path` | yes | Public URL (e.g. `/blog/my-post`). |
+| `aliases` | no | Old paths that redirect here (a list like `["/old-name"]`, or a single string). Each must start with `/`; collisions with other pages fail the build. |
 | `language` | no | `en` (default), `es` or `jp`. Anything else fails the build. |
 | `lastModifiedAt` | no | Last edit date, `YYYY-MM-DD`. |
 | `draft` | no | `true` to leave the post out of the site (and skip validation) while it's in progress. |

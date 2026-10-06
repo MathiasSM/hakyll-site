@@ -13,6 +13,7 @@ tests =
     [ languageTests
     , statusTests
     , postTests
+    , aliasTests
     , projectTests
     , showcaseTests
     ]
@@ -79,6 +80,28 @@ postTests =
     ]
  where
   parse = parsePostYaml . render
+
+-- Aliases --------------------------------------------------------------------
+
+aliasTests :: Test
+aliasTests =
+  group
+    "parseAliasesYaml"
+    [ it "reads a list" $
+        parseAliasesYaml "aliases: [/old, /older/place]" ~?= Right ["/old", "/older/place"]
+    , it "reads a single string" $
+        parseAliasesYaml "aliases: /old" ~?= Right ["/old"]
+    , it "is empty when there are none" $
+        parseAliasesYaml "title: x" ~?= Right []
+    , it "rejects an alias without a leading slash" $
+        parseAliasesYaml "aliases: [old]" ~?= Left ["aliases: \"old\" must start with / (like /old-name)"]
+    , it "rejects the home page" $
+        parseAliasesYaml "aliases: [/]" ~?= Left ["aliases: / is the home page, it can't be an alias"]
+    , it "rejects something that isn't text" $
+        isLeft (parseAliasesYaml "aliases: 3") ~?= True
+    ]
+ where
+  isLeft = either (const True) (const False)
 
 -- Projects -------------------------------------------------------------------
 

@@ -51,7 +51,9 @@ executable site
   import:           shared
   main-is:          Main.hs
   hs-source-dirs:   app
-  build-depends:    base, hakyll, mathiassm
+  build-depends:    base
+                  , hakyll
+                  , mathiassm
   ghc-options:      -threaded -rtsopts -with-rtsopts=-N
 
 test-suite spec
@@ -63,5 +65,9 @@ test-suite spec
                   , MathiasSM.CleanURLSpec
                   , MathiasSM.ContentSpec
                   , MathiasSM.MetadataSpec
+                  , MathiasSM.RedirectsSpec
                   , MathiasSM.TsvSpec
-  build-depends:    base, HUnit, mathiassm, time
+  build-depends:    base
+                  , mathiassm
+                  , HUnit
+                  , time

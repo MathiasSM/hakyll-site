@@ -1,29 +1,25 @@
-module MathiasSM.CleanURL (cleanRoute, pathRoute, cleanIndex, cleanIndexUrls, cleanIndexHtmls) where
+module MathiasSM.CleanURL (outputPath, pathRoute, cleanIndex, cleanIndexUrls, cleanIndexHtmls) where
 
 import Data.List (isSuffixOf)
-import Hakyll (Compiler, Item, Metadata, Routes, composeRoutes, constRoute, customRoute, gsubRoute, replaceAll, toFilePath, withUrls)
+import Hakyll (Compiler, Item, Metadata, Routes, customRoute, replaceAll, toFilePath, withUrls)
 import MathiasSM.Metadata (Key (Path), lookupKey)
-import System.FilePath.Posix (takeBaseName, takeDirectory, takeExtension, (</>))
+import System.FilePath.Posix (takeExtension, (</>))
 
--- | Makes routes be something/index.html instead of just something.html
-cleanRoute :: Routes
-cleanRoute = customRoute createIndexRoute `composeRoutes` gsubRoute "^./" (const "")
- where
-  createIndexRoute ident = takeDirectory p </> takeBaseName p </> "index.html"
-   where
-    p = toFilePath ident
-
-{- | Route from the `path:` front matter: `/contact` becomes `contact/index.html`,
+{- | The output file for a public path: `/contact` becomes `contact/index.html`,
 while a path with an extension (like `/404.html`) is kept as is.
 -}
+outputPath :: FilePath -> FilePath
+outputPath path
+  | null (takeExtension path) = withoutSlash </> "index.html"
+  | otherwise = withoutSlash
+ where
+  withoutSlash = dropWhile (== '/') path
+
+-- | Route from the `path:` front matter, laid out by 'outputPath'
 pathRoute :: Metadata -> Routes
 pathRoute metadata = case lookupKey Path metadata of
   Nothing -> customRoute $ \ident -> error $ "Missing `path` in " ++ toFilePath ident
-  Just path
-    | null (takeExtension path) -> withoutSlash `composeRoutes` cleanRoute
-    | otherwise -> withoutSlash
-   where
-    withoutSlash = constRoute path `composeRoutes` gsubRoute "^/" (const "")
+  Just path -> customRoute $ const $ outputPath path
 
 -- | Cleans all URLs
 cleanIndexUrls :: Item String -> Compiler (Item String)
