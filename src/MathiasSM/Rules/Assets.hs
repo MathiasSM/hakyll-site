@@ -59,19 +59,13 @@ processCss = do
       css <- loadAll "css/*.css"
       makeItem $ unlines $ map itemBody css
 
-{- | Uses unix external filter (dot) to compile them as png
-TODO: Test
-TODO: Same for other processed styles
--}
+-- | Uses unix external filter (dot) to compile them as png
 processDotImages :: Rules ()
 processDotImages = match "images/**.dot" $ do
   route $ setExtension "png"
   compile $ getResourceLBS >>= traverse (unixFilterLBS "dot" ["-Tpng"])
 
-{- | Compiles SVG into context, usable by templates to include directly in HTML
-TODO: Figure out how to also output svg version
-TODO: Figure out how to also output png versions for icons
--}
+-- | Compiles SVG into context, usable by templates to include directly in HTML, and copies it as an image
 processSvgImages :: Rules ()
 processSvgImages = do
   -- Allows including directly in html
@@ -82,7 +76,7 @@ processSvgImages = do
       route $ setExtension "svg"
       compile copyFileCompiler
 
--- Allows importing as img with src="<...>.svg"
+-- | Generates the favicons from the logo
 processFavicon :: Rules ()
 processFavicon = do
   faviconRules "images/logo.svg"
