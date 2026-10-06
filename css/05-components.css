@@ -6,13 +6,6 @@
   flex-direction: column;
   text-align: center
 }
-.site-header nav {
-  display: flex;
-  justify-content: space-around;
-  padding: .2em 0 0;
-  flex-direction: column;
-  flex-wrap:wrap;
-}
 .site-header svg * {fill: var(--color-bg);}
 .site-header a {color: currentcolor}
 
@@ -30,12 +23,12 @@
 .site-description::before {content:'[ '}
 .site-description::after {content:' ]'}
 
-/* site header ****************************************************************/
+/* site header nav ************************************************************/
 .site-header nav {
   font-weight: bold;
   display: flex;
   justify-content: space-around;
-  padding: .2em 0 0;
+  padding: .5rem 0 0;
   flex-direction: column;
   flex-wrap:wrap;
 }
@@ -62,6 +55,7 @@
   content: url("data:image/svg+xml;charset=UTF-8,%3c?xml version='1.0' encoding='UTF-8'?%3e%3csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z'/%3e%3c/svg%3e");
   opacity: .2;
 }
+.main-article .social-contact a[href^=http]::after { display:none }
 .main-article div a:hover[href^=http]::after,
 .main-article div a:active[href^=http]::after { opacity: .8; }
 
@@ -146,12 +140,24 @@
 .social-contact {
   list-style-type: none;
   padding:0;
-  margin: 3em 0;
+  margin-left: -.5rem;
+  margin-right: -.5rem;
 }
-.social-contact a:hover {color: var(--color-accent)}
-.social-contact svg {width: 50px}
-.social-contact li {margin:.2em;}
-.social-contact a {display: flex; padding:.2em;color: var(--color-main-black)}
+.social-contact svg {width: 1em}
+.social-contact li {
+  margin:.5rem;
+  display: inline-block;
+}
+.social-contact a {
+  display: flex;
+  padding: .5rem 1rem;
+  background: var(--color-main-white);
+  color: var(--color-main-black)
+}
+.social-contact a:hover {
+  background: var(--color-accent-white);
+  /* color: var(--color-accent) */
+}
 .social-contact a > div:first-child  {
   margin-right:1em;
   display:flex; flex-direction:column; justify-content:center;
@@ -160,3 +166,4 @@
 /* common *********************************************************************/
 
 .unbreakable {white-space: nowrap;}
+.ipa {font-style: italic;}

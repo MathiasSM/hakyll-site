@@ -1,15 +1,5 @@
 <ul class="social-contact">
 $for(socials-contact)$
-    <li>
-        <article>
-            <a href="$href$" title="$username$" class="special">
-                <div>$partial(iconPath)$</div>
-                <div>
-                    <div>$cta$</div>
-                    <div><strong>$username$</strong></div>
-                </div>
-            </a>
-        </article>
-    </li>
+  $partial("templates/social-link-item.html")$
 $endfor$
 </ul>

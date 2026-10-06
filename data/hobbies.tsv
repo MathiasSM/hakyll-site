@@ -1,12 +1,13 @@
-icon	name	href
-sketching	Drawing	/hobbies/drawing
-feather	Writing	/hobbies/writing
-dice-3	Boardgames	/hobbies/boardgames
-cards	TCGs	/hobbies/tcgs
-device-gamepad-2	Gaming	/hobbies/gaming
-book	Reading	/hobbies/reading
-alphabet-japanese	Japanese	/hobbies/japanese
-arrow-narrow-up-dashed	Bouldering	/hobbies/bouldering
-chart-grid-dots	Tinkering	/hobbies/tinkering
-movie	Movies	/hobbies/movies
-device-tv	TV	/hobbies/tv
+icon	name	href	show
+sketching	Drawing	/hobbies/drawing	true
+feather	Writing	/hobbies/writing	true
+dice-3	Boardgames	/hobbies/boardgames	true
+cards	TCGs	/hobbies/tcgs	true
+device-gamepad-2	Gaming	/hobbies/gaming	true
+book	Reading	/hobbies/reading	true
+alphabet-japanese	Japanese	/hobbies/japanese	true
+arrow-narrow-up-dashed	Bouldering	/hobbies/bouldering	true
+chart-grid-dots	Tinkering	/hobbies/tinkering	true
+movie	Movies	/hobbies/movies	true
+device-tv	TV	/hobbies/tv	true
+-	Collecting	/hobbies/collecting	false

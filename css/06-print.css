@@ -22,7 +22,11 @@
   .site-header svg, .site-header svg * {fill: var(--color-main-light);}
 
   .social-contact {display:block !important;}
-  .social-contact a {align-items: flex-end;}
+  .social-contact li {padding: 0; margin: 0;}
   .social-contact a::after {padding-left:1em}
+
+  .hobbies ul { justify-content: start;}
+  .hobbies ul .item {box-shadow: none; padding: 0;}
+  .hobbies {break-inside: avoid-column;}
 }
 
