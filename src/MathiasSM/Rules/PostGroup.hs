@@ -33,7 +33,7 @@ processPostGroupItems :: String -> Rules ()
 processPostGroupItems groupName =
   let groupItemsPattern = fromString $ "data/posts/" ++ groupName ++ "/**"
       groupSnapshot = fromString $ "published-" ++ groupName
-   in matchMetadata groupItemsPattern hasMinimalMetadata $ do
+   in matchMetadata groupItemsPattern postMetadata $ do
         route $ metadataRoute getMetadataRoute `composeRoutes` cleanRoute
         compile $
           getResourceString
@@ -42,10 +42,6 @@ processPostGroupItems groupName =
             >>= loadAndApplyTemplate "templates/minimal.html" minimalCtx
             >>= loadAndApplyTemplate "templates/as-post.html" minimalCtx
             >>= finish (postSocialTagsContext <> navStateContext groupName <> minimalCtx)
-
--- | Checks if item has all needed metadata
-hasMinimalMetadata :: Metadata -> Bool
-hasMinimalMetadata m = all (\f -> f m) [hasTitle, hasPublishedDate, hasPath]
 
 -- | Build context for archive page
 getCtx :: String -> Compiler (Context String)
@@ -58,4 +54,6 @@ getCtx groupName =
 
 -- | Gets route from metadata "path" field
 getMetadataRoute :: Metadata -> Routes
-getMetadataRoute m = constRoute (metadataPath m) `composeRoutes` gsubRoute "^/" (const "")
+getMetadataRoute m = case lookupKey Path m of
+  Just path -> constRoute path `composeRoutes` gsubRoute "^/" (const "")
+  Nothing -> customRoute $ \ident -> error $ "Missing `path` in " ++ toFilePath ident

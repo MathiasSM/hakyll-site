@@ -1,118 +1,92 @@
+-- | Front matter keys the site relies on, and what each kind of content must provide
 module MathiasSM.Metadata (
-  HasMetadata,
-  hasDescriptions, hasHref, hasLanguage, hasLongDescription, hasMetadataStringList,
-  hasModifiedDate, hasPath, hasPublishedDate, hasShortDescription, hasStartDate, hasStatus, hasTOC,
-  hasTitle,
-  matchesHref, matchesLanguage, matchesLongDescription, matchesMetadataStringList,
-  matchesModifiedDate, matchesPath, matchesPublishedDate, matchesShortDescription,
-  matchesStartDate, matchesStatus, matchesTOC, matchesTitle,
-  metadataHref, metadataLanguage, metadataLongDescription, metadataModifiedDate, metadataPath,
-  metadataPublishedDate, metadataShortDescription, metadataStartDate, metadataStatus,
-  metadataStringList, metadataTOC, metadataTitle,
-)
-where
+  Key (..),
+  keyName,
+  lookupKey,
+  hasKeys,
+  postMetadata,
+  projectMetadata,
+) where
 
-import Data.Maybe (fromJust, isJust)
-import Hakyll (Metadata, lookupString, lookupStringList)
+import Data.Maybe (isJust)
+import Hakyll (Metadata, lookupString)
 
-type MetadataKey = String
+{- | Every front matter key that content may use.
 
-hrefKey, languageKey, longDescriptionKey, modifiedDateKey, pathKey
-  , publishedDateKey, shortDescriptionKey, startDateKey, statusKey
-  , titleKey, tocKey
-  :: MetadataKey
+Add a constructor here (and in 'keyName') before using a new key anywhere;
+see @scripts/get-all-frontmatter-keys.sh@ for the keys currently in content.
+-}
+data Key
+  = -- Keys Hakyll itself interprets
+    Title
+  | Date
+  | Published
+  | -- Keys specific to this site
+    Description
+  | FinishDate
+  | FinishedDate
+  | HideDescription
+  | Home
+  | Href
+  | Language
+  | LastDate
+  | LastModifiedAt
+  | LongDescription
+  | Path
+  | Priority
+  | Project
+  | ShareDescription
+  | ShareTitle
+  | ShortDescription
+  | StartDate
+  | Status
+  | Team
+  | Templated
+  | TOC
+  | Type
+  deriving (Eq, Show, Enum, Bounded)
 
-hrefKey             = "href"
-languageKey         = "language"
-longDescriptionKey  = "longDescription"
-modifiedDateKey     = "lastModifiedAt"
-pathKey             = "path"
-publishedDateKey    = "date"
-shortDescriptionKey = "shortDescription"
-startDateKey        = "startDate"
-statusKey           = "status"
-titleKey            = "title"
-tocKey              = "TOC"
+-- | The key as spelled in front matter
+keyName :: Key -> String
+keyName key = case key of
+  Title -> "title"
+  Date -> "date"
+  Published -> "published"
+  Description -> "description"
+  FinishDate -> "finishDate"
+  FinishedDate -> "finishedDate"
+  HideDescription -> "hideDescription"
+  Home -> "home"
+  Href -> "href"
+  Language -> "language"
+  LastDate -> "lastDate"
+  LastModifiedAt -> "lastModifiedAt"
+  LongDescription -> "longDescription"
+  Path -> "path"
+  Priority -> "priority"
+  Project -> "project"
+  ShareDescription -> "shareDescription"
+  ShareTitle -> "shareTitle"
+  ShortDescription -> "shortDescription"
+  StartDate -> "startDate"
+  Status -> "status"
+  Team -> "team"
+  Templated -> "templated"
+  TOC -> "TOC"
+  Type -> "type"
 
----
+-- | Looks up a key's value as a string
+lookupKey :: Key -> Metadata -> Maybe String
+lookupKey = lookupString . keyName
 
+-- | Checks that every given key is present
+hasKeys :: [Key] -> Metadata -> Bool
+hasKeys keys m = all (\k -> isJust $ lookupKey k m) keys
 
-type GetMetadata a = Metadata -> a
-type HasMetadata = Metadata -> Bool
-type MatchesMetadata a = (a -> Bool) -> Metadata -> Bool
+-- | What a post (blog, escritos) needs to be published
+postMetadata :: Metadata -> Bool
+postMetadata = hasKeys [Title, Date, Path]
 
-metadataString :: MetadataKey -> GetMetadata String
-metadataString field = fromJust . lookupString field
-
-metadataStringList :: MetadataKey -> GetMetadata [String]
-metadataStringList field = fromJust . lookupStringList field
-
-hasMetadataString :: MetadataKey -> HasMetadata
-hasMetadataString field = isJust . lookupString field
-
-hasMetadataStringList :: MetadataKey -> HasMetadata
-hasMetadataStringList field = isJust . lookupStringList field
-
-matchesMetadataString :: MetadataKey -> MatchesMetadata String
-matchesMetadataString field predicate = maybe False predicate . lookupString field
-
-matchesMetadataStringList :: MetadataKey -> MatchesMetadata [String]
-matchesMetadataStringList field predicate = maybe False predicate . lookupStringList field
-
----
-
-hasHref, hasLanguage, hasLongDescription, hasModifiedDate, hasPath
-  , hasPublishedDate, hasShortDescription, hasStartDate, hasStatus
-  , hasTitle, hasTOC
-  :: HasMetadata
-
-metadataHref, metadataLanguage, metadataLongDescription, metadataModifiedDate, metadataPath
-  , metadataPublishedDate, metadataShortDescription, metadataStartDate, metadataStatus
-  , metadataTitle, metadataTOC
-  :: GetMetadata String
-
-matchesHref, matchesLanguage, matchesLongDescription, matchesModifiedDate, matchesPath
-  , matchesPublishedDate, matchesShortDescription, matchesStartDate, matchesStatus
-  , matchesTitle, matchesTOC
-  :: MatchesMetadata String
-
-hasHref                  = hasMetadataString hrefKey
-hasLanguage              = hasMetadataString languageKey
-hasLongDescription       = hasMetadataString longDescriptionKey
-hasModifiedDate          = hasMetadataString modifiedDateKey
-hasPath                  = hasMetadataString pathKey
-hasPublishedDate         = hasMetadataString publishedDateKey
-hasShortDescription      = hasMetadataString shortDescriptionKey
-hasStartDate             = hasMetadataString startDateKey
-hasStatus                = hasMetadataString statusKey
-hasTOC                   = hasMetadataString tocKey
-hasTitle                 = hasMetadataString titleKey
-
-metadataHref             = metadataString hrefKey
-metadataLanguage         = metadataString languageKey
-metadataLongDescription  = metadataString longDescriptionKey
-metadataModifiedDate     = metadataString modifiedDateKey
-metadataPath             = metadataString pathKey
-metadataPublishedDate    = metadataString publishedDateKey
-metadataShortDescription = metadataString shortDescriptionKey
-metadataStartDate        = metadataString startDateKey
-metadataStatus           = metadataString statusKey
-metadataTOC              = metadataString tocKey
-metadataTitle            = metadataString titleKey
-
-matchesHref              = matchesMetadataString hrefKey
-matchesLanguage          = matchesMetadataString languageKey
-matchesLongDescription   = matchesMetadataString longDescriptionKey
-matchesModifiedDate      = matchesMetadataString modifiedDateKey
-matchesPath              = matchesMetadataString pathKey
-matchesPublishedDate     = matchesMetadataString publishedDateKey
-matchesShortDescription  = matchesMetadataString shortDescriptionKey
-matchesStartDate         = matchesMetadataString startDateKey
-matchesStatus            = matchesMetadataString statusKey
-matchesTOC               = matchesMetadataString tocKey
-matchesTitle             = matchesMetadataString titleKey
-
---- Special
-
-hasDescriptions :: Metadata -> Bool
-hasDescriptions m = hasMetadataString shortDescriptionKey m && hasMetadataString longDescriptionKey m
+-- | What a showcase project needs to be listed
+projectMetadata :: Metadata -> Bool
+projectMetadata = hasKeys [Title, Status, StartDate, ShortDescription, LongDescription]

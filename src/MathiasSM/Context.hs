@@ -3,6 +3,7 @@ module MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext) wh
 import Control.Monad (unless)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes, fromMaybe)
+import MathiasSM.Metadata (Key (Language, Path), lookupKey)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 import Hakyll (
   Compiler,
@@ -20,7 +21,6 @@ import Hakyll (
   defaultContext,
   field,
   jsonldField,
-  lookupString,
   noResult,
   openGraphField,
   twitterCardField,
@@ -98,7 +98,7 @@ ensureHobbyPagesExist :: Compiler ()
 ensureHobbyPagesExist = do
   table <- load "data/hobbies.tsv"
   postIds <- getMatches "data/posts/blog/**"
-  paths <- mapM (fmap (lookupString "path") . getMetadata) postIds
+  paths <- mapM (fmap (lookupKey Path) . getMetadata) postIds
   let hrefs = [h | row <- parseTsv $ itemBody table, Just h <- [lookup "href" row]]
       missing = filter (`notElem` catMaybes paths) hrefs
   unless (null missing) $
@@ -132,7 +132,7 @@ languageContext =
  where
   getLanguage item = do
     metadata <- getMetadata (itemIdentifier item)
-    return $ fromMaybe defaultLanguage $ lookupString "language" metadata
+    return $ fromMaybe defaultLanguage $ lookupKey Language metadata
 
   isLanguage lang item = do
     metaLang <- getLanguage item
