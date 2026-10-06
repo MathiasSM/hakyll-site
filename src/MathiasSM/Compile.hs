@@ -2,6 +2,7 @@ module MathiasSM.Compile (runPandoc, applyTemplates, finish) where
 
 import Control.Monad (foldM, (<=<))
 import Data.List (find)
+import Data.Text qualified as T
 import Hakyll (
   Compiler,
   Context,
@@ -11,30 +12,30 @@ import Hakyll (
   defaultHakyllWriterOptions,
   loadAndApplyTemplate,
   relativizeUrls,
-  withTags, renderPandocWithTransform,
+  renderPandocWithTransform,
+  withTags,
  )
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
 import Text.HTML.TagSoup (Tag (TagOpen))
+import Text.Pandoc (Inline (Link, RawInline, Str))
 import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
-import Text.Pandoc (Inline(Link, Str, RawInline))
 import Text.Pandoc.Walk (walk)
-import qualified Data.Text as T
-
 
 -- | Custom configuration for Pandoc
 runPandoc :: Item String -> Compiler (Item String)
-runPandoc = titleToAlt <=< renderPandocWithTransform
-    defaultHakyllReaderOptions
-    writerOptions
-    transforms 
-  where
-    transforms = walk processRubyText
-    writerOptions =
-      defaultHakyllWriterOptions
-        { writerMathMethod = MathJax ""
-        }
-
+runPandoc =
+  titleToAlt
+    <=< renderPandocWithTransform
+      defaultHakyllReaderOptions
+      writerOptions
+      transforms
+ where
+  transforms = walk processRubyText
+  writerOptions =
+    defaultHakyllWriterOptions
+      { writerMathMethod = MathJax ""
+      }
 
 -- | Applies the given templates in order, each wrapping the previous result
 applyTemplates :: Context String -> [Identifier] -> Item String -> Compiler (Item String)
@@ -47,7 +48,6 @@ finish context item =
     >>= relativizeUrls
     >>= cleanIndexUrls
     >>= cleanIndexHtmls
-
 
 {- | Set the @alt@ of each @img@ tag to the text in its @title@ and
 remove the @title@ attribute altogether.
@@ -73,7 +73,6 @@ titleToAlt item = pure $ withTags fixImg <$> item
       _ -> ""
     oneOf atts (att, _) = att `elem` atts
 
-
 {- | Change special syntax (overloading Links) into ruby-annotated text
 
 Ex. `[飯](-はん)` into `<ruby lang=jp>飯<rt>はん</rt></ruby>`
@@ -83,9 +82,10 @@ NOTE: `jp` is hardcoded into the ruby tag "just in case"
 NOTE: Uses RawInline since there's no native AST representation
 -}
 processRubyText :: Inline -> Inline
-processRubyText x@(Link _ [Str kanji] (src,_)) =
+processRubyText x@(Link _ [Str kanji] (src, _)) =
   case T.uncons src of
-    Just ('-', ruby) -> RawInline "html" $
-      "<ruby lang=jp>" <> kanji <> "<rp>(</rp><rt>" <> ruby <> "</rt><rp>)</rp></ruby>"
+    Just ('-', ruby) ->
+      RawInline "html" $
+        "<ruby lang=jp>" <> kanji <> "<rp>(</rp><rt>" <> ruby <> "</rt><rp>)</rp></ruby>"
     _ -> x
 processRubyText x = x

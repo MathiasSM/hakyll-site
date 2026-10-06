@@ -23,6 +23,12 @@
 1. `cabal test` runs the unit tests (`test/`)
 2. `scripts/check-site` builds a small fixture site (`test/fixtures/content`) and compares the output with the golden snapshot in `test/golden`. When a change to the output is intended, review the diff and run `scripts/check-site --update`. (Needs ImageMagick, like the build itself.)
 
+## Format and lint
+
+1. Install the tools once (e.g. `ghcup install fourmolu` and `ghcup install hlint`, or `cabal install fourmolu hlint`).
+2. `scripts/format` formats the Haskell sources (fourmolu, configured in `fourmolu.yaml`); `scripts/format --check` only checks, and fails with a diff if something would change.
+3. `hlint app src test` lints them; it should report no hints.
+
 ## Content
 
 The `content/` folder is its own git repo (`web-writings`), ignored by this one:

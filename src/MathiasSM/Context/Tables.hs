@@ -2,7 +2,6 @@
 module MathiasSM.Context.Tables (socialMediaContext, hobbiesContext, experienceContext) where
 
 import Data.Maybe (fromMaybe)
-import System.FilePath.Posix ((</>))
 import Hakyll (
   Compiler,
   Context,
@@ -16,6 +15,7 @@ import Hakyll (
  )
 import MathiasSM.Config (assetsDir, experienceTable, hobbiesTable, socialsTable)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
+import System.FilePath.Posix ((</>))
 
 -- | Table of social accounts (content/tables/socials.tsv)
 socialMediaContext :: Context a

@@ -16,7 +16,7 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
-import MathiasSM.Config (minimalTemplate, pagesPattern, pageTemplate)
+import MathiasSM.Config (minimalTemplate, pageTemplate, pagesPattern)
 import MathiasSM.Context (minimalCtx)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)

@@ -1,7 +1,7 @@
 module MathiasSM.Context.Nav (navContext) where
 
-import Data.Maybe (catMaybes)
 import Data.List (sortOn)
+import Data.Maybe (catMaybes)
 import Hakyll (
   Compiler,
   Context,

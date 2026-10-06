@@ -1,6 +1,7 @@
 -- | The Atom feeds: one per post group, described by the group's index page
 module MathiasSM.Feeds (Feed (..), feedHref, feeds, absoluteUrl) where
 
+import Data.Either (lefts, rights)
 import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Hakyll (MonadMetadata (getMatches, getMetadata), toFilePath)
@@ -27,14 +28,14 @@ feedHref feed = '/' : feedFile feed
 Each feed lives next to the group's index page (`/blog` has `/blog/atom.xml`) and
 takes its title and description from that page.
 -}
-feeds :: MonadMetadata m => m (Either [String] [Feed])
+feeds :: (MonadMetadata m) => m (Either [String] [Feed])
 feeds = collect <$> mapM feedOf postGroups
  where
-  collect results = case [problem | Left problem <- results] of
-    [] -> Right [feed | Right feed <- results]
+  collect results = case lefts results of
+    [] -> Right (rights results)
     problems -> Left problems
 
-feedOf :: MonadMetadata m => String -> m (Either String Feed)
+feedOf :: (MonadMetadata m) => String -> m (Either String Feed)
 feedOf group = do
   indexPages <- getMatches (pagesPattern group)
   case indexPages of
