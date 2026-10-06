@@ -21,6 +21,7 @@
 ## Test
 
 1. `cabal test` runs the unit tests (`test/`)
+2. `scripts/check-site` builds a small fixture site (`test/fixtures/content`) and compares the output with the golden snapshot in `test/golden`. When a change to the output is intended, review the diff and run `scripts/check-site --update`. (Needs ImageMagick, like the build itself.)
 
 ## Content
 

@@ -1,0 +1,12 @@
+# https://journallist.net/reference-document-for-trust-txt-specifications
+
+# Single member: me.
+member=https://mathiassm.dev
+contact=https://mathiassm.dev/contact
+
+# My socials:social=https://x.com/example
+social=https://github.com/example
+
+
+# AI, begone (please):
+datatrainingallowed=no
