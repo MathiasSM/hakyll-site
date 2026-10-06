@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.Assets (processAssets) where
 
 import Hakyll

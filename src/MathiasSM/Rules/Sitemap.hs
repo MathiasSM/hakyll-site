@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.Sitemap (processSitemap) where
 
 import Hakyll

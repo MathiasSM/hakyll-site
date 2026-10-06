@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.Redirects (processRedirects) where
 
 import Hakyll ( Rules, version, createRedirects, Identifier )

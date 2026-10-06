@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.Assets.Favicon (faviconRules) where
 
 import Hakyll

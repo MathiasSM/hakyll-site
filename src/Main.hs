@@ -1,6 +1,4 @@
 --------------------------------------------------------------------------------
-{-# LANGUAGE OverloadedStrings #-}
-
 import Hakyll
 import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.PostGroup (processPostGroup)
