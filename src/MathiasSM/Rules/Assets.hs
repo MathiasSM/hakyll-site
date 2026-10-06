@@ -22,7 +22,7 @@ import Hakyll
       unixFilterLBS,
       compressCssCompiler,
       templateBodyCompiler )
-import MathiasSM.Rules.Assets.Favicon ( faviconRules )
+import MathiasSM.Rules.Favicon ( faviconRules )
 
 -- | Processes all assets (images or otherwise) into final site
 processAssets :: Rules ()

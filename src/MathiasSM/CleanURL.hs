@@ -1,4 +1,4 @@
-module MathiasSM.CleanURL (cleanRoute, pathRoute, cleanIndexUrls, cleanIndexHtmls) where
+module MathiasSM.CleanURL (cleanRoute, pathRoute, cleanIndex, cleanIndexUrls, cleanIndexHtmls) where
 
 import Data.List (isSuffixOf)
 import Hakyll (Compiler, Item, Metadata, Routes, composeRoutes, constRoute, customRoute, gsubRoute, replaceAll, toFilePath, withUrls)

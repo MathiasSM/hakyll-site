@@ -1,13 +1,13 @@
 # Page frontmatter
 
-Standalone pages live in `data/pages/<name>.md` and are registered in `src/Main.hs`.
+Standalone pages live in `data/pages/<name>.md` and are registered in `app/Main.hs`.
 This README is not registered there and is excluded from the sitemap, so Hakyll
 does not process it.
 
 | Key | Required | Meaning |
 | --- | --- | --- |
 | `title` | yes | Page title. |
-| `path` | yes | Public URL (e.g. `/contact`); the actual output route is set in `Rules/SinglePages.hs`. |
+| `path` | yes | Public URL (e.g. `/contact`); the output route is derived from it (`/contact` becomes `contact/index.html`; a path with an extension, like `/404.html`, is kept). |
 | `description` | no | Summary shown on the page and in `<meta name="description">`. |
 | `type` | no | Kind of page (currently `page`). |
 | `language` | no | `en` (default), `es` or `jp`. |
