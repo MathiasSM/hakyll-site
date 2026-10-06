@@ -46,6 +46,8 @@ Registered by name in `app/Main.hs` (`standalonePages`) and routed by their `pat
 | --- | --- | --- |
 | `title` | yes | Page title. |
 | `path` | yes | Public URL (e.g. `/contact`). |
+| `nav` | no | Puts the page in the site menu with this label (HTML allowed, e.g. `'<i>Es</i>critos'`). Needs `navOrder`. |
+| `navOrder` | with `nav` | Position in the menu, lowest first. |
 | `aliases` | no | Old paths that redirect here (a list like `["/old-name"]`, or a single string). Each must start with `/`; collisions with other pages fail the build. |
 | `description` | no | Summary shown on the page and in `<meta name="description">`. |
 | `type` | no | Kind of page (currently `page`). |

@@ -1,6 +1,3 @@
-<nav class="site-menu">
-    <a $if(currentview-showcase)$class="active" aria-current="true"$endif$ href="/showcase">Showcase</a>
-    <a $if(currentview-blog)$class="active" aria-current="true"$endif$ href="/blog">Blog</a>
-    <a $if(currentview-creative-writing)$class="active" aria-current="true"$endif$ href="/escritos" lang="es"><i><mark>Es</mark>critos</i></a>
-    <a $if(currentview-contact)$class="active" aria-current="true"$endif$ href="/contact">Contact</a>
+<nav class="site-menu">$for(nav)$
+    <a $if(active)$class="active" aria-current="true"$endif$ href="$href$"$if(lang)$ lang="$lang$"$endif$>$label$</a>$endfor$
 </nav>
