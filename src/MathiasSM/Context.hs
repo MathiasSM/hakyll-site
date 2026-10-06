@@ -1,6 +1,8 @@
 module MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext) where
 
-import Data.Maybe (fromMaybe)
+import Control.Monad (unless)
+import Data.List (intercalate)
+import Data.Maybe (catMaybes, fromMaybe)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 import Hakyll (
   Compiler,
@@ -8,6 +10,7 @@ import Hakyll (
   Identifier,
   Item (Item, itemBody),
   fromFilePath,
+  getMatches,
   toFilePath,
   listField,
   load,
@@ -84,10 +87,25 @@ socialMediaContext =
 
 -- | Table of hobbies, as a list usable in templates
 hobbiesContext :: Context a
-hobbiesContext = listField "hobbies" rowCtx $ tableItems "data/hobbies.tsv" (filter $ isYes "show")
+hobbiesContext = listField "hobbies" rowCtx $ do
+  ensureHobbyPagesExist
+  tableItems "data/hobbies.tsv" (filter $ isYes "show")
  where
   rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
   iconOf row = "images/icons/" ++ fromMaybe "" (lookup "icon" row) ++ ".svg"
+
+-- | Fails the build if any hobby (shown or not) lacks a blog post with `path: <href>`
+ensureHobbyPagesExist :: Compiler ()
+ensureHobbyPagesExist = do
+  table <- load "data/hobbies.tsv"
+  postIds <- getMatches "data/posts/blog/**"
+  paths <- mapM (fmap (lookupString "path") . getMetadata) postIds
+  let hrefs = [h | row <- parseTsv $ itemBody table, Just h <- [lookup "href" row]]
+      missing = filter (`notElem` catMaybes paths) hrefs
+  unless (null missing) $
+    fail $
+      "hobbies.tsv: no post in data/posts/blog with a matching `path:` for: "
+        ++ intercalate ", " missing
 
 -- | Table of experience items, as a list usable in templates
 experienceContext :: Context a

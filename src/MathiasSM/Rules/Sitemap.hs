@@ -4,6 +4,8 @@ module MathiasSM.Rules.Sitemap (processSitemap) where
 
 import Hakyll
     ( Rules,
+      (.&&.),
+      complement,
       makeItem,
       loadAll,
       idRoute,
@@ -22,7 +24,7 @@ processSitemap = create ["sitemap.xml"] $ do
   compile $ do
     blog <- recentFirst =<< loadAll "data/posts/blog/*"
     escritos <- recentFirst =<< loadAll "data/posts/escritos/*"
-    pages <- loadAll "data/pages/*"
+    pages <- loadAll ("data/pages/*" .&&. complement "data/pages/README.md")
     let allItems = return $ pages <> blog <> escritos
         sitemapCtx = listField "entries" minimalCtx allItems <> minimalCtx
     makeItem ""
