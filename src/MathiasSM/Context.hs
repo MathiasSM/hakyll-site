@@ -1,8 +1,8 @@
-module MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext) where
+module MathiasSM.Context (minimalCtx, projectContext, navStateContext, postSocialTagsContext) where
 
 import Data.Maybe (fromMaybe)
 import MathiasSM.Config (baseUrl, experienceTable, hobbiesTable, socialsTable)
-import MathiasSM.Metadata (Key (Language), lookupKey)
+import MathiasSM.Content (Project (..), languageCode, requireLanguage, statusName)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 import MathiasSM.Validate (ensureHobbyPagesExist)
 import Hakyll (
@@ -14,7 +14,6 @@ import Hakyll (
   toFilePath,
   listField,
   load,
-  MonadMetadata (getMetadata),
   boolField,
   constField,
   defaultContext,
@@ -34,6 +33,23 @@ minimalCtx =
     <> experienceContext
     <> languageContext
     <> defaultContext
+
+-- | A showcase project's fields, as read by the project templates
+projectContext :: Context Project
+projectContext =
+  mconcat
+    [ projectField "title" projectTitle
+    , projectField "href" projectHref
+    , projectField "status" (statusName . projectStatus)
+    , projectField "startDate" (show . projectStart)
+    , optionalField "endDate" (fmap show . projectEnd)
+    , projectField "shortDescription" projectShortDescription
+    , projectField "longDescription" projectLongDescription
+    , languageContext
+    ]
+ where
+  projectField name get = field name (return . get . itemBody)
+  optionalField name get = field name (maybe (noResult $ "No " ++ name) return . get . itemBody)
 
 -- | Given a string, builds a context field based on that name as currentView
 navStateContext :: String -> Context a
@@ -114,23 +130,16 @@ tableItems path select = do
 -- | Sets a language variable for choosing strings and using in html
 languageContext :: Context a
 languageContext =
-  mconcat
-    [ field "language" getLanguage
-    , field "lang-es" (isLanguage "es")
-    , field "lang-en" (isLanguage "en")
-    , field "lang-jp" (isLanguage "jp")
-    ]
+  mconcat $
+    field "language" (fmap languageCode . itemLanguage)
+      : [field ("lang-" ++ languageCode lang) (isLanguage lang) | lang <- [minBound .. maxBound]]
  where
-  getLanguage item = do
-    metadata <- getMetadata (itemIdentifier item)
-    return $ fromMaybe defaultLanguage $ lookupKey Language metadata
+  itemLanguage = requireLanguage . itemIdentifier
 
   isLanguage lang item = do
-    metaLang <- getLanguage item
-    if metaLang == lang
-      then return metaLang
+    itemLang <- itemLanguage item
+    if itemLang == lang
+      then return $ languageCode lang
       else noResult "No lang"
-
-  defaultLanguage = "en"
 
 -- TODO: date (published and modified) context with utc and pretty "ago" versions
