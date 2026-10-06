@@ -30,6 +30,7 @@ minimalCtx =
   siteContext
     <> socialMediaContext
     <> hobbiesContext
+    <> experienceContext
     <> languageContext
     <> defaultContext
 
@@ -81,9 +82,16 @@ socialMediaContext =
   rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
   iconOf row = "images/icons/social/" ++ fromMaybe "" (lookup "site" row) ++ ".svg"
 
--- | Table of hobbies (data/hobbies.tsv), as a list usable in templates
+-- | Table of hobbies, as a list usable in templates
 hobbiesContext :: Context a
-hobbiesContext = listField "hobbies" rowCtx $ tableItems "data/hobbies.tsv" id
+hobbiesContext = listField "hobbies" rowCtx $ tableItems "data/hobbies.tsv" (filter $ isYes "show")
+ where
+  rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
+  iconOf row = "images/icons/" ++ fromMaybe "" (lookup "icon" row) ++ ".svg"
+
+-- | Table of experience items, as a list usable in templates
+experienceContext :: Context a
+experienceContext = listField "experience" rowCtx $ tableItems "data/experience.tsv" id
  where
   rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
   iconOf row = "images/icons/" ++ fromMaybe "" (lookup "icon" row) ++ ".svg"

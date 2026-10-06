@@ -13,13 +13,8 @@ main { flex:1; }
   .social-contact {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
   }
-  .social-contact li {flex: 0 0 45%; margin:1.2em .2em;}
 }
-@media (min-width: 730px) { .social-contact li {flex: 0 0 30%;} }
-@media (min-width: 1000px) { .social-contact li {flex: 0 0 45%;} }
-@media (min-width: 1500px) { .social-contact li {flex: 0 0 30%;} }
 
 /* Desktop layout */
 @media (min-width: 1000px) and (min-height: 600px) {
@@ -35,7 +30,10 @@ main { flex:1; }
   }
   .site-header {grid-area: header; min-width:20em; padding:0 1em;}
   main {grid-area: main; overflow-y:scroll;scroll-behavior:smooth}
-  .site-footer {grid-area: footer}
+  .site-footer {
+    grid-area: footer;
+    text-align: left;
+  }
   .site-header > a {
     flex-direction:column;
     margin: 4rem 0 0;
