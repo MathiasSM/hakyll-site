@@ -2,8 +2,6 @@ module MathiasSM.Rules.Sitemap (processSitemap) where
 
 import Hakyll
     ( Rules,
-      (.&&.),
-      complement,
       makeItem,
       loadAll,
       idRoute,
@@ -14,7 +12,7 @@ import Hakyll
       loadAndApplyTemplate,
       recentFirst )
 import MathiasSM.CleanURL ( cleanIndexHtmls )
-import MathiasSM.Config ( postGroups, postsPattern )
+import MathiasSM.Config ( pagesPattern, postGroups, postsPattern )
 import MathiasSM.Context ( minimalCtx )
 
 -- | Builds sitemap.xml from the standalone pages and every post group
@@ -23,7 +21,7 @@ processSitemap = create ["sitemap.xml"] $ do
   route idRoute
   compile $ do
     posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern group)) postGroups
-    pages <- loadAll ("data/pages/*" .&&. complement "data/pages/README.md")
+    pages <- loadAll $ pagesPattern "*"
     let allItems = return $ pages <> concat posts
         sitemapCtx = listField "entries" minimalCtx allItems <> minimalCtx
     makeItem ""

@@ -69,7 +69,7 @@ siteContext =
     , constField "root" baseUrl -- read by Hakyll's own social cards
     ]
 
--- | Table of social accounts (data/socials.tsv), as lists usable in templates
+-- | Table of social accounts (content/tables/socials.tsv), as lists usable in templates
 socialMediaContext :: Context a
 socialMediaContext =
   mconcat

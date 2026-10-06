@@ -1,11 +1,15 @@
 -- | Site-wide constants: where content lives, what groups exist, shared templates
 module MathiasSM.Config (
   baseUrl,
+  contentDir,
   postGroups,
   showcaseName,
+  standalonePages,
+  requiredContent,
   pagesPattern,
   postsPattern,
   projectsPattern,
+  tablesPattern,
   hobbiesTable,
   socialsTable,
   experienceTable,
@@ -16,37 +20,56 @@ module MathiasSM.Config (
 ) where
 
 import Data.String (fromString)
-import Hakyll (Identifier, Pattern)
+import Hakyll (Identifier, Pattern, fromFilePath)
+import System.FilePath.Posix ((<.>), (</>))
 
 -- | Public origin of the site, without trailing slash
 baseUrl :: String
 baseUrl = "https://mathiassm.dev"
 
--- | Groups of posts, each with an index page (data/pages/<group>.*) and items (data/posts/<group>/**)
-postGroups :: [String]
-postGroups = ["blog", "escritos"]
+-- | Where the content repo is cloned (git-ignored): pages/, projects/, tables/, and one folder per post group
+contentDir :: FilePath
+contentDir = "content"
 
--- | Name of the page listing the projects in data/projects
+-- | Groups of posts, each with an index page (content/pages/<group>.*) and items (content/<group>/**)
+postGroups :: [String]
+postGroups = ["blog", "creative-writing"]
+
+-- | Name of the page listing the projects in content/projects
 showcaseName :: String
 showcaseName = "showcase"
 
+-- | Plain pages, each content/pages/<name>.*, routed by its `path:`
+standalonePages :: [String]
+standalonePages = ["about", "contact", "404"]
+
+-- | Files the site cannot build without, relative to the repo root
+requiredContent :: [FilePath]
+requiredContent =
+  [contentDir </> "pages" </> name <.> "md" | name <- standalonePages <> [showcaseName] <> postGroups]
+    <> [contentDir </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
+
 -- | Standalone page named @name@
 pagesPattern :: String -> Pattern
-pagesPattern name = fromString $ "data/pages/" ++ name ++ ".*"
+pagesPattern name = fromString $ contentDir </> "pages" </> name <.> "*"
 
 -- | Items of a post group
 postsPattern :: String -> Pattern
-postsPattern group = fromString $ "data/posts/" ++ group ++ "/**"
+postsPattern group = fromString $ contentDir </> group </> "**"
 
 -- | All showcase projects
 projectsPattern :: Pattern
-projectsPattern = "data/projects/**"
+projectsPattern = fromString $ contentDir </> "projects" </> "**"
+
+-- | All tables (TSV)
+tablesPattern :: Pattern
+tablesPattern = fromString $ contentDir </> "tables" </> "*.tsv"
 
 -- | Tables (TSV) read by contexts
 hobbiesTable, socialsTable, experienceTable :: Identifier
-hobbiesTable = "data/hobbies.tsv"
-socialsTable = "data/socials.tsv"
-experienceTable = "data/experience.tsv"
+hobbiesTable = fromFilePath $ contentDir </> "tables" </> "hobbies.tsv"
+socialsTable = fromFilePath $ contentDir </> "tables" </> "socials.tsv"
+experienceTable = fromFilePath $ contentDir </> "tables" </> "experience.tsv"
 
 -- | Templates every kind of page goes through
 siteTemplate, minimalTemplate, pageTemplate, postTemplate :: Identifier

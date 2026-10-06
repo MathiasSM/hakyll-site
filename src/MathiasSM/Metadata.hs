@@ -83,7 +83,7 @@ lookupKey = lookupString . keyName
 hasKeys :: [Key] -> Metadata -> Bool
 hasKeys keys m = all (\k -> isJust $ lookupKey k m) keys
 
--- | What a post (blog, escritos) needs to be published
+-- | What a post (blog, creative-writing) needs to be published
 postMetadata :: Metadata -> Bool
 postMetadata = hasKeys [Title, Date, Path]
 

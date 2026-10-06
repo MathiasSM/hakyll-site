@@ -20,7 +20,7 @@ import MathiasSM.Config (minimalTemplate, pagesPattern, pageTemplate)
 import MathiasSM.Context (minimalCtx, navStateContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
 
--- | A standalone page, backed by data/pages/<pageName>.* and routed by its `path:`
+-- | A standalone page, backed by content/pages/<pageName>.* and routed by its `path:`
 data Page = Page
   { pageName :: String
   , pageContext :: Compiler (Context String)
