@@ -22,6 +22,7 @@ import Hakyll
       unixFilterLBS,
       compressCssCompiler,
       templateBodyCompiler )
+import MathiasSM.Config ( tablesPattern )
 import MathiasSM.Rules.Favicon ( faviconRules )
 
 -- | Processes all assets (images or otherwise) into final site
@@ -46,7 +47,7 @@ processStaticFiles = do
 
 -- | Makes tables (TSV) loadable by contexts and rules; they are not routed
 processTables :: Rules ()
-processTables = match "data/*.tsv" $ compile getResourceString
+processTables = match tablesPattern $ compile getResourceString
 
 {- | Compress all CSS as one file -}
 processCss :: Rules ()
