@@ -24,6 +24,10 @@ library
                   , MathiasSM.Config
                   , MathiasSM.Content
                   , MathiasSM.Context
+                  , MathiasSM.Context.Language
+                  , MathiasSM.Context.Project
+                  , MathiasSM.Context.Site
+                  , MathiasSM.Context.Tables
                   , MathiasSM.Metadata
                   , MathiasSM.Rules.Assets
                   , MathiasSM.Rules.Favicon

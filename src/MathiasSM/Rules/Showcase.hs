@@ -14,7 +14,8 @@ import Hakyll (
  )
 import MathiasSM.Config (projectsPattern)
 import MathiasSM.Content (requireProject, showcaseKey)
-import MathiasSM.Context (minimalCtx, projectContext)
+import MathiasSM.Context (minimalCtx)
+import MathiasSM.Context.Project (projectContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
 -- | Processes the showcase: its index page and the projects it lists
