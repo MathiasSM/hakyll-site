@@ -55,21 +55,30 @@ Registered by name in `app/Main.hs` (`standalonePages`) and routed by their `pat
 
 ### Posts (`blog/`, `creative-writing/`)
 
-Each group `<g>` needs an index page `pages/<g>.md`. A post needs `title`, `date` and `path`; files missing one are skipped by Hakyll. Each hobby listed in `tables/hobbies.tsv` needs a blog post whose `path:` equals the row's `href`.
+Each group `<g>` needs an index page `pages/<g>.md`. Every file in a group is published unless marked `draft: true`, and the build fails (naming the file and every problem) if its front matter is invalid. Each hobby listed in `tables/hobbies.tsv` needs a blog post whose `path:` equals the row's `href`.
 
-### Projects (`projects/<name>.md`)
+| Key | Required | Meaning |
+| --- | --- | --- |
+| `title` | yes | Post title. |
+| `date` | yes | Publication date, `YYYY-MM-DD`. |
+| `path` | yes | Public URL (e.g. `/blog/my-post`). |
+| `language` | no | `en` (default), `es` or `jp`. Anything else fails the build. |
+| `lastModifiedAt` | no | Last edit date, `YYYY-MM-DD`. |
+| `draft` | no | `true` to leave the post out of the site (and skip validation) while it's in progress. |
+| `description`, `TOC`, `project` | no | Passed through to templates. |
 
-Listed on `/showcase`. Files missing a required key are skipped (`matchMetadata` in `Rules/Showcase.hs`).
+### Projects (`projects/<name>.yaml`)
+
+One YAML file per project, listed on `/showcase` (no front matter fences, no body). A missing or invalid key fails the build, naming the file. Order: projects with a `priority` first (lowest number first), then the rest, newest `startDate` first.
 
 | Key | Required | Meaning |
 | --- | --- | --- |
 | `title` | yes | Project name. |
 | `href` | yes | Link target of the project card (`#` for none). |
-| `startDate` | yes | Start date; shown as "Started on". |
+| `startDate` | yes | Start date, `YYYY-MM-DD`; shown as "Started on". |
 | `status` | yes | Shown as a badge: `ongoing`, `finished`, `alpha`, `unmaintained`. |
-| `shortDescription` | yes | One-line summary (needs both descriptions). |
-| `longDescription` | yes | Longer summary (needs both descriptions). |
-| `date` | no | Placeholder date (used for sorting/sitemap only). |
+| `shortDescription` | yes | One-line summary. |
+| `longDescription` | yes | Longer summary. |
+| `endDate` | no | End date, `YYYY-MM-DD`; shown as "Finished". |
 | `team` | no | List of collaborators. |
-| `priority` | no | Ordering hint (unused by templates so far). |
-| `finishDate`, `finishedDate`, `lastDate` | no | Legacy end-date keys; the date template reads `endDate`, so these currently aren't shown. |
+| `priority` | no | Whole number; lower numbers come first. |

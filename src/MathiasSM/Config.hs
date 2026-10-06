@@ -59,7 +59,7 @@ postsPattern group = fromString $ contentDir </> group </> "**"
 
 -- | All showcase projects
 projectsPattern :: Pattern
-projectsPattern = fromString $ contentDir </> "projects" </> "**"
+projectsPattern = fromString $ contentDir </> "projects" </> "*.yaml"
 
 -- | All tables (TSV)
 tablesPattern :: Pattern

@@ -1,14 +1,10 @@
--- | Front matter keys the site relies on, and what each kind of content must provide
+-- | Front matter keys the site knows about, and how they are spelled
 module MathiasSM.Metadata (
   Key (..),
   keyName,
   lookupKey,
-  hasKeys,
-  postMetadata,
-  projectMetadata,
 ) where
 
-import Data.Maybe (isJust)
 import Hakyll (Metadata, lookupString)
 
 {- | Every front matter key that content may use.
@@ -23,13 +19,12 @@ data Key
   | Published
   | -- Keys specific to this site
     Description
-  | FinishDate
-  | FinishedDate
+  | Draft
+  | EndDate
   | HideDescription
   | Home
   | Href
   | Language
-  | LastDate
   | LastModifiedAt
   | LongDescription
   | Path
@@ -53,13 +48,12 @@ keyName key = case key of
   Date -> "date"
   Published -> "published"
   Description -> "description"
-  FinishDate -> "finishDate"
-  FinishedDate -> "finishedDate"
+  Draft -> "draft"
+  EndDate -> "endDate"
   HideDescription -> "hideDescription"
   Home -> "home"
   Href -> "href"
   Language -> "language"
-  LastDate -> "lastDate"
   LastModifiedAt -> "lastModifiedAt"
   LongDescription -> "longDescription"
   Path -> "path"
@@ -78,15 +72,3 @@ keyName key = case key of
 -- | Looks up a key's value as a string
 lookupKey :: Key -> Metadata -> Maybe String
 lookupKey = lookupString . keyName
-
--- | Checks that every given key is present
-hasKeys :: [Key] -> Metadata -> Bool
-hasKeys keys m = all (\k -> isJust $ lookupKey k m) keys
-
--- | What a post (blog, creative-writing) needs to be published
-postMetadata :: Metadata -> Bool
-postMetadata = hasKeys [Title, Date, Path]
-
--- | What a showcase project needs to be listed
-projectMetadata :: Metadata -> Bool
-projectMetadata = hasKeys [Title, Status, StartDate, ShortDescription, LongDescription]
