@@ -1,47 +1,46 @@
 module MathiasSM.Rules.Showcase (processShowcase) where
 
-import Data.String (fromString)
-import Hakyll
-    ( Rules,
-      Context,
-      Compiler,
-      getResourceString,
-      saveSnapshot,
-      loadAllSnapshots,
-      compile,
-      matchMetadata,
-      listField, Snapshot, Pattern)
-import MathiasSM.Compile ( runPandoc )
-import MathiasSM.Context ( minimalCtx )
-import MathiasSM.Rules.SinglePages (processKnownPage')
+import Hakyll (
+  Compiler,
+  Context,
+  Rules,
+  Snapshot,
+  compile,
+  getResourceString,
+  listField,
+  loadAllSnapshots,
+  matchMetadata,
+  saveSnapshot,
+ )
+import MathiasSM.Compile (runPandoc)
+import MathiasSM.Config (projectsPattern)
+import MathiasSM.Context (minimalCtx)
 import MathiasSM.Metadata (projectMetadata)
+import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
--- | Processes a group: its index page and all the item pages
+-- | Processes the showcase: its index page and the project items it lists
 processShowcase :: String -> Rules ()
 processShowcase name = do
   processShowcaseItems name
   processShowcaseIndex name
 
--- | Builds the group index page as an archive page
+-- | Builds the index page, listing all projects
 processShowcaseIndex :: String -> Rules ()
-processShowcaseIndex pageName = processKnownPage' True (getProjectsCtx pageName) pageName ["templates/with-projects.html"]
-  
-groupItemsPattern :: Pattern
-groupItemsPattern = "data/projects/**"
+processShowcaseIndex name =
+  processPage (page name){pageContext = getProjectsCtx name, pageTemplates = ["templates/with-projects.html"]}
 
 groupSnapshot :: String -> Snapshot
-groupSnapshot groupName = fromString $ "published-" ++ groupName
+groupSnapshot groupName = "published-" ++ groupName
 
--- | Builds each item/post page
+-- | Compiles each project (not routed), so the index can list it
 processShowcaseItems :: String -> Rules ()
 processShowcaseItems groupName =
-  matchMetadata groupItemsPattern projectMetadata $
-        compile $
-          getResourceString >>= runPandoc >>= saveSnapshot (groupSnapshot groupName)
+  matchMetadata projectsPattern projectMetadata $
+    compile $
+      getResourceString >>= runPandoc >>= saveSnapshot (groupSnapshot groupName)
 
-
--- | Build context for archive page
+-- | Build context for the index page
 getProjectsCtx :: String -> Compiler (Context String)
 getProjectsCtx groupName = do
-  posts <- loadAllSnapshots groupItemsPattern (groupSnapshot groupName)
-  return $ listField "projects" minimalCtx (return posts) <> minimalCtx
+  projects <- loadAllSnapshots projectsPattern (groupSnapshot groupName)
+  return $ listField "projects" minimalCtx (return projects) <> minimalCtx

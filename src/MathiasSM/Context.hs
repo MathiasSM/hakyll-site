@@ -1,17 +1,16 @@
 module MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext) where
 
-import Control.Monad (unless)
-import Data.List (intercalate)
-import Data.Maybe (catMaybes, fromMaybe)
-import MathiasSM.Metadata (Key (Language, Path), lookupKey)
+import Data.Maybe (fromMaybe)
+import MathiasSM.Config (baseUrl, experienceTable, hobbiesTable, socialsTable)
+import MathiasSM.Metadata (Key (Language), lookupKey)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
+import MathiasSM.Validate (ensureHobbyPagesExist)
 import Hakyll (
   Compiler,
   Context,
   Identifier,
   Item (Item, itemBody, itemIdentifier),
   fromFilePath,
-  getMatches,
   toFilePath,
   listField,
   load,
@@ -66,8 +65,8 @@ siteContext =
     , constField "site-description" "Software Development Engineer"
     , constField "site-author" "Mathias San Miguel"
     , constField "site-copyrightYear" "2013"
-    , constField "site-baseUrl" "https://mathiassm.dev"
-    , constField "root" "https://mathiassm.dev"
+    , constField "site-baseUrl" baseUrl
+    , constField "root" baseUrl -- read by Hakyll's own social cards
     ]
 
 -- | Table of social accounts (data/socials.tsv), as lists usable in templates
@@ -80,38 +79,30 @@ socialMediaContext =
     ]
  where
   socialsField name keep =
-    listField name rowCtx $ tableItems "data/socials.tsv" (filter keep)
-  rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
-  iconOf row = "images/icons/social/" ++ fromMaybe "" (lookup "site" row) ++ ".svg"
+    listField name rowCtx $ tableItems socialsTable (filter keep)
+  rowCtx = iconContext "images/icons/social/" "site"
 
 -- | Table of hobbies, as a list usable in templates
 hobbiesContext :: Context a
 hobbiesContext = listField "hobbies" rowCtx $ do
   ensureHobbyPagesExist
-  tableItems "data/hobbies.tsv" (filter $ isYes "show")
+  tableItems hobbiesTable (filter $ isYes "show")
  where
-  rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
-  iconOf row = "images/icons/" ++ fromMaybe "" (lookup "icon" row) ++ ".svg"
-
--- | Fails the build if any hobby (shown or not) lacks a blog post with `path: <href>`
-ensureHobbyPagesExist :: Compiler ()
-ensureHobbyPagesExist = do
-  table <- load "data/hobbies.tsv"
-  postIds <- getMatches "data/posts/blog/**"
-  paths <- mapM (fmap (lookupKey Path) . getMetadata) postIds
-  let hrefs = [h | row <- parseTsv $ itemBody table, Just h <- [lookup "href" row]]
-      missing = filter (`notElem` catMaybes paths) hrefs
-  unless (null missing) $
-    fail $
-      "hobbies.tsv: no post in data/posts/blog with a matching `path:` for: "
-        ++ intercalate ", " missing
+  rowCtx = iconContext "images/icons/" "icon"
 
 -- | Table of experience items, as a list usable in templates
 experienceContext :: Context a
-experienceContext = listField "experience" rowCtx $ tableItems "data/experience.tsv" id
+experienceContext = listField "experience" rowCtx $ tableItems experienceTable id
  where
-  rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
-  iconOf row = "images/icons/" ++ fromMaybe "" (lookup "icon" row) ++ ".svg"
+  rowCtx = iconContext "images/icons/" "icon"
+
+{- | Row context with every column, plus `iconPath`: the SVG named by the row's
+@column@ under @prefix@
+-}
+iconContext :: String -> String -> Context Row
+iconContext prefix column = field "iconPath" (return . iconOf . itemBody) <> rowContext
+ where
+  iconOf row = prefix ++ fromMaybe "" (lookup column row) ++ ".svg"
 
 -- | Loads a TSV table as one item per (filtered) row
 tableItems :: Identifier -> ([Row] -> [Row]) -> Compiler [Item Row]

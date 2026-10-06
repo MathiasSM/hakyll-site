@@ -1,75 +1,51 @@
-module MathiasSM.Rules.SinglePages (processKnownPage, processKnownPage') where
+module MathiasSM.Rules.SinglePages (Page (..), page, processPage) where
 
-import Data.String (fromString)
 import Hakyll (
   Compiler,
   Context,
   Identifier,
-  Item,
   Rules,
-  compile,
   applyAsTemplate,
+  compile,
   getMetadata,
-  getUnderlying,
-  composeRoutes,
-  constRoute,
   getResourceString,
-  loadAndApplyTemplate,
+  getUnderlying,
   match,
+  metadataRoute,
   route,
  )
-import MathiasSM.CleanURL (cleanRoute)
-import MathiasSM.Compile (finish, runPandoc)
+import MathiasSM.CleanURL (pathRoute)
+import MathiasSM.Compile (applyTemplates, finish, runPandoc)
+import MathiasSM.Config (minimalTemplate, pagesPattern, pageTemplate)
 import MathiasSM.Context (minimalCtx, navStateContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
-import Control.Monad ((>=>))
 
-preTemplates :: [Identifier]
-preTemplates = ["templates/minimal.html"]
+-- | A standalone page, backed by data/pages/<pageName>.* and routed by its `path:`
+data Page = Page
+  { pageName :: String
+  , pageContext :: Compiler (Context String)
+  -- ^ Context for the page body and its templates
+  , pageTemplates :: [Identifier]
+  -- ^ Extra templates, applied between the minimal and page templates
+  }
 
-postTemplates :: [Identifier]
-postTemplates = ["templates/as-page.html"]
+-- | A page with the minimal context and no extra templates
+page :: String -> Page
+page name = Page{pageName = name, pageContext = return minimalCtx, pageTemplates = []}
 
-knownPagePatternString :: String -> String
-knownPagePatternString pageName = "data/pages/" ++ pageName ++ ".*"
-
--- | Filters named routes
-finalPageRoute :: String -> String
-finalPageRoute "about" = ""
-finalPageRoute "404" = "404.html"
-finalPageRoute pageName = pageName
-
--- | Chains multiple templates into a single monadic action
-templateSteps :: Context String -> [Identifier] -> [Item String -> Compiler (Item String)]
-templateSteps ctx = map (`loadAndApplyTemplate` ctx)
-
-applyMyTemplates :: Context String -> [Identifier] -> Item String -> Compiler (Item String)
-applyMyTemplates ctx extraTemplates =
-  let templates = concat [preTemplates, extraTemplates, postTemplates]
-      steps = templateSteps ctx templates
-  in foldl (>=>) return steps
-
--- | Processes a given standalone page
-processKnownPage :: String -> [Identifier] -> Rules ()
-processKnownPage = processKnownPage' True (return minimalCtx)
-
--- | Processes a given standalone page
-processKnownPage' :: Bool -> Compiler (Context String) -> String -> [Identifier] -> Rules ()
-processKnownPage' mustCleanRoute getCtx pageName extraTemplates = match pagePattern $ do
-  route $ if mustCleanRoute
-            then constRoute pageRoute `composeRoutes` cleanRoute
-            else constRoute pageRoute
+-- | Processes a standalone page, routed by its `path:` front matter
+processPage :: Page -> Rules ()
+processPage Page{pageName, pageContext, pageTemplates} = match (pagesPattern pageName) $ do
+  route $ metadataRoute pathRoute
   compile $ do
-    ctx <- getCtx
+    ctx <- pageContext
     templated <- isTemplated
     getResourceString
       >>= (if templated then applyAsTemplate ctx else return)
       >>= runPandoc
-      >>= applyMyTemplates ctx extraTemplates
+      >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
       >>= finish (navStateContext pageName <> ctx)
  where
-  pagePattern = fromString $ knownPagePatternString pageName
-  pageRoute = finalPageRoute pageName
   -- Pages with `templated: true` may use template syntax in their body
   isTemplated = do
     metadata <- getUnderlying >>= getMetadata

@@ -1,8 +1,9 @@
-module MathiasSM.CleanURL (cleanRoute, cleanIndexUrls, cleanIndexHtmls) where
+module MathiasSM.CleanURL (cleanRoute, pathRoute, cleanIndexUrls, cleanIndexHtmls) where
 
 import Data.List (isSuffixOf)
-import Hakyll (Compiler, Item, Routes, composeRoutes, customRoute, gsubRoute, replaceAll, toFilePath, withUrls)
-import System.FilePath.Posix (takeBaseName, takeDirectory, (</>))
+import Hakyll (Compiler, Item, Metadata, Routes, composeRoutes, constRoute, customRoute, gsubRoute, replaceAll, toFilePath, withUrls)
+import MathiasSM.Metadata (Key (Path), lookupKey)
+import System.FilePath.Posix (takeBaseName, takeDirectory, takeExtension, (</>))
 
 -- | Makes routes be something/index.html instead of just something.html
 cleanRoute :: Routes
@@ -11,6 +12,18 @@ cleanRoute = customRoute createIndexRoute `composeRoutes` gsubRoute "^./" (const
   createIndexRoute ident = takeDirectory p </> takeBaseName p </> "index.html"
    where
     p = toFilePath ident
+
+{- | Route from the `path:` front matter: `/contact` becomes `contact/index.html`,
+while a path with an extension (like `/404.html`) is kept as is.
+-}
+pathRoute :: Metadata -> Routes
+pathRoute metadata = case lookupKey Path metadata of
+  Nothing -> customRoute $ \ident -> error $ "Missing `path` in " ++ toFilePath ident
+  Just path
+    | null (takeExtension path) -> withoutSlash `composeRoutes` cleanRoute
+    | otherwise -> withoutSlash
+   where
+    withoutSlash = constRoute path `composeRoutes` gsubRoute "^/" (const "")
 
 -- | Cleans all URLs
 cleanIndexUrls :: Item String -> Compiler (Item String)
