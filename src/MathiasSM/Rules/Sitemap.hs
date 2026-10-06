@@ -14,16 +14,17 @@ import Hakyll
       loadAndApplyTemplate,
       recentFirst )
 import MathiasSM.CleanURL ( cleanIndexHtmls )
+import MathiasSM.Config ( postGroups, postsPattern )
 import MathiasSM.Context ( minimalCtx )
 
+-- | Builds sitemap.xml from the standalone pages and every post group
 processSitemap :: Rules ()
 processSitemap = create ["sitemap.xml"] $ do
   route idRoute
   compile $ do
-    blog <- recentFirst =<< loadAll "data/posts/blog/*"
-    escritos <- recentFirst =<< loadAll "data/posts/escritos/*"
+    posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern group)) postGroups
     pages <- loadAll ("data/pages/*" .&&. complement "data/pages/README.md")
-    let allItems = return $ pages <> blog <> escritos
+    let allItems = return $ pages <> concat posts
         sitemapCtx = listField "entries" minimalCtx allItems <> minimalCtx
     makeItem ""
       >>= loadAndApplyTemplate "templates/sitemap.xml" sitemapCtx

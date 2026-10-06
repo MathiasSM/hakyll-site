@@ -1,10 +1,11 @@
-module MathiasSM.Compile (runPandoc, finish) where
+module MathiasSM.Compile (runPandoc, applyTemplates, finish) where
 
-import Control.Monad ((<=<))
+import Control.Monad (foldM, (<=<))
 import Data.List (find)
 import Hakyll (
   Compiler,
   Context,
+  Identifier,
   Item,
   defaultHakyllReaderOptions,
   defaultHakyllWriterOptions,
@@ -13,6 +14,7 @@ import Hakyll (
   withTags, renderPandocWithTransform,
  )
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
+import MathiasSM.Config (siteTemplate)
 import Text.HTML.TagSoup (Tag (TagOpen))
 import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
 import Text.Pandoc (Inline(Link, Str, RawInline))
@@ -34,15 +36,17 @@ runPandoc = titleToAlt <=< renderPandocWithTransform
         }
 
 
+-- | Applies the given templates in order, each wrapping the previous result
+applyTemplates :: Context String -> [Identifier] -> Item String -> Compiler (Item String)
+applyTemplates ctx templates item = foldM (\i t -> loadAndApplyTemplate t ctx i) item templates
+
 -- | Factors out the final common default steps for basically all pages
 finish :: Context String -> Item String -> Compiler (Item String)
 finish context item =
-  loadAndApplyTemplate defaultTemplate context item
+  applyTemplates context [siteTemplate] item
     >>= relativizeUrls
     >>= cleanIndexUrls
     >>= cleanIndexHtmls
- where
-  defaultTemplate = "templates/site.html"
 
 
 {- | Set the @alt@ of each @img@ tag to the text in its @title@ and
