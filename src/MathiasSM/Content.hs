@@ -7,6 +7,8 @@ module MathiasSM.Content (
   Post (..),
   Project (..),
   isDraft,
+  aliasesOf,
+  parseAliasesYaml,
   parsePost,
   parsePostYaml,
   parseProject,
@@ -17,7 +19,7 @@ module MathiasSM.Content (
   requireProject,
 ) where
 
-import Data.Aeson (FromJSON (parseJSON), Object, Value (Null), withText)
+import Data.Aeson (FromJSON (parseJSON), Object, Value (Null, String), withText)
 import Data.Aeson.Key (fromString)
 import Data.Aeson.KeyMap (lookup)
 import Data.Aeson.Types (Parser, parseEither)
@@ -115,6 +117,33 @@ languageOf o = fromMaybe En <$> optional o K.Language
 -- | Whether an item is marked `draft: true`, and so left out of the site
 isDraft :: Metadata -> Bool
 isDraft o = runCheck (optional o K.Draft) == Right (Just True)
+
+{- | Old paths an item should redirect from (`aliases: [/old]`, or a single `aliases: /old`)
+
+Each must be an absolute path other than the home page.
+-}
+aliasesOf :: Metadata -> Either [String] [FilePath]
+aliasesOf o = do
+  aliases <- maybe [] unAliasList <$> runCheck (optional o K.Aliases)
+  case concatMap problem aliases of
+    [] -> Right aliases
+    problems -> Left problems
+ where
+  problem alias
+    | alias == "/" = ["aliases: / is the home page, it can't be an alias"]
+    | take 1 alias /= "/" = ["aliases: " ++ show alias ++ " must start with / (like /old-name)"]
+    | otherwise = []
+
+-- | A string or a list of strings
+newtype AliasList = AliasList {unAliasList :: [String]}
+
+instance FromJSON AliasList where
+  parseJSON v@(String _) = AliasList . pure <$> parseJSON v
+  parseJSON v = AliasList <$> parseJSON v
+
+-- | 'aliasesOf' on YAML text (the same shape as front matter)
+parseAliasesYaml :: String -> Either [String] [FilePath]
+parseAliasesYaml = decodeYaml >=> aliasesOf
 
 -- | Parses a project, reporting every problem (not just the first)
 parseProject :: Object -> Either [String] Project

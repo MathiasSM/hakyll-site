@@ -3,6 +3,7 @@ import Control.Monad (unless)
 import qualified MathiasSM.CleanURLSpec as CleanURL
 import qualified MathiasSM.ContentSpec as Content
 import qualified MathiasSM.MetadataSpec as Metadata
+import qualified MathiasSM.RedirectsSpec as Redirects
 import qualified MathiasSM.TsvSpec as Tsv
 import Support (group)
 import System.Exit (exitFailure)
@@ -11,5 +12,5 @@ import Test.HUnit (Counts (..), runTestTT)
 main :: IO ()
 main = do
   Counts{errors, failures} <-
-    runTestTT $ group "mathiassm" [CleanURL.tests, Content.tests, Metadata.tests, Tsv.tests]
+    runTestTT $ group "mathiassm" [CleanURL.tests, Content.tests, Metadata.tests, Redirects.tests, Tsv.tests]
   unless (errors + failures == 0) exitFailure
