@@ -1,0 +1,159 @@
+name: CI
+
+on:
+  # Every branch is built and tested; master is also deployed (see the end of the `build` job)
+  push:
+    branches: ["**"]
+  # The content repo (web-writings) asks for a redeploy when it changes, see .github/... there
+  repository_dispatch:
+    types: [content-updated]
+  # Rebuild on the 1st of every month, 06:00 UTC, to pick up anything that changed without a push
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # Never cancel a run that may be publishing the site
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+env:
+  GHC_VERSION: "9.10.3"
+  CABAL_VERSION: "3.14"
+  FOURMOLU_VERSION: "0.20.1.0"
+  HLINT_VERSION: "3.10"
+
+jobs:
+  build:
+    name: Build, test, golden output, deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: haskell-actions/setup@v2
+        id: setup
+        with:
+          ghc-version: ${{ env.GHC_VERSION }}
+          cabal-version: ${{ env.CABAL_VERSION }}
+
+      # The site renders its favicons with ImageMagick (and scripts/check-site inspects them)
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+
+      - name: Plan the build
+        run: |
+          cabal update
+          cabal build all --dry-run
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.setup.outputs.cabal-store }}
+            dist-newstyle
+          key: build-${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-${{ hashFiles('dist-newstyle/cache/plan.json') }}
+          restore-keys: |
+            build-${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-
+
+      - name: Build
+        run: cabal build all
+
+      - name: Unit tests
+        run: cabal test --test-show-details=direct
+
+      # Builds the fixture site (test/fixtures) and compares it with test/golden
+      - name: Golden output
+        run: scripts/check-site
+
+      # --- Deploy: only master (pushes, content updates, the monthly rebuild, manual runs) ---
+      # Needs the repository variable DEPLOY_REPOSITORY (owner/name of the GitHub Pages repo)
+      # and the secret DEPLOY_TOKEN; without them the deploy steps are skipped with a warning.
+      - name: Check the deploy configuration
+        id: deploy
+        if: github.ref == 'refs/heads/master'
+        env:
+          DEPLOY_REPOSITORY: ${{ vars.DEPLOY_REPOSITORY }}
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          if [ -n "$DEPLOY_REPOSITORY" ] && [ -n "$DEPLOY_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Deploy skipped: set the repository variable DEPLOY_REPOSITORY and the secret DEPLOY_TOKEN (see the README)"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Get the content
+        if: steps.deploy.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: MathiasSM/web-writings
+          path: content
+          token: ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: Build the site
+        if: steps.deploy.outputs.enabled == 'true'
+        run: |
+          cabal run site -- build
+          # GitHub Pages would otherwise run Jekyll, which skips .well-known and _test.html
+          touch _site/.nojekyll
+
+      - name: Get the Pages repo
+        if: steps.deploy.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.DEPLOY_REPOSITORY }}
+          path: pages
+          token: ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: Publish
+        if: steps.deploy.outputs.enabled == 'true'
+        run: |
+          # The Pages repo is a mirror of _site/: anything else in it is removed
+          rsync -a --delete --exclude '/.git/' _site/ pages/
+          cd pages
+          git add --all
+          if git diff --cached --quiet; then
+            echo "Nothing changed, nothing to publish"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Deploy ${GITHUB_SHA::7} (content $(git -C ../content rev-parse --short HEAD))"
+          git push
+
+  lint:
+    name: Format and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: ${{ env.GHC_VERSION }}
+          cabal-version: ${{ env.CABAL_VERSION }}
+
+      # Compiling these takes a while, so the installed binaries are cached
+      - name: Restore fourmolu and hlint
+        id: tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/bin
+          key: tools-${{ runner.os }}-fourmolu-${{ env.FOURMOLU_VERSION }}-hlint-${{ env.HLINT_VERSION }}
+
+      - name: Install fourmolu and hlint
+        if: steps.tools.outputs.cache-hit != 'true'
+        run: |
+          cabal update
+          cd "$RUNNER_TEMP"
+          cabal install "fourmolu-${FOURMOLU_VERSION}" "hlint-${HLINT_VERSION}" \
+            --installdir="$HOME/.local/bin" --install-method=copy --overwrite-policy=always
+
+      - name: Put the tools on the PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Formatting
+        run: scripts/format --check
+
+      - name: hlint
+        run: hlint app src test

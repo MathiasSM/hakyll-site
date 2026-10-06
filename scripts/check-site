@@ -5,8 +5,9 @@
 #   scripts/check-site            compare (exit 1 and show the diff if they differ)
 #   scripts/check-site --update   regenerate test/golden from the current code
 #
-# PNG/ICO files are compared by pixel hash (ImageMagick output embeds timestamps);
-# everything else byte for byte.
+# PNG/ICO files are compared by name, format and size (their bytes embed timestamps and
+# vary with the ImageMagick version, so pixels would differ between machines); everything
+# else byte for byte.
 set -euo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
@@ -30,12 +31,12 @@ cp -r test/fixtures/content "$work/build/content"
   exit 1
 }
 
-# Snapshot = every output file except PNG/ICO, plus the pixel hash of those.
+# Snapshot = every output file except PNG/ICO, plus a listing of those (name, format, size).
 snapshot="$work/snapshot"
 mkdir "$snapshot"
 (cd "$work/build/_site" && find . -type f ! -name '*.png' ! -name '*.ico' -print0 | xargs -0 cp --parents -t "$snapshot")
 (cd "$work/build/_site" && find . -type f \( -name '*.png' -o -name '*.ico' \) | sort |
-  while read -r file; do printf '%s %s\n' "$file" "$(convert "$file" -format %# info:)"; done) >"$snapshot/pixel-hashes.txt"
+  while read -r file; do printf '%s ' "$file"; identify -format '%m %wx%h\n' "$file" | tr '\n' ' '; echo; done) >"$snapshot/images.txt"
 
 if [ "$mode" = "--update" ]; then
   rm -rf test/golden

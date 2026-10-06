@@ -23,6 +23,25 @@
 1. `cabal test` runs the unit tests (`test/`)
 2. `scripts/check-site` builds a small fixture site (`test/fixtures/content`) and compares the output with the golden snapshot in `test/golden`. When a change to the output is intended, review the diff and run `scripts/check-site --update`. (Needs ImageMagick, like the build itself.)
 
+CI (`.github/workflows/ci.yml`) builds and tests every pushed branch: build, `cabal test`, `scripts/check-site`, `scripts/format --check` and `hlint`. It needs `ghc 9.10.3`, `cabal >= 3.14` and ImageMagick, and pins fourmolu 0.20.1.0 and hlint 3.10.
+
+## Deploying
+
+On `master` the same workflow also publishes the site: it checks out the content repo into `content/`, runs `site build`, and mirrors `_site/` into a GitHub Pages repo (adding `.nojekyll`, since Jekyll would skip `.well-known` and `_`-prefixed files). The Pages repo is fully managed by CI: anything else in it is removed. It runs when:
+
+- this repo is pushed on `master`,
+- the content repo is pushed on `master` (`web-writings` has `.github/workflows/notify-site.yml`, which sends a `content-updated` event here),
+- on the 1st of every month (06:00 UTC), and
+- you start it by hand (Actions, Run workflow).
+
+One-time setup:
+
+1. In the Pages repo, enable GitHub Pages ("Deploy from a branch", its default branch). `CNAME` is part of the output.
+2. In this repo (Settings, Secrets and variables, Actions): the **variable** `DEPLOY_REPOSITORY` (`owner/name` of the Pages repo) and the **secret** `DEPLOY_TOKEN`, a fine-grained token with *Contents: read and write* on the Pages repo and *Contents: read* on `MathiasSM/web-writings`.
+3. In `web-writings`: the **secret** `SITE_DISPATCH_TOKEN`, a fine-grained token with *Contents: read and write* on `MathiasSM/hakyll-site` (GitHub requires that to send a dispatch event).
+
+Until `DEPLOY_REPOSITORY` and `DEPLOY_TOKEN` exist, the deploy steps are skipped with a warning and everything else still runs. GitHub disables scheduled workflows in a public repo after 60 days without repository activity; a push re-enables them.
+
 ## Format and lint
 
 1. Install the tools once (e.g. `ghcup install fourmolu` and `ghcup install hlint`, or `cabal install fourmolu hlint`).
