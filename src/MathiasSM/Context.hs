@@ -4,7 +4,6 @@ import Data.Maybe (fromMaybe)
 import MathiasSM.Config (baseUrl, experienceTable, hobbiesTable, socialsTable)
 import MathiasSM.Content (Project (..), languageCode, requireLanguage, statusName)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
-import MathiasSM.Validate (ensureHobbyPagesExist)
 import Hakyll (
   Compiler,
   Context,
@@ -100,9 +99,7 @@ socialMediaContext =
 
 -- | Table of hobbies, as a list usable in templates
 hobbiesContext :: Context a
-hobbiesContext = listField "hobbies" rowCtx $ do
-  ensureHobbyPagesExist
-  tableItems hobbiesTable (filter $ isYes "show")
+hobbiesContext = listField "hobbies" rowCtx $ tableItems hobbiesTable (filter $ isYes "show")
  where
   rowCtx = iconContext "images/icons/" "icon"
 
