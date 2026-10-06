@@ -15,6 +15,7 @@ module MathiasSM.Content (
   parseProjectYaml,
   showcaseKey,
   requirePost,
+  requirePostOf,
   requireLanguage,
   requireProject,
 ) where
@@ -188,6 +189,12 @@ requirePost :: Compiler Post
 requirePost = do
   metadata <- getUnderlying >>= getMetadata
   either (failWith "invalid front matter") pure (parsePost metadata)
+
+-- | Parses the front matter of any item, failing the build (naming it) with the problems found
+requirePostOf :: Identifier -> Compiler Post
+requirePostOf ident = do
+  metadata <- getMetadata ident
+  either (failWith $ toFilePath ident ++ ": invalid front matter") pure (parsePost metadata)
 
 -- | The language of an item, failing the build if it's not a known one
 requireLanguage :: Identifier -> Compiler Language

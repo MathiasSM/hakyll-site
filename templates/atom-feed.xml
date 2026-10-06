@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title><![CDATA[$title$]]></title>
+    <subtitle><![CDATA[$description$]]></subtitle>
+    <link href="$root$$url$" rel="self" />
+    <link href="$root$" />
+    <id>$root$$url$</id>
+    <author>
+        <name><![CDATA[$authorName$]]></name>
+    </author>
+    <updated>$updated$</updated>
+$body$
+</feed>

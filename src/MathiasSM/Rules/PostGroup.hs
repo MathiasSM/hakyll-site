@@ -4,7 +4,6 @@ import Hakyll (
   Compiler,
   Context,
   Rules,
-  Snapshot,
   compile,
   getResourceString,
   listField,
@@ -17,7 +16,7 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
-import MathiasSM.Config (minimalTemplate, postTemplate, postsPattern)
+import MathiasSM.Config (minimalTemplate, postSnapshot, postTemplate, postsPattern)
 import MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext)
 import MathiasSM.Content (isDraft, requirePost)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
@@ -45,15 +44,12 @@ processPostGroupItems groupName =
       requirePost
         >> getResourceString
         >>= runPandoc
-        >>= saveSnapshot (groupSnapshot groupName)
+        >>= saveSnapshot (postSnapshot groupName)
         >>= applyTemplates minimalCtx [minimalTemplate, postTemplate]
         >>= finish (postSocialTagsContext <> navStateContext groupName <> minimalCtx)
-
-groupSnapshot :: String -> Snapshot
-groupSnapshot groupName = "published-" ++ groupName
 
 -- | Build context for archive page
 getCtx :: String -> Compiler (Context String)
 getCtx groupName = do
-  posts <- recentFirst =<< loadAllSnapshots (postsPattern groupName) (groupSnapshot groupName)
+  posts <- recentFirst =<< loadAllSnapshots (postsPattern groupName) (postSnapshot groupName)
   return $ listField "posts" minimalCtx (return posts) <> minimalCtx

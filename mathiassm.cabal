@@ -23,7 +23,9 @@ library
                   , MathiasSM.Compile
                   , MathiasSM.Config
                   , MathiasSM.Content
+                  , MathiasSM.Feeds
                   , MathiasSM.Context
+                  , MathiasSM.Context.Feeds
                   , MathiasSM.Context.Language
                   , MathiasSM.Context.Project
                   , MathiasSM.Context.Site
@@ -31,6 +33,7 @@ library
                   , MathiasSM.Metadata
                   , MathiasSM.Rules.Assets
                   , MathiasSM.Rules.Favicon
+                  , MathiasSM.Rules.Feed
                   , MathiasSM.Rules.PostGroup
                   , MathiasSM.Rules.Redirects
                   , MathiasSM.Rules.Showcase
@@ -68,6 +71,7 @@ test-suite spec
   other-modules:    Support
                   , MathiasSM.CleanURLSpec
                   , MathiasSM.ContentSpec
+                  , MathiasSM.FeedsSpec
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
                   , MathiasSM.ValidateSpec

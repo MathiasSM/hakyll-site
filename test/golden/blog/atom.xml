@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title><![CDATA[Blog - MathiasSM]]></title>
+    <subtitle><![CDATA[Fixture blog index.]]></subtitle>
+    <link href="https://mathiassm.dev/blog/atom.xml" rel="self" />
+    <link href="https://mathiassm.dev" />
+    <id>https://mathiassm.dev/blog/atom.xml</id>
+    <author>
+        <name><![CDATA[Mathias San Miguel]]></name>
+    </author>
+    <updated>2026-01-05T00:00:00Z</updated>
+<entry>
+    <title><![CDATA[Drawing]]></title>
+    <link href="https://mathiassm.dev/hobbies/drawing" />
+    <id>https://mathiassm.dev/hobbies/drawing</id>
+    <published>2026-01-05T00:00:00Z</published>
+    <updated>2026-01-05T00:00:00Z</updated>
+    <content type="html"><![CDATA[<p>I draw.</p>]]></content>
+</entry>
+<entry>
+    <title><![CDATA[Hello, world]]></title>
+    <link href="https://mathiassm.dev/blog/hello" />
+    <id>https://mathiassm.dev/blog/hello</id>
+    <published>2025-06-01T00:00:00Z</published>
+    <updated>2025-07-02T00:00:00Z</updated>
+    <content type="html"><![CDATA[<p>First post, with an image title becoming alt:</p>
+<p><img alt="The logo" src="https://mathiassm.dev/images/logo.svg" /></p>]]></content>
+</entry>
+
+</feed>

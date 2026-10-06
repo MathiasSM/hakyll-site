@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title><![CDATA[Escritura Creativa - MathiasSM]]></title>
+    <subtitle><![CDATA[Fixture de escritos.]]></subtitle>
+    <link href="https://mathiassm.dev/escritos/atom.xml" rel="self" />
+    <link href="https://mathiassm.dev" />
+    <id>https://mathiassm.dev/escritos/atom.xml</id>
+    <author>
+        <name><![CDATA[Mathias San Miguel]]></name>
+    </author>
+    <updated>2024-03-09T00:00:00Z</updated>
+<entry>
+    <title><![CDATA[Una noche]]></title>
+    <link href="https://mathiassm.dev/escritos/una-noche" />
+    <id>https://mathiassm.dev/escritos/una-noche</id>
+    <published>2024-03-09T00:00:00Z</published>
+    <updated>2024-03-09T00:00:00Z</updated>
+    <content type="html"><![CDATA[<p>Era una noche tranquila.</p>]]></content>
+</entry>
+
+</feed>
