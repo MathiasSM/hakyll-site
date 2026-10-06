@@ -66,6 +66,7 @@ test-suite spec
                   , MathiasSM.ContentSpec
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
+                  , MathiasSM.ValidateSpec
                   , MathiasSM.TsvSpec
   build-depends:    base
                   , mathiassm
