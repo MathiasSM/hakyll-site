@@ -2,6 +2,7 @@ import Control.Monad (unless)
 import Hakyll
 import MathiasSM.Config (postGroups, showcaseName, siteConfiguration, standalonePages)
 import MathiasSM.Rules.Assets (processAssets)
+import MathiasSM.Rules.Feed (processFeeds)
 import MathiasSM.Rules.PostGroup (processPostGroup)
 import MathiasSM.Rules.Redirects (processRedirects)
 import MathiasSM.Rules.Showcase (processShowcase)
@@ -28,6 +29,7 @@ rules = do
   mapM_ (processPage . page) (standalonePages <> ["_test"])
   processShowcase showcaseName
   mapM_ processPostGroup postGroups
+  processFeeds
   processSitemap
   processRedirects
   processTrust

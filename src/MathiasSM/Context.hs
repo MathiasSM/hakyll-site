@@ -11,6 +11,7 @@ import Hakyll (
   twitterCardField,
  )
 import MathiasSM.Config (twitterHandle)
+import MathiasSM.Context.Feeds (feedsContext)
 import MathiasSM.Context.Language (languageContext)
 import MathiasSM.Context.Site (siteContext)
 import MathiasSM.Context.Tables (experienceContext, hobbiesContext, socialMediaContext)
@@ -23,6 +24,7 @@ minimalCtx =
     <> hobbiesContext
     <> experienceContext
     <> languageContext
+    <> feedsContext
     <> defaultContext
 
 -- | Given a string, builds a context field based on that name as currentView

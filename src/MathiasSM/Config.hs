@@ -16,6 +16,8 @@ module MathiasSM.Config (
   requiredContent,
   pagesPattern,
   postsPattern,
+  postSnapshot,
+  feedItemLimit,
   projectsPattern,
   tablesPattern,
   hobbiesTable,
@@ -28,7 +30,7 @@ module MathiasSM.Config (
 ) where
 
 import Data.String (fromString)
-import Hakyll (Configuration (ignoreFile), Identifier, Pattern, defaultConfiguration, fromFilePath)
+import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
 -- | Site-wide information, exposed to templates as @site-name@, @site-description@, ...
@@ -91,6 +93,14 @@ pagesPattern name = fromString $ contentDir </> "pages" </> name <.> "*"
 -- | Items of a post group
 postsPattern :: String -> Pattern
 postsPattern group = fromString $ contentDir </> group </> "**"
+
+-- | The snapshot holding each published post of a group, as rendered HTML (before the page templates)
+postSnapshot :: String -> Snapshot
+postSnapshot group = "published-" ++ group
+
+-- | How many of the newest posts each Atom feed carries
+feedItemLimit :: Int
+feedItemLimit = 20
 
 -- | All showcase projects
 projectsPattern :: Pattern
