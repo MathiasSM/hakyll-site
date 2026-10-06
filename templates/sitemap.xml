@@ -7,16 +7,11 @@
   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
   xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
 >
-  <url>
-    <loc>$site-baseUrl$</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
 $for(entries)$
   <url>
     <loc>$site-baseUrl$$url$</loc>
     <lastmod>$if(lastModifiedAt)$$lastModifiedAt$$else$$if(date)$$date$$endif$$endif$</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>$if(home)$daily$else$weekly$endif$</changefreq>
     <priority>$if(home)$1.0$else$0.8$endif$</priority>
   </url>
 $endfor$

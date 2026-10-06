@@ -1,6 +1,7 @@
 -- | Site-wide constants: where content lives, what groups exist, shared templates
 module MathiasSM.Config (
   baseUrl,
+  siteConfiguration,
   contentDir,
   postGroups,
   showcaseName,
@@ -20,12 +21,20 @@ module MathiasSM.Config (
 ) where
 
 import Data.String (fromString)
-import Hakyll (Identifier, Pattern, fromFilePath)
-import System.FilePath.Posix ((<.>), (</>))
+import Hakyll (Configuration (ignoreFile), Identifier, Pattern, defaultConfiguration, fromFilePath)
+import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
 -- | Public origin of the site, without trailing slash
 baseUrl :: String
 baseUrl = "https://mathiassm.dev"
+
+{- | Hakyll's defaults, except that `.well-known` folders are not ignored
+(Hakyll skips every dot-folder, but `static/.well-known/` must be published)
+-}
+siteConfiguration :: Configuration
+siteConfiguration = defaultConfiguration{ignoreFile = ignore}
+ where
+  ignore path = takeFileName path /= ".well-known" && ignoreFile defaultConfiguration path
 
 -- | Where the content repo is cloned (git-ignored): pages/, projects/, tables/, and one folder per post group
 contentDir :: FilePath

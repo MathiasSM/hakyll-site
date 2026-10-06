@@ -1,5 +1,5 @@
 import Hakyll
-import MathiasSM.Config (postGroups, showcaseName, standalonePages)
+import MathiasSM.Config (postGroups, showcaseName, siteConfiguration, standalonePages)
 import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.PostGroup (processPostGroup)
 import MathiasSM.Rules.Redirects (processRedirects)
@@ -14,7 +14,7 @@ import MathiasSM.Validate (ensureContentExists)
 main :: IO ()
 main = do
   ensureContentExists
-  hakyll rules
+  hakyllWith siteConfiguration rules
 
 rules :: Rules ()
 rules = do

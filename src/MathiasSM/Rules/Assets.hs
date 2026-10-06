@@ -43,7 +43,7 @@ processStaticFiles :: Rules ()
 processStaticFiles = do
   justCopy ("images/**.jpg" .||. "images/**.png" .||. "images/**.gif") idRoute
   justCopy "favicon.ico" idRoute
-  justCopy ("static/**/*") rootRoute
+  justCopy "static/**" rootRoute
 
 -- | Makes tables (TSV) loadable by contexts and rules; they are not routed
 processTables :: Rules ()
