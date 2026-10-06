@@ -46,5 +46,3 @@ postSocialTagsContext =
       , constField "twitter-site" twitterHandle
       , minimalCtx
       ]
-
--- TODO: date (published and modified) context with utc and pretty "ago" versions
