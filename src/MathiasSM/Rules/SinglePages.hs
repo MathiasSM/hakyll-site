@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.SinglePages (processKnownPage, processKnownPage') where
 
 import Data.String (fromString)
@@ -11,7 +9,6 @@ import Hakyll (
   Rules,
   compile,
   applyAsTemplate,
-  composeRoutes,
   getMetadata,
   getUnderlying,
   lookupString,

@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Compile (runPandoc, finish) where
 
 import Control.Monad ((<=<))
@@ -36,7 +34,7 @@ runPandoc = titleToAlt <=< renderPandocWithTransform
         }
 
 
--- | Refators away the final common default steps for basically all pages
+-- | Factors out the final common default steps for basically all pages
 finish :: Context String -> Item String -> Compiler (Item String)
 finish context item =
   loadAndApplyTemplate defaultTemplate context item

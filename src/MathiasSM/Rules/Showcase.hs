@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.Showcase (processShowcase) where
 
 import Data.String (fromString)
@@ -30,7 +28,7 @@ processShowcaseIndex :: String -> Rules ()
 processShowcaseIndex pageName = processKnownPage' True (getProjectsCtx pageName) pageName ["templates/with-projects.html"]
   
 groupItemsPattern :: Pattern
-groupItemsPattern = fromString "data/projects/**"
+groupItemsPattern = "data/projects/**"
 
 groupSnapshot :: String -> Snapshot
 groupSnapshot groupName = fromString $ "published-" ++ groupName
@@ -44,7 +42,7 @@ processShowcaseItems groupName =
 
 
 minimalMetadata :: [HasMetadata]
-minimalMetadata = [hasTitle, hasStatus, hasStatus, hasStartDate, hasDescriptions]
+minimalMetadata = [hasTitle, hasStatus, hasStartDate, hasDescriptions]
 
 -- | Checks if item has all needed metadata
 hasMinimalMetadata :: Metadata -> Bool

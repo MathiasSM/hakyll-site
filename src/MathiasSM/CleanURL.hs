@@ -23,7 +23,7 @@ cleanIndexHtmls = return . fmap (replaceAll indexPattern replacement)
   indexPattern = "/index.html"
   replacement = const ""
 
--- | Strips a URL of it's index.html suffix
+-- | Strips a URL of its index.html suffix
 cleanIndex :: String -> String
 cleanIndex url
   | idx == url = "/"

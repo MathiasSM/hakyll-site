@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module MathiasSM.Rules.PostGroup (processPostGroup) where
 
 import Data.String (fromString)
