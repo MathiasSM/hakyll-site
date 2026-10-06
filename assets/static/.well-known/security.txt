@@ -1,8 +1,8 @@
 # https://www.rfc-editor.org/rfc/rfc9116
 
-Canonical: https://mathiassm.dev/.well-known/security.txt
+Canonical: $site-baseUrl$/.well-known/security.txt
 
-Contact: https://mathiassm.dev/contact
+Contact: $site-baseUrl$/contact
 
 Preferred-Languages: en, es
 

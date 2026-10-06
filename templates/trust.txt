@@ -1,8 +1,8 @@
 # https://journallist.net/reference-document-for-trust-txt-specifications
 
 # Single member: me.
-member=https://mathiassm.dev
-contact=https://mathiassm.dev/contact
+member=$site-baseUrl$
+contact=$site-baseUrl$/contact
 
 # My socials:
 $-for(socials-all)-$

@@ -2,6 +2,7 @@
 module MathiasSM.Context.Tables (socialMediaContext, hobbiesContext, experienceContext) where
 
 import Data.Maybe (fromMaybe)
+import System.FilePath.Posix ((</>))
 import Hakyll (
   Compiler,
   Context,
@@ -13,7 +14,7 @@ import Hakyll (
   load,
   toFilePath,
  )
-import MathiasSM.Config (experienceTable, hobbiesTable, socialsTable)
+import MathiasSM.Config (assetsDir, experienceTable, hobbiesTable, socialsTable)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 
 -- | Table of social accounts (content/tables/socials.tsv)
@@ -41,11 +42,15 @@ experienceContext = listField "experience" rowCtx $ tableItems experienceTable i
  where
   rowCtx = iconContext "images/icons/" "icon"
 
-{- | Row context with every column, plus `iconPath`: the SVG named by the row's
-@column@ under @prefix@
+{- | Row context with every column, plus the SVG named by the row's @column@ under
+@prefix@ (a path inside `images/`): `iconPath` is its URL path, `iconSource` the
+identifier to `$partial(...)$` it inline
 -}
 iconContext :: String -> String -> Context Row
-iconContext prefix column = field "iconPath" (return . iconOf . itemBody) <> rowContext
+iconContext prefix column =
+  field "iconPath" (return . iconOf . itemBody)
+    <> field "iconSource" (return . (assetsDir </>) . iconOf . itemBody)
+    <> rowContext
  where
   iconOf row = prefix ++ fromMaybe "" (lookup column row) ++ ".svg"
 

@@ -3,6 +3,7 @@ module MathiasSM.Context.Site (siteContext) where
 import Hakyll (Context, constField)
 import MathiasSM.Config (
   baseUrl,
+  siteDomain,
   siteAuthor,
   siteCopyrightYear,
   siteDescription,
@@ -18,5 +19,6 @@ siteContext =
     , constField "site-author" siteAuthor
     , constField "site-copyrightYear" siteCopyrightYear
     , constField "site-baseUrl" baseUrl
+    , constField "site-domain" siteDomain
     , constField "root" baseUrl -- read by Hakyll's own social cards
     ]
