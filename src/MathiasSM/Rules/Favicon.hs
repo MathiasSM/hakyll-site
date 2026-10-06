@@ -49,7 +49,7 @@ processFavicon favicon = version (faviconVersion favicon) $ do
 
 -- | Distinguishes the versions of the logo item; one per generated file
 faviconVersion :: Favicon -> String
-faviconVersion = ("favicon-" ++) . faviconPath
+faviconVersion = faviconPath
 
 -- | ImageMagick invocation converting the SVG on stdin, if the favicon needs one
 faviconCommand :: Favicon -> Maybe (String, [String])

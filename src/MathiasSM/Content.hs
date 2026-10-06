@@ -31,7 +31,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import Data.Time (Day)
 import Data.Yaml (decodeEither', prettyPrintParseException)
-import Hakyll (Compiler, Identifier, Item (itemBody, itemIdentifier), Metadata, getMetadata, getUnderlying, toFilePath)
+import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, getUnderlying, toFilePath)
 import MathiasSM.Metadata (Key, keyName)
 import qualified MathiasSM.Metadata as K
 import Control.Monad ((>=>))
@@ -148,8 +148,8 @@ parseAliasesYaml = decodeYaml >=> aliasesOf
 -- | Parses a project, reporting every problem (not just the first)
 parseProject :: Object -> Either [String] Project
 parseProject o =
-  runCheck $
-    Project
+  runCheck
+    ( Project
       <$> required o K.Title
       <*> required o K.Href
       <*> required o K.Status
@@ -159,6 +159,12 @@ parseProject o =
       <*> required o K.LongDescription
       <*> (fromMaybe [] <$> optional o K.Team)
       <*> optional o K.Priority
+    )
+    >>= endsAfterStart
+ where
+  endsAfterStart project = case projectEnd project of
+    Just end | end < projectStart project -> Left ["endDate: " ++ show end ++ " is before startDate " ++ show (projectStart project)]
+    _ -> Right project
 
 {- | Sort key for the showcase: projects with a `priority` first (lowest number
 first), then the rest, newest start first
@@ -177,29 +183,29 @@ parseProjectYaml = decodeYaml >=> parseProject
 decodeYaml :: String -> Either [String] Object
 decodeYaml = first (\e -> [prettyPrintParseException e]) . decodeEither' . T.encodeUtf8 . T.pack
 
--- | Parses the current item's front matter, failing the build with its file name
+-- | Parses the current item's front matter, failing the build with the problems found
 requirePost :: Compiler Post
 requirePost = do
-  ident <- getUnderlying
-  metadata <- getMetadata ident
-  orFail ident (parsePost metadata)
+  metadata <- getUnderlying >>= getMetadata
+  either (failWith "invalid front matter") pure (parsePost metadata)
 
--- | The language of an item, failing the build with its file name if it's not a known one
+-- | The language of an item, failing the build if it's not a known one
 requireLanguage :: Identifier -> Compiler Language
 requireLanguage ident = do
   metadata <- getMetadata ident
-  orFail ident (runCheck $ languageOf metadata)
+  either (failWith $ toFilePath ident ++ ": invalid language") pure (runCheck $ languageOf metadata)
 
--- | Parses a project item (its body is the YAML), failing the build with its file name
+-- | Parses a project item (its body is the YAML), failing the build with the problems found
 requireProject :: Item String -> Compiler Project
-requireProject item = orFail (itemIdentifier' item) (parseProjectYaml $ itemBody item)
- where
-  itemIdentifier' = itemIdentifier
+requireProject = either (failWith "invalid project") pure . parseProjectYaml . itemBody
 
-orFail :: Identifier -> Either [String] a -> Compiler a
-orFail ident = either (fail . message) pure
- where
-  message problems = toFilePath ident ++ ":\n" ++ unlines (map ("  " ++) problems)
+{- | Fails the build listing the problems.
+
+Hakyll already prefixes the error with the item being compiled, so the message
+only says what is wrong (and names the other item when it isn't the one compiling).
+-}
+failWith :: String -> [String] -> Compiler a
+failWith what problems = fail $ what ++ ":\n" ++ intercalate "\n" (map ("  " ++) problems)
 
 -- Accumulating validation ----------------------------------------------------
 
