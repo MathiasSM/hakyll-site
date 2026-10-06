@@ -11,7 +11,6 @@ import Hakyll (
   applyAsTemplate,
   getMetadata,
   getUnderlying,
-  lookupString,
   composeRoutes,
   constRoute,
   getResourceString,
@@ -22,6 +21,7 @@ import Hakyll (
 import MathiasSM.CleanURL (cleanRoute)
 import MathiasSM.Compile (finish, runPandoc)
 import MathiasSM.Context (minimalCtx, navStateContext)
+import MathiasSM.Metadata (Key (Templated), lookupKey)
 import Control.Monad ((>=>))
 
 preTemplates :: [Identifier]
@@ -73,4 +73,4 @@ processKnownPage' mustCleanRoute getCtx pageName extraTemplates = match pagePatt
   -- Pages with `templated: true` may use template syntax in their body
   isTemplated = do
     metadata <- getUnderlying >>= getMetadata
-    return $ lookupString "templated" metadata == Just "true"
+    return $ lookupKey Templated metadata == Just "true"

@@ -3,7 +3,6 @@ module MathiasSM.Rules.Showcase (processShowcase) where
 import Data.String (fromString)
 import Hakyll
     ( Rules,
-      Metadata,
       Context,
       Compiler,
       getResourceString,
@@ -15,7 +14,7 @@ import Hakyll
 import MathiasSM.Compile ( runPandoc )
 import MathiasSM.Context ( minimalCtx )
 import MathiasSM.Rules.SinglePages (processKnownPage')
-import MathiasSM.Metadata (hasTitle, hasStartDate, hasStatus, hasDescriptions, HasMetadata)
+import MathiasSM.Metadata (projectMetadata)
 
 -- | Processes a group: its index page and all the item pages
 processShowcase :: String -> Rules ()
@@ -36,17 +35,10 @@ groupSnapshot groupName = fromString $ "published-" ++ groupName
 -- | Builds each item/post page
 processShowcaseItems :: String -> Rules ()
 processShowcaseItems groupName =
-  matchMetadata groupItemsPattern hasMinimalMetadata $
+  matchMetadata groupItemsPattern projectMetadata $
         compile $
           getResourceString >>= runPandoc >>= saveSnapshot (groupSnapshot groupName)
 
-
-minimalMetadata :: [HasMetadata]
-minimalMetadata = [hasTitle, hasStatus, hasStartDate, hasDescriptions]
-
--- | Checks if item has all needed metadata
-hasMinimalMetadata :: Metadata -> Bool
-hasMinimalMetadata m = foldl (\z f -> z && f m) True minimalMetadata
 
 -- | Build context for archive page
 getProjectsCtx :: String -> Compiler (Context String)
