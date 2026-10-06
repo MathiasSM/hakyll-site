@@ -167,7 +167,8 @@ projectTests =
               , projectPriority = Just 2
               }
     , it "leaves endDate, team and priority out when absent" $
-        fmap (\p -> (projectEnd p, projectTeam p, projectPriority p))
+        fmap
+          (\p -> (projectEnd p, projectTeam p, projectPriority p))
           (parse $ without ["endDate", "team", "priority"] sutori)
           ~?= Right (Nothing, [], Nothing)
     , group "requires" $
@@ -207,8 +208,8 @@ showcaseTests =
 
   project :: String -> String -> Maybe String -> Project
   project name start priority =
-    fromRight (error $ "invalid fixture " ++ name) . parseProjectYaml . render $
-      maybe id (set "priority") priority $
-        set "startDate" start $
-          set "title" name $
-            without ["endDate", "team", "priority"] sutori
+    fromRight (error $ "invalid fixture " ++ name) . parseProjectYaml . render
+      $ maybe id (set "priority") priority
+      $ set "startDate" start
+      $ set "title" name
+      $ without ["endDate", "team", "priority"] sutori

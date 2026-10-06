@@ -24,22 +24,22 @@ module MathiasSM.Content (
   requireProject,
 ) where
 
+import Control.Monad ((>=>))
 import Data.Aeson (FromJSON (parseJSON), Object, Value (Null, String), withText)
 import Data.Aeson.Key (fromString)
 import Data.Aeson.KeyMap (lookup)
 import Data.Aeson.Types (Parser, parseEither)
 import Data.Bifunctor (first)
 import Data.List (intercalate, stripPrefix)
-import Data.Ord (Down (Down))
 import Data.Maybe (fromMaybe)
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
+import Data.Ord (Down (Down))
+import Data.Text qualified as T
+import Data.Text.Encoding qualified as T
 import Data.Time (Day)
 import Data.Yaml (decodeEither', prettyPrintParseException)
 import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, getUnderlying, toFilePath)
 import MathiasSM.Metadata (Key, keyName)
-import qualified MathiasSM.Metadata as K
-import Control.Monad ((>=>))
+import MathiasSM.Metadata qualified as K
 import Prelude hiding (lookup)
 
 -- | Language a page is written in
@@ -75,8 +75,13 @@ enumFromJSON what render = withText what $ \t ->
     x : _ -> pure x
     [] ->
       fail $
-        "unknown " ++ what ++ " \"" ++ T.unpack t ++ "\" (expected "
-          ++ intercalate ", " (map render [minBound .. maxBound]) ++ ")"
+        "unknown "
+          ++ what
+          ++ " \""
+          ++ T.unpack t
+          ++ "\" (expected "
+          ++ intercalate ", " (map render [minBound .. maxBound])
+          ++ ")"
 
 -- | What a post (blog, creative-writing) needs to be published
 data Post = Post
@@ -155,15 +160,15 @@ parseProject :: Object -> Either [String] Project
 parseProject o =
   runCheck
     ( Project
-      <$> required o K.Title
-      <*> required o K.Href
-      <*> required o K.Status
-      <*> required o K.StartDate
-      <*> optional o K.EndDate
-      <*> required o K.ShortDescription
-      <*> required o K.LongDescription
-      <*> (fromMaybe [] <$> optional o K.Team)
-      <*> optional o K.Priority
+        <$> required o K.Title
+        <*> required o K.Href
+        <*> required o K.Status
+        <*> required o K.StartDate
+        <*> optional o K.EndDate
+        <*> required o K.ShortDescription
+        <*> required o K.LongDescription
+        <*> (fromMaybe [] <$> optional o K.Team)
+        <*> optional o K.Priority
     )
     >>= endsAfterStart
  where
@@ -268,19 +273,19 @@ instance Applicative Check where
   Check (Left a) <*> Check _ = Check (Left a)
   Check (Right f) <*> Check r = Check (fmap f r)
 
-required :: FromJSON a => Object -> Key -> Check a
+required :: (FromJSON a) => Object -> Key -> Check a
 required o key = case lookup (fromString $ keyName key) o of
   Nothing -> Check $ Left [keyName key ++ ": missing"]
   Just Null -> Check $ Left [keyName key ++ ": missing"]
   Just v -> Check $ decodeField key v
 
-optional :: FromJSON a => Object -> Key -> Check (Maybe a)
+optional :: (FromJSON a) => Object -> Key -> Check (Maybe a)
 optional o key = case lookup (fromString $ keyName key) o of
   Nothing -> pure Nothing
   Just Null -> pure Nothing
   Just v -> Check $ Just <$> decodeField key v
 
-decodeField :: FromJSON a => Key -> Value -> Either [String] a
+decodeField :: (FromJSON a) => Key -> Value -> Either [String] a
 decodeField key = first (\e -> [keyName key ++ ": " ++ clean e]) . parseEither parseJSON
  where
   clean e = fromMaybe e (stripPrefix "Error in $: " e)

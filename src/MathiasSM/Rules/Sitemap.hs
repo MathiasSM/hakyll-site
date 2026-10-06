@@ -1,19 +1,20 @@
 module MathiasSM.Rules.Sitemap (processSitemap) where
 
-import Hakyll
-    ( Rules,
-      makeItem,
-      loadAll,
-      idRoute,
-      compile,
-      create,
-      route,
-      listField,
-      loadAndApplyTemplate,
-      recentFirst )
-import MathiasSM.CleanURL ( cleanIndexHtmls )
-import MathiasSM.Config ( pagesPattern, postGroups, postsPattern )
-import MathiasSM.Context ( minimalCtx )
+import Hakyll (
+  Rules,
+  compile,
+  create,
+  idRoute,
+  listField,
+  loadAll,
+  loadAndApplyTemplate,
+  makeItem,
+  recentFirst,
+  route,
+ )
+import MathiasSM.CleanURL (cleanIndexHtmls)
+import MathiasSM.Config (pagesPattern, postGroups, postsPattern)
+import MathiasSM.Context (minimalCtx)
 
 -- | Builds sitemap.xml from the standalone pages and every post group
 processSitemap :: Rules ()

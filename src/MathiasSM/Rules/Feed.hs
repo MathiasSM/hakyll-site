@@ -15,18 +15,18 @@ import Hakyll (
   fromFilePath,
   idRoute,
   loadAllSnapshots,
+  loadBody,
   mapContext,
   preprocess,
   recentFirst,
-  loadBody,
   renderAtomWithTemplates,
   route,
   urlField,
   withUrls,
  )
 import MathiasSM.CleanURL (cleanIndex)
-import MathiasSM.Content (Post (..), requirePostOf)
 import MathiasSM.Config (baseUrl, feedItemLimit, postSnapshot, postsPattern, siteAuthor)
+import MathiasSM.Content (Post (..), requirePostOf)
 import MathiasSM.Feeds (Feed (..), absoluteUrl, feeds)
 
 -- | Builds the Atom feed of every post group: its newest posts, in full

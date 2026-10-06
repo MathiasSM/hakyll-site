@@ -1,5 +1,6 @@
 module MathiasSM.Rules.Redirects (processRedirects, Entry (..), planRedirects) where
 
+import Data.Either (fromLeft)
 import Data.List (tails)
 import Hakyll (
   Rules,
@@ -35,7 +36,7 @@ processRedirects = do
       planned = planRedirects entries
       problems =
         [file ++ ": " ++ problem | (file, _, Left found) <- parsed, problem <- found]
-          ++ either id (const []) planned
+          ++ fromLeft [] planned
   case planned of
     Right redirects | null problems -> version "redirects" $ createRedirects [(fromFilePath out, target) | (out, target) <- redirects]
     _ -> preprocess $ ioError $ userError $ "Invalid aliases:\n" ++ unlines (map ("  " ++) problems)

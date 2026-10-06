@@ -3,10 +3,10 @@ module MathiasSM.Context.Site (siteContext) where
 import Hakyll (Context, constField)
 import MathiasSM.Config (
   baseUrl,
-  siteDomain,
   siteAuthor,
   siteCopyrightYear,
   siteDescription,
+  siteDomain,
   siteName,
  )
 

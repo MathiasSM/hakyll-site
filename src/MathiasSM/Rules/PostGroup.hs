@@ -17,9 +17,9 @@ import Hakyll (
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (minimalTemplate, postSnapshot, postTemplate, postsPattern)
+import MathiasSM.Content (isDraft, requirePost)
 import MathiasSM.Context (minimalCtx, postSocialTagsContext)
 import MathiasSM.Context.Nav (navContext)
-import MathiasSM.Content (isDraft, requirePost)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
 -- | Processes a group: its index page and all the item pages

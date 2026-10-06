@@ -1,36 +1,37 @@
 module MathiasSM.Rules.Assets (processAssets) where
 
-import Hakyll
-    ( Pattern,
-      Rules,
-      Item(itemBody),
-      Routes,
-      getResourceLBS,
-      makeItem,
-      loadAll,
-      copyFileCompiler,
-      (.||.),
-      (.&&.),
-      composeRoutes,
-      complement,
-      applyAsTemplate,
-      getResourceString,
-      gsubRoute,
-      idRoute,
-      setExtension,
-      compile,
-      create,
-      match,
-      route,
-      version,
-      unixFilterLBS,
-      compressCssCompiler,
-      templateBodyCompiler )
-import Data.String ( fromString )
-import MathiasSM.Config ( assetsDir, tablesPattern )
-import System.FilePath.Posix ( (</>) )
-import MathiasSM.Context.Site ( siteContext )
-import MathiasSM.Rules.Favicon ( faviconRules )
+import Data.String (fromString)
+import Hakyll (
+  Item (itemBody),
+  Pattern,
+  Routes,
+  Rules,
+  applyAsTemplate,
+  compile,
+  complement,
+  composeRoutes,
+  compressCssCompiler,
+  copyFileCompiler,
+  create,
+  getResourceLBS,
+  getResourceString,
+  gsubRoute,
+  idRoute,
+  loadAll,
+  makeItem,
+  match,
+  route,
+  setExtension,
+  templateBodyCompiler,
+  unixFilterLBS,
+  version,
+  (.&&.),
+  (.||.),
+ )
+import MathiasSM.Config (assetsDir, tablesPattern)
+import MathiasSM.Context.Site (siteContext)
+import MathiasSM.Rules.Favicon (faviconRules)
+import System.FilePath.Posix ((</>))
 
 -- | Processes all assets (images or otherwise) into final site
 processAssets :: Rules ()
@@ -57,7 +58,7 @@ processStaticFiles = do
 processTables :: Rules ()
 processTables = match tablesPattern $ compile getResourceString
 
-{- | Compress all CSS as one file -}
+-- | Compress all CSS as one file
 processCss :: Rules ()
 processCss = do
   match cssFiles $ compile compressCssCompiler

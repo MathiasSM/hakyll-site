@@ -1,12 +1,12 @@
--- | Runs the specs of every module (one MathiasSM.*Spec per library module)
+-- \| Runs the specs of every module (one MathiasSM.*Spec per library module)
 import Control.Monad (unless)
-import qualified MathiasSM.CleanURLSpec as CleanURL
-import qualified MathiasSM.ContentSpec as Content
-import qualified MathiasSM.FeedsSpec as Feeds
-import qualified MathiasSM.MetadataSpec as Metadata
-import qualified MathiasSM.RedirectsSpec as Redirects
-import qualified MathiasSM.TsvSpec as Tsv
-import qualified MathiasSM.ValidateSpec as Validate
+import MathiasSM.CleanURLSpec qualified as CleanURL
+import MathiasSM.ContentSpec qualified as Content
+import MathiasSM.FeedsSpec qualified as Feeds
+import MathiasSM.MetadataSpec qualified as Metadata
+import MathiasSM.RedirectsSpec qualified as Redirects
+import MathiasSM.TsvSpec qualified as Tsv
+import MathiasSM.ValidateSpec qualified as Validate
 import Support (group)
 import System.Exit (exitFailure)
 import Test.HUnit (Counts (..), runTestTT)

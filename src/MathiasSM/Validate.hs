@@ -18,11 +18,13 @@ Hakyll would otherwise build whatever it finds, silently leaving out missing pag
 ensureContentExists :: IO ()
 ensureContentExists = do
   present <- doesDirectoryExist contentDir
-  unless present $
-    die $ contentDir ++ "/ not found: clone the content repo there (see README)"
+  unless present
+    $ die
+    $ contentDir ++ "/ not found: clone the content repo there (see README)"
   missing <- filterM (fmap not . doesFileExist) requiredContent
-  unless (null missing) $
-    die $ "Missing required content:\n" ++ unlines (map ("  " ++) missing)
+  unless (null missing)
+    $ die
+    $ "Missing required content:\n" ++ unlines (map ("  " ++) missing)
 
 {- | Fails the build, once, if any hobby (shown or not) lacks a published blog post with `path: <href>`
 
@@ -34,12 +36,14 @@ validateHobbyPages = do
   posts <- getAllMetadata $ postsPattern "blog"
   let paths = [path | (_, metadata) <- posts, not (isDraft metadata), Just path <- [lookupKey Path metadata]]
       missing = missingHobbyPages (parseTsv table) paths
-  unless (null missing) $
-    preprocess $
-      ioError $
-        userError $
-          "hobbies.tsv: no post in " ++ contentDir ++ "/blog with a matching `path:` for: "
-            ++ intercalate ", " missing
+  unless (null missing)
+    $ preprocess
+    $ ioError
+    $ userError
+    $ "hobbies.tsv: no post in "
+      ++ contentDir
+      ++ "/blog with a matching `path:` for: "
+      ++ intercalate ", " missing
 
 {- | Fails the build, once, listing every page whose menu entry (`nav:`) is invalid
 
@@ -49,11 +53,11 @@ validateNavEntries :: Rules ()
 validateNavEntries = do
   pages <- getAllMetadata $ pagesPattern "*"
   let problems = [toFilePath page ++ ": " ++ problem | (page, metadata) <- pages, Left found <- [parseNavEntry metadata], problem <- found]
-  unless (null problems) $
-    preprocess $
-      ioError $
-        userError $
-          "Invalid menu entries:\n" ++ unlines (map ("  " ++) problems)
+  unless (null problems)
+    $ preprocess
+    $ ioError
+    $ userError
+    $ "Invalid menu entries:\n" ++ unlines (map ("  " ++) problems)
 
 -- | The `href` of every hobby that no post `path` matches
 missingHobbyPages :: [Row] -> [FilePath] -> [FilePath]
