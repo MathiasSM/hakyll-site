@@ -17,7 +17,8 @@ import Hakyll (
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (minimalTemplate, postSnapshot, postTemplate, postsPattern)
-import MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext)
+import MathiasSM.Context (minimalCtx, postSocialTagsContext)
+import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Content (isDraft, requirePost)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
@@ -46,7 +47,7 @@ processPostGroupItems groupName =
         >>= runPandoc
         >>= saveSnapshot (postSnapshot groupName)
         >>= applyTemplates minimalCtx [minimalTemplate, postTemplate]
-        >>= finish (postSocialTagsContext <> navStateContext groupName <> minimalCtx)
+        >>= finish (postSocialTagsContext <> navContext groupName <> minimalCtx)
 
 -- | Build context for archive page
 getCtx :: String -> Compiler (Context String)

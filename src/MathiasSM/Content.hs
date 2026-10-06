@@ -6,6 +6,7 @@ module MathiasSM.Content (
   statusName,
   Post (..),
   Project (..),
+  NavEntry (..),
   isDraft,
   aliasesOf,
   parseAliasesYaml,
@@ -13,10 +14,13 @@ module MathiasSM.Content (
   parsePostYaml,
   parseProject,
   parseProjectYaml,
+  parseNavEntry,
+  parseNavYaml,
   showcaseKey,
   requirePost,
   requirePostOf,
   requireLanguage,
+  requireNav,
   requireProject,
 ) where
 
@@ -167,11 +171,41 @@ parseProject o =
     Just end | end < projectStart project -> Left ["endDate: " ++ show end ++ " is before startDate " ++ show (projectStart project)]
     _ -> Right project
 
+-- | A page that appears in the site menu (`nav: <label>`, `navOrder: <n>` in its front matter)
+data NavEntry = NavEntry
+  { navLabel :: String
+  -- ^ What the menu link says; may contain HTML
+  , navOrder :: Int
+  , navHref :: FilePath
+  -- ^ The page's `path`
+  , navLanguage :: Language
+  }
+  deriving (Eq, Show)
+
+{- | The menu entry a page asks for, if it has a `nav:` label (it then also needs `navOrder`
+and `path`)
+-}
+parseNavEntry :: Metadata -> Either [String] (Maybe NavEntry)
+parseNavEntry o = do
+  label <- runCheck (optional o K.Nav)
+  case label of
+    Nothing -> Right Nothing
+    Just text ->
+      runCheck $
+        (\order path language -> Just (NavEntry text order path language))
+          <$> required o K.NavOrder
+          <*> required o K.Path
+          <*> languageOf o
+
 {- | Sort key for the showcase: projects with a `priority` first (lowest number
 first), then the rest, newest start first
 -}
 showcaseKey :: Project -> (Int, Down Day)
 showcaseKey p = (fromMaybe maxBound (projectPriority p), Down (projectStart p))
+
+-- | 'parseNavEntry' on YAML text (the same shape as front matter)
+parseNavYaml :: String -> Either [String] (Maybe NavEntry)
+parseNavYaml = decodeYaml >=> parseNavEntry
 
 -- | 'parsePost' on YAML text (the same shape as front matter)
 parsePostYaml :: String -> Either [String] Post
@@ -201,6 +235,12 @@ requireLanguage :: Identifier -> Compiler Language
 requireLanguage ident = do
   metadata <- getMetadata ident
   either (failWith $ toFilePath ident ++ ": invalid language") pure (runCheck $ languageOf metadata)
+
+-- | The menu entry of any page, failing the build (naming the page) if it's invalid
+requireNav :: Identifier -> Compiler (Maybe NavEntry)
+requireNav ident = do
+  metadata <- getMetadata ident
+  either (failWith $ toFilePath ident ++ ": invalid menu entry") pure (parseNavEntry metadata)
 
 -- | Parses a project item (its body is the YAML), failing the build with the problems found
 requireProject :: Item String -> Compiler Project

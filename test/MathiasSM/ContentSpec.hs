@@ -14,6 +14,7 @@ tests =
     , statusTests
     , postTests
     , aliasTests
+    , navTests
     , projectTests
     , showcaseTests
     ]
@@ -101,6 +102,34 @@ aliasTests =
         isLeft (parseAliasesYaml "aliases: 3") ~?= True
     ]
  where
+  isLeft = either (const True) (const False)
+
+-- Menu entries ---------------------------------------------------------------
+
+-- | A page that wants a menu entry
+navPage :: Fields
+navPage = [("title", "Blog"), ("path", "/blog"), ("nav", "Blog"), ("navOrder", "2")]
+
+navTests :: Test
+navTests =
+  group
+    "parseNavYaml"
+    [ it "reads label, order, path and language (English unless stated)" $
+        parse navPage ~?= Right (Just (NavEntry "Blog" 2 "/blog" En))
+    , it "keeps HTML in the label and reads the language" $
+        parse (set "nav" "'<i>Es</i>critos'" $ set "language" "es" navPage)
+          ~?= Right (Just (NavEntry "<i>Es</i>critos" 2 "/blog" Es))
+    , it "gives no entry to a page without a nav label" $
+        parse (without ["nav", "navOrder"] navPage) ~?= Right Nothing
+    , it "needs an order when there is a label" $
+        parse (without ["navOrder"] navPage) ~?= Left ["navOrder: missing"]
+    , it "needs a path when there is a label" $
+        parse (without ["path"] navPage) ~?= Left ["path: missing"]
+    , it "rejects an order that isn't a number" $
+        isLeft (parse $ set "navOrder" "first" navPage) ~?= True
+    ]
+ where
+  parse = parseNavYaml . render
   isLeft = either (const True) (const False)
 
 -- Projects -------------------------------------------------------------------

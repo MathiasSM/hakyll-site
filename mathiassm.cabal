@@ -27,6 +27,7 @@ library
                   , MathiasSM.Context
                   , MathiasSM.Context.Feeds
                   , MathiasSM.Context.Language
+                  , MathiasSM.Context.Nav
                   , MathiasSM.Context.Project
                   , MathiasSM.Context.Site
                   , MathiasSM.Context.Tables

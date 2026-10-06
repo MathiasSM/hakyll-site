@@ -17,7 +17,8 @@ import Hakyll (
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (minimalTemplate, pagesPattern, pageTemplate)
-import MathiasSM.Context (minimalCtx, navStateContext)
+import MathiasSM.Context (minimalCtx)
+import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
 
 -- | A standalone page, backed by content/pages/<pageName>.* and routed by its `path:`
@@ -44,7 +45,7 @@ processPage Page{pageName, pageContext, pageTemplates} = match (pagesPattern pag
       >>= (if templated then applyAsTemplate ctx else return)
       >>= runPandoc
       >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
-      >>= finish (navStateContext pageName <> ctx)
+      >>= finish (navContext pageName <> ctx)
  where
   -- Pages with `templated: true` may use template syntax in their body
   isTemplated = do

@@ -28,6 +28,8 @@ data Key
   | Language
   | LastModifiedAt
   | LongDescription
+  | Nav
+  | NavOrder
   | Path
   | Priority
   | Project
@@ -58,6 +60,8 @@ keyName key = case key of
   Language -> "language"
   LastModifiedAt -> "lastModifiedAt"
   LongDescription -> "longDescription"
+  Nav -> "nav"
+  NavOrder -> "navOrder"
   Path -> "path"
   Priority -> "priority"
   Project -> "project"
