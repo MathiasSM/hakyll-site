@@ -1,8 +1,16 @@
 module MathiasSM.Context (minimalCtx, navStateContext, postSocialTagsContext) where
 
 import Data.Maybe (fromMaybe)
+import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 import Hakyll (
+  Compiler,
   Context,
+  Identifier,
+  Item (Item, itemBody),
+  fromFilePath,
+  toFilePath,
+  listField,
+  load,
   Item (itemIdentifier),
   MonadMetadata (getMetadata),
   boolField,
@@ -21,12 +29,11 @@ minimalCtx :: Context String
 minimalCtx =
   siteContext
     <> socialMediaContext
+    <> hobbiesContext
     <> languageContext
     <> defaultContext
 
-{- | Given a string, builds a context field based on that name as currentView
-TODO: Grab from item path?
--}
+-- | Given a string, builds a context field based on that name as currentView
 navStateContext :: String -> Context a
 navStateContext currentView = boolField fieldName $ const True
  where
@@ -60,34 +67,33 @@ siteContext =
     , constField "root" "https://mathiassm.dev"
     ]
 
-{- | Sets social media links as part of context (social-<platform>-href)
- TODO: Load from compiled source/md
--}
+-- | Table of social accounts (data/socials.tsv), as lists usable in templates
 socialMediaContext :: Context a
 socialMediaContext =
-  mconcat $ hrefs ++ usernames ++ ctas
+  mconcat
+    [ socialsField "socials-all" (const True)
+    , socialsField "socials-contact" (isYes "show_contact")
+    , socialsField "socials-about" (isYes "show_about")
+    ]
  where
-  hrefs =
-    [ constField "social-twitter-href" "https://twitter.com/mathiassm"
-    , constField "social-github-href" "https://github.com/MathiasSM"
-    , constField "social-linkedin-href" "https://www.linkedin.com/in/mathiassm"
-    , constField "social-mal-href" "https://myanimelist.net/animelist/mathiassm"
-    , constField "social-imdb-href" "https://www.imdb.com/user/ur62639773/ratings"
-    ]
-  usernames =
-    [ constField "social-twitter-username" "@mathiassm"
-    , constField "social-github-username" "MathiasSM"
-    , constField "social-linkedin-username" "mathiassm"
-    , constField "social-mal-username" "mathiassm"
-    , constField "social-imdb-username" "mathiassanmiguel"
-    ]
-  ctas =
-    [ constField "social-twitter-cta" "Wanna chat?"
-    , constField "social-github-cta" "Wanna code?"
-    , constField "social-linkedin-cta" "Wanna hire?"
-    , constField "social-mal-cta" "My Anime List"
-    , constField "social-imdb-cta" "Movie ratings"
-    ]
+  socialsField name keep =
+    listField name rowCtx $ tableItems "data/socials.tsv" (filter keep)
+  rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
+  iconOf row = "images/icons/social/" ++ fromMaybe "" (lookup "site" row) ++ ".svg"
+
+-- | Table of hobbies (data/hobbies.tsv), as a list usable in templates
+hobbiesContext :: Context a
+hobbiesContext = listField "hobbies" rowCtx $ tableItems "data/hobbies.tsv" id
+ where
+  rowCtx = field "iconPath" (return . iconOf . itemBody) <> rowContext
+  iconOf row = "images/icons/" ++ fromMaybe "" (lookup "icon" row) ++ ".svg"
+
+-- | Loads a TSV table as one item per (filtered) row
+tableItems :: Identifier -> ([Row] -> [Row]) -> Compiler [Item Row]
+tableItems path select = do
+  table <- load path
+  let rows = select $ parseTsv $ itemBody table
+  return [Item (fromFilePath $ toFilePath path ++ "#" ++ show n) row | (n, row) <- zip [0 :: Int ..] rows]
 
 -- | Sets a language variable for choosing strings and using in html
 languageContext :: Context a

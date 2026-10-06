@@ -23,6 +23,8 @@ executable site
                   , MathiasSM.Rules.Showcase
                   , MathiasSM.Rules.SinglePages
                   , MathiasSM.Rules.Sitemap
+                  , MathiasSM.Rules.Trust
+                  , MathiasSM.Tsv
   build-depends:    base         >= 4 && < 5
                   , filepath     >= 1.5 && < 2
                   , text         >= 2.1 && < 3

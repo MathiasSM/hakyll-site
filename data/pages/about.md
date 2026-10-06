@@ -1,5 +1,6 @@
 ---
 home: true
+templated: true
 title: "Mathias San Miguel"
 description: "Software Development Engineer. Programming Languages, Databases and Artificial Intelligence."
 path: "/"
@@ -18,11 +19,11 @@ shareTitle: "Mathias San Miguel - Software Development Engineer"
 
 ## Experience highlights
 
-- ![](/images/work.svg){.icon}[**SDE at Amazon** for 6+ years improving search and catalog metadata tooling]{}
-- ![](/images/work.svg){.icon}[**SWE at health research startup** for ~1 year working on security and data]{}
-- ![](/images/work.svg){.icon}[**System Administrator at computing lab** for ~2 years maintaining Linux servers]{}
-- ![](/images/idea.svg){.icon}[**ACM-ICPC World Finalist** after a lot of [C++]{.unbreakable}]{}
-- ![](/images/school.svg){.icon}[**Engineering degree in Computer Science** from _Universidad Simón Bolívar_]{}
+- ![](/images/icons/work.svg){.icon}[**SDE at Amazon** for 6+ years improving search and catalog metadata tooling]{}
+- ![](/images/icons/work.svg){.icon}[**SWE at health research startup** for ~1 year working on security and data]{}
+- ![](/images/icons/work.svg){.icon}[**System Administrator at computing lab** for ~2 years maintaining Linux servers]{}
+- ![](/images/icons/idea.svg){.icon}[**ACM-ICPC World Finalist** after a lot of [C++]{.unbreakable}]{}
+- ![](/images/icons/school.svg){.icon}[**Engineering degree in Computer Science** from _Universidad Simón Bolívar_]{}
 
 :::::
 
@@ -32,17 +33,9 @@ shareTitle: "Mathias San Miguel - Software Development Engineer"
 
 These are hobbies I take on at random times and during random periods of time:
 
-- [![](/images/sketching.svg){.icon}[Drawing]{}](/hobbies/drawing){.item}
-- [![](/images/feather.svg){.icon}[Writing]{}](/hobbies/writing){.item}
-- [![](/images/dice-3.svg){.icon}[Boardgames]{}](/hobbies/boardgames){.item}
-- [![](/images/cards.svg){.icon}[TCGs]{}](/hobbies/tcgs){.item}
-- [![](/images/device-gamepad-2.svg){.icon}[Gaming]{}](/hobbies/gaming){.item}
-- [![](/images/book.svg){.icon}[Reading]{}](/hobbies/reading){.item}
-- [![](/images/alphabet-japanese.svg){.icon}[Japanese]{}](/hobbies/japanese){.item}
-- [![](/images/arrow-narrow-up-dashed.svg){.icon}[Bouldering]{}](/hobbies/bouldering){.item}
-- [![](/images/chart-grid-dots.svg){.icon}[Tinkering]{}](/hobbies/tinkering){.item}
-- [![](/images/movie.svg){.icon}[Movies]{}](/hobbies/movies){.item}
-- [![](/images/device-tv.svg){.icon}[TV]{}](/hobbies/tv){.item}
+```{=html}
+$partial("templates/hobbies.html")$
+```
 
 I could mention [collecting](/hobbies/collecting) as a cross-hobby activity as well.
 
@@ -53,5 +46,8 @@ I could mention [collecting](/hobbies/collecting) as a cross-hobby activity as w
 
 ## Reach out!
 
+```{=html}
+$partial("templates/social-links-about.html")$
+```
 
 :::::

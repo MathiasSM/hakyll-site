@@ -8,6 +8,7 @@ import MathiasSM.Rules.Redirects (processRedirects)
 import MathiasSM.Rules.Showcase (processShowcase)
 import MathiasSM.Rules.SinglePages (processKnownPage, processKnownPage')
 import MathiasSM.Rules.Sitemap (processSitemap)
+import MathiasSM.Rules.Trust (processTrust)
 import MathiasSM.Context (minimalCtx)
 
 --------------------------------------------------------------------------------
@@ -25,3 +26,4 @@ main = hakyll $ do
   processPostGroup "escritos"
   processSitemap
   processRedirects
+  processTrust
