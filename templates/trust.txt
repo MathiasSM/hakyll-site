@@ -12,5 +12,7 @@ $endfor$
 # AI, begone (please):
 datatrainingallowed=no
 
+$-if(false)$
 # Approximate syntax of this file:
 # vim:ft=ini
+$endif$
