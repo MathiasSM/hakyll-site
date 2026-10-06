@@ -9,6 +9,7 @@ module MathiasSM.Config (
   twitterHandle,
   siteConfiguration,
   contentDir,
+  assetsDir,
   postGroups,
   showcaseName,
   standalonePages,
@@ -50,7 +51,7 @@ twitterHandle :: String
 twitterHandle = "mathiassm"
 
 {- | Hakyll's defaults, except that `.well-known` folders are not ignored
-(Hakyll skips every dot-folder, but `static/.well-known/` must be published)
+(Hakyll skips every dot-folder, but `assets/static/.well-known/` must be published)
 -}
 siteConfiguration :: Configuration
 siteConfiguration = defaultConfiguration{ignoreFile = ignore}
@@ -60,6 +61,10 @@ siteConfiguration = defaultConfiguration{ignoreFile = ignore}
 -- | Where the content repo is cloned (git-ignored): pages/, projects/, tables/, and one folder per post group
 contentDir :: FilePath
 contentDir = "content"
+
+-- | Site-owned files: `css/`, `images/`, and `static/` (published at the site root as is)
+assetsDir :: FilePath
+assetsDir = "assets"
 
 -- | Groups of posts, each with an index page (content/pages/<group>.*) and items (content/<group>/**)
 postGroups :: [String]

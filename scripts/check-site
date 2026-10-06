@@ -20,9 +20,9 @@ site=$(cabal list-bin site)
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
-# The site code reads templates/css/images/static and content/ from its working directory.
+# The site code reads templates/, assets/ and content/ from its working directory.
 mkdir "$work/build"
-cp -r templates css images static "$work/build/"
+cp -r templates assets "$work/build/"
 cp -r test/fixtures/content "$work/build/content"
 (cd "$work/build" && "$site" build >"$work/build.log" 2>&1) || {
   cat "$work/build.log" >&2

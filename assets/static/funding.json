@@ -3,12 +3,12 @@
   "entity": {
     "type": "individual",
     "role": "owner",
-    "name": "Mathias San Miguel",
+    "name": "$site-author$",
     "email": "mathiassanmiguel@gmail.com",
     "phone": "",
     "description": "Mathias is a Software Developer Engineer.",
     "webpageUrl": {
-      "url": "https://mathiassm.dev"
+      "url": "$site-baseUrl$"
     }
   },
   "projects": [
@@ -17,7 +17,7 @@
       "name": "MathiasSM.dev (website)",
       "description": "My personal website. Note: This is just a test of the funding.json manifest.",
       "webpageUrl": {
-        "url": "https://mathiassm.dev"
+        "url": "$site-baseUrl$"
       },
       "repositoryUrl": {
         "url": "https://github.com/MathiasSM/hakyll-site",
