@@ -61,7 +61,7 @@ content/
   creative-writing/  posts
 ```
 
-The build stops with a list of anything missing from this set (see `requiredContent` in `src/MathiasSM/Config.hs`). Run `scripts/get-all-frontmatter-keys.sh` to list the front matter keys in use.
+The build stops with a list of anything missing from this set (see `requiredContent` in `src/MathiasSM/Config.hs`).
 
 ### Pages (`pages/<name>.md`)
 

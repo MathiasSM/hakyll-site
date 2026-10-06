@@ -9,8 +9,7 @@ import Hakyll (Metadata, lookupString)
 
 {- | Every front matter key that content may use.
 
-Add a constructor here (and in 'keyName') before using a new key anywhere;
-see @scripts/get-all-frontmatter-keys.sh@ for the keys currently in content.
+Add a constructor here (and in 'keyName') before using a new key anywhere.
 -}
 data Key
   = -- Keys Hakyll itself interprets
