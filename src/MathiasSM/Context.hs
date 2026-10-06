@@ -1,7 +1,17 @@
 module MathiasSM.Context (minimalCtx, projectContext, navStateContext, postSocialTagsContext) where
 
 import Data.Maybe (fromMaybe)
-import MathiasSM.Config (baseUrl, experienceTable, hobbiesTable, socialsTable)
+import MathiasSM.Config (
+  baseUrl,
+  experienceTable,
+  hobbiesTable,
+  siteAuthor,
+  siteCopyrightYear,
+  siteDescription,
+  siteName,
+  socialsTable,
+  twitterHandle,
+ )
 import MathiasSM.Content (Project (..), languageCode, requireLanguage, statusName)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 import Hakyll (
@@ -67,8 +77,8 @@ postSocialTagsContext =
  where
   ctx =
     mconcat
-      [ constField "twitter-creator" "mathiassm"
-      , constField "twitter-site" "mathiassm"
+      [ constField "twitter-creator" twitterHandle
+      , constField "twitter-site" twitterHandle
       , minimalCtx
       ]
 
@@ -76,10 +86,10 @@ postSocialTagsContext =
 siteContext :: Context a
 siteContext =
   mconcat
-    [ constField "site-name" "MathiasSM"
-    , constField "site-description" "Software Development Engineer"
-    , constField "site-author" "Mathias San Miguel"
-    , constField "site-copyrightYear" "2013"
+    [ constField "site-name" siteName
+    , constField "site-description" siteDescription
+    , constField "site-author" siteAuthor
+    , constField "site-copyrightYear" siteCopyrightYear
     , constField "site-baseUrl" baseUrl
     , constField "root" baseUrl -- read by Hakyll's own social cards
     ]

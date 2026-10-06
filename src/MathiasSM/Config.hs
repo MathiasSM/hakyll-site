@@ -1,6 +1,12 @@
 -- | Site-wide constants: where content lives, what groups exist, shared templates
 module MathiasSM.Config (
+  siteName,
+  siteDescription,
+  siteAuthor,
+  siteCopyrightYear,
+  siteDomain,
   baseUrl,
+  twitterHandle,
   siteConfiguration,
   contentDir,
   postGroups,
@@ -24,9 +30,24 @@ import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, defaultConfiguration, fromFilePath)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
+-- | Site-wide information, exposed to templates as @site-name@, @site-description@, ...
+siteName, siteDescription, siteAuthor, siteCopyrightYear :: String
+siteName = "MathiasSM"
+siteDescription = "Software Development Engineer"
+siteAuthor = "Mathias San Miguel"
+siteCopyrightYear = "2013"
+
+-- | The site's domain, without scheme
+siteDomain :: String
+siteDomain = "mathiassm.dev"
+
 -- | Public origin of the site, without trailing slash
 baseUrl :: String
-baseUrl = "https://mathiassm.dev"
+baseUrl = "https://" ++ siteDomain
+
+-- | Twitter handle (without @) used for the social cards of posts
+twitterHandle :: String
+twitterHandle = "mathiassm"
 
 {- | Hakyll's defaults, except that `.well-known` folders are not ignored
 (Hakyll skips every dot-folder, but `static/.well-known/` must be published)
