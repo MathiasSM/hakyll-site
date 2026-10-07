@@ -28,7 +28,7 @@ env:
 
 jobs:
   build:
-    name: Build, test, golden output, deploy
+    name: Build, test, snapshot output, deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
 
-      # The site renders its favicons with ImageMagick (and scripts/check-site inspects them)
+      # The site renders its favicons with ImageMagick (the snapshot test reads their dimensions)
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
 
@@ -61,11 +61,11 @@ jobs:
         run: cabal build all
 
       - name: Unit tests
-        run: cabal test --test-show-details=direct
+        run: cabal test spec --test-show-details=direct
 
-      # Builds the fixture site (test/fixtures) and compares it with test/golden
-      - name: Golden output
-        run: scripts/check-site
+      # Builds the fixture site (test/fixtures) in-process and compares it with test/snapshot
+      - name: Snapshot output
+        run: cabal test snapshot --test-show-details=direct
 
       # --- Deploy: only master (pushes, content updates, the monthly rebuild, manual runs) ---
       # Needs the repository variable DEPLOY_REPOSITORY (owner/name of the GitHub Pages repo)
@@ -156,4 +156,4 @@ jobs:
         run: scripts/format --check
 
       - name: hlint
-        run: hlint app src test
+        run: hlint app src test test-snapshot

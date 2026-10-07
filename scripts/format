@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+#
 # Formats the Haskell sources with fourmolu.
 #
 #   scripts/format           format in place
-#   scripts/format --check   change nothing; fail (and show the diff) if anything would change
+#   scripts/format --check   change nothing; fail if anything would change
+
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -13,4 +15,4 @@ case "${1:-}" in
   *) echo "usage: $0 [--check]" >&2; exit 2 ;;
 esac
 
-find app src test -name '*.hs' -print0 | xargs -0 fourmolu --mode "$mode"
+find "app" "src" "test" -name '*.hs' -print0 | xargs -0 fourmolu --mode "$mode"
