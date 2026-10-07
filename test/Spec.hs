@@ -14,5 +14,15 @@ import Test.HUnit (Counts (..), runTestTT)
 main :: IO ()
 main = do
   Counts{errors, failures} <-
-    runTestTT $ group "mathiassm" [CleanURL.tests, Content.tests, Feeds.tests, Metadata.tests, Redirects.tests, Tsv.tests, Validate.tests]
+    runTestTT $
+      group
+        "mathiassm"
+        [ CleanURL.tests
+        , Content.tests
+        , Feeds.tests
+        , Metadata.tests
+        , Redirects.tests
+        , Tsv.tests
+        , Validate.tests
+        ]
   unless (errors + failures == 0) exitFailure

@@ -1,5 +1,5 @@
-_site
-_cache
-dist-newstyle
+/_site
+/_cache
+/dist-newstyle
 /content
-
+/.repro

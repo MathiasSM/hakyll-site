@@ -20,10 +20,10 @@
 
 ## Test
 
-1. `cabal test` runs the unit tests (`test/`)
-2. `scripts/check-site` builds a small fixture site (`test/fixtures/content`) and compares the output with the golden snapshot in `test/golden`. When a change to the output is intended, review the diff and run `scripts/check-site --update`. (Needs ImageMagick, like the build itself.)
+1. `cabal test spec` runs the fast unit tests (`test/`).
+2. `cabal test snapshot` builds a small fixture site (`test/fixtures/content`) in-process and compares the output with the baseline in `test/snapshot`. When a change to the output is intended, review the diff and run `cabal test snapshot --test-options=--update`. (Needs ImageMagick, like the build itself.) The two suites are independent: bare `cabal test` runs both, but each can be run on its own.
 
-CI (`.github/workflows/ci.yml`) builds and tests every pushed branch: build, `cabal test`, `scripts/check-site`, `scripts/format --check` and `hlint`. It needs `ghc 9.10.3`, `cabal >= 3.14` and ImageMagick, and pins fourmolu 0.20.1.0 and hlint 3.10.
+CI (`.github/workflows/ci.yml`) builds and tests every pushed branch: build, `cabal test spec`, `cabal test snapshot`, `scripts/format --check` and `hlint`. It needs `ghc 9.10.3`, `cabal >= 3.14` and ImageMagick, and pins fourmolu 0.20.1.0 and hlint 3.10.
 
 ## Deploying
 
@@ -46,7 +46,7 @@ Until `DEPLOY_REPOSITORY` and `DEPLOY_TOKEN` exist, the deploy steps are skipped
 
 1. Install the tools once (e.g. `ghcup install fourmolu` and `ghcup install hlint`, or `cabal install fourmolu hlint`).
 2. `scripts/format` formats the Haskell sources (fourmolu, configured in `fourmolu.yaml`); `scripts/format --check` only checks, and fails with a diff if something would change.
-3. `hlint app src test` lints them; it should report no hints.
+3. `hlint app src test test-snapshot` lints them; it should report no hints.
 
 ## Content
 
