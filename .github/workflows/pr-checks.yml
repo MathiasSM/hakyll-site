@@ -1,15 +1,8 @@
-name: CI
+name: PR Checks
 
 on:
-  push:
+  pull_request:
     branches: ["**"]
-  # The content repo (web-writings) asks for a redeploy when it changes, see .github/... there
-  repository_dispatch:
-    types: [content-updated]
-  # Rebuild on a schedule to pick up anything that changed without a push
-  schedule:
-    - cron: "0 6 1 * *" # 1st of every month at 06:00 UTC
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -77,7 +70,7 @@ jobs:
           
       - name: Upload static files as artifact
         id: deployment
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: _site/
           include-hidden-files: true
