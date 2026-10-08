@@ -5,7 +5,7 @@ member=$site-baseUrl$
 contact=$site-baseUrl$/contact
 
 # My socials:
-$-for(socials-all)-$
+$for(socials-all)-$
 social=$href$
 $endfor$
 
