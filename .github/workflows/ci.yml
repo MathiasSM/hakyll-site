@@ -1,15 +1,14 @@
 name: CI
 
 on:
-  # Every branch is built and tested; master is also deployed (see the end of the `build` job)
   push:
     branches: ["**"]
   # The content repo (web-writings) asks for a redeploy when it changes, see .github/... there
   repository_dispatch:
     types: [content-updated]
-  # Rebuild on the 1st of every month, 06:00 UTC, to pick up anything that changed without a push
+  # Rebuild on a schedule to pick up anything that changed without a push
   schedule:
-    - cron: "0 6 1 * *"
+    - cron: "0 6 1 * *" # 1st of every month at 06:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -146,6 +145,10 @@ jobs:
         run: |
           ghcup install hlint ${HLINT_VERSION}
           ghcup install fourmolu ${FOURMOLU_VERSION}
+
+      - name: Print GHCup Logs on Failure
+        if: failure()
+        run: cat /usr/local/.ghcup/logs/*
 
       - name: Put the tools on the PATH
         run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
