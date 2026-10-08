@@ -144,10 +144,8 @@ jobs:
       - name: Install fourmolu and hlint
         if: steps.tools.outputs.cache-hit != 'true'
         run: |
-          cabal update
-          cd "$RUNNER_TEMP"
-          cabal install "fourmolu-${FOURMOLU_VERSION}" "hlint-${HLINT_VERSION}" \
-            --installdir="$HOME/.local/bin" --install-method=copy --overwrite-policy=always
+          ghcup install hlint ${HLINT_VERSION}
+          ghcup install fourmolu ${FOURMOLU_VERSION}
 
       - name: Put the tools on the PATH
         run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
