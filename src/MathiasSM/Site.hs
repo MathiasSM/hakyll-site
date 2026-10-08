@@ -10,7 +10,6 @@ import MathiasSM.Rules.Redirects (processRedirects)
 import MathiasSM.Rules.Showcase (processShowcase)
 import MathiasSM.Rules.SinglePages (page, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
-import MathiasSM.Rules.Trust (processTrust)
 import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
 
 rules :: Rules ()
@@ -25,4 +24,3 @@ rules = do
   processFeeds
   processSitemap
   processRedirects
-  processTrust

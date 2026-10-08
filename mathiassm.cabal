@@ -40,7 +40,6 @@ library
                   , MathiasSM.Rules.Showcase
                   , MathiasSM.Rules.SinglePages
                   , MathiasSM.Rules.Sitemap
-                  , MathiasSM.Rules.Trust
                   , MathiasSM.Site
                   , MathiasSM.Tsv
                   , MathiasSM.Validate

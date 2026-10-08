@@ -29,9 +29,9 @@ import Hakyll (
   (.||.),
  )
 import MathiasSM.Config (assetsDir, tablesPattern)
-import MathiasSM.Context.Site (siteContext)
 import MathiasSM.Rules.Favicon (faviconRules)
 import System.FilePath.Posix ((</>))
+import MathiasSM.Context (minimalCtx)
 
 -- | Processes all assets (images or otherwise) into final site
 processAssets :: Rules ()
@@ -104,6 +104,7 @@ templatedStatic =
         , "funding.json"
         , "manifest.webmanifest"
         , ".well-known/security.txt"
+        , ".well-known/trust.txt"
         , ".well-known/funding-manifest-urls"
         ]
     ]
@@ -112,7 +113,7 @@ processTemplatedStatic :: Rules ()
 processTemplatedStatic = match templatedStatic $
   version "raw" $ do
     route staticRoute
-    compile $ getResourceString >>= applyAsTemplate siteContext
+    compile $ getResourceString >>= applyAsTemplate minimalCtx 
 
 -- | Rule to copy static files
 justCopy :: Pattern -> Routes -> Rules ()
