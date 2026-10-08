@@ -8,5 +8,7 @@ Preferred-Languages: en, es
 
 Expires: 2027-12-31T22:59:00.000Z
 
+$-if(false)$
 # Approximate syntax of this file:
 # vim:ft=salt
+$endif$

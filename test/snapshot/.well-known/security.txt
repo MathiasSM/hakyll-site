@@ -7,6 +7,3 @@ Contact: https://mathiassm.dev/contact
 Preferred-Languages: en, es
 
 Expires: 2027-12-31T22:59:00.000Z
-
-# Approximate syntax of this file:
-# vim:ft=sh
