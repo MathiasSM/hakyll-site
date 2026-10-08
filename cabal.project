@@ -1,0 +1,10 @@
+packages: .
+
+-- Hakyll by default checks external URLs are reachable via its check command
+-- F*ing X (Twitter) returns so much content within the response headers,
+-- it breaks this, "throwing" a OverlongHeaders exception. 
+--
+-- I don't see another way to configure it, so this disables all external checks
+--
+-- TODO: Add a script or test to replace this check, even if only manually
+constraints: hakyll -checkexternal
