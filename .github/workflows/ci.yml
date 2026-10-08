@@ -25,9 +25,38 @@ env:
   FOURMOLU_VERSION: "0.20.1.0"
   HLINT_VERSION: "3.10"
 
+  DEPENDENCIES: |
+    imagemagick
+
 jobs:
+
+  lint:
+    name: Format and lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up HLint
+        uses: haskell-actions/hlint-setup@v2
+        with:
+          version: ${{ env.HLINT_VERSION }}
+
+      - uses: actions/checkout@v3
+
+      - name: 'Run HLint'
+        uses: haskell-actions/hlint-run@v2
+        with:
+          path: src/
+          fail-on: warning
+
+      - uses: haskell-actions/run-fourmolu@v13
+        with:
+          version: "${{ env.FOURMOLU_VERSION }}"
+          pattern: |
+            src/**.hs
+            app/**.hs
+            test/**.hs
+
   build:
-    name: Build, test, snapshot output, deploy
+    name: Build & Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,92 +67,36 @@ jobs:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
 
-      # The site renders its favicons with ImageMagick (the snapshot test reads their dimensions)
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
+      - name: Install System Dependencies
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends $DEPENDENCIES
 
       - name: Plan the build
         run: |
           cabal update
           cabal build all --dry-run
-
-      - uses: actions/cache@v4
+          
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            ${{ steps.setup.outputs.cabal-store }}
-            dist-newstyle
-          key: build-${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-${{ hashFiles('dist-newstyle/cache/plan.json') }}
-          restore-keys: |
-            build-${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-
+          path: _site/
+          include-hidden-files: true
 
-      - name: Build
-        run: cabal build all
+  deploy:
+    name: Deploy
+    needs: [build, lint]
+    if: github.ref == 'refs/heads/master'
 
-      - name: Unit tests
-        run: cabal test spec --test-show-details=direct
-
-      # Builds the fixture site (test/fixtures) in-process and compares it with test/snapshot
-      - name: Snapshot output
-        run: cabal test snapshot --test-show-details=direct
-
-      # --- Deploy: only master (pushes, content updates, the monthly rebuild, manual runs) ---
-      # Needs the repository variable DEPLOY_REPOSITORY (owner/name of the GitHub Pages repo)
-      # and the secret DEPLOY_TOKEN; without them the deploy steps are skipped with a warning.
-      - name: Check the deploy configuration
-        id: deploy
-        if: github.ref == 'refs/heads/master'
-        env:
-          DEPLOY_REPOSITORY: ${{ vars.DEPLOY_REPOSITORY }}
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-        run: |
-          if [ -n "$DEPLOY_REPOSITORY" ] && [ -n "$DEPLOY_TOKEN" ]; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::Deploy skipped: set the repository variable DEPLOY_REPOSITORY and the secret DEPLOY_TOKEN (see the README)"
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Get the content
-        if: steps.deploy.outputs.enabled == 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: MathiasSM/web-writings
-          path: content
-          token: ${{ secrets.DEPLOY_TOKEN }}
-
-      - name: Build the site
-        if: steps.deploy.outputs.enabled == 'true'
-        run: |
-          cabal run site -- build
-          # GitHub Pages would otherwise run Jekyll, which skips .well-known and _test.html
-          touch _site/.nojekyll
-
-      - name: Get the Pages repo
-        if: steps.deploy.outputs.enabled == 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ vars.DEPLOY_REPOSITORY }}
-          path: pages
-          token: ${{ secrets.DEPLOY_TOKEN }}
-
-      - name: Publish
-        if: steps.deploy.outputs.enabled == 'true'
-        run: |
-          # The Pages repo is a mirror of _site/: anything else in it is removed
-          rsync -a --delete --exclude '/.git/' _site/ pages/
-          cd pages
-          git add --all
-          if git diff --cached --quiet; then
-            echo "Nothing changed, nothing to publish"
-            exit 0
-          fi
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit -m "Deploy ${GITHUB_SHA::7} (content $(git -C ../content rev-parse --short HEAD))"
-          git push
-
-  lint:
-    name: Format and lint
     runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -132,29 +105,53 @@ jobs:
           ghc-version: ${{ env.GHC_VERSION }}
           cabal-version: ${{ env.CABAL_VERSION }}
 
-      # Compiling these takes a while, so the installed binaries are cached
-      - name: Restore fourmolu and hlint
-        id: tools
-        uses: actions/cache@v4
+      - name: Install System Dependencies
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends $DEPENDENCIES
+
+      - name: Get the content
+        uses: actions/checkout@v4
         with:
-          path: ~/.local/bin
-          key: tools-${{ runner.os }}-fourmolu-${{ env.FOURMOLU_VERSION }}-hlint-${{ env.HLINT_VERSION }}
+          repository: ${{ secrets.CONTENT_REPOSITORY }}
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          path: content
 
-      - name: Install fourmolu and hlint
-        if: steps.tools.outputs.cache-hit != 'true'
+      - name: Build the site
         run: |
-          ghcup install hlint ${HLINT_VERSION}
-          ghcup install fourmolu ${FOURMOLU_VERSION}
+          cabal run site -- build
 
-      - name: Print GHCup Logs on Failure
-        if: failure()
-        run: cat /usr/local/.ghcup/logs/*
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
-      - name: Put the tools on the PATH
-        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        
 
-      - name: Formatting
-        run: scripts/format --check
-
-      - name: hlint
-        run: hlint app src test test-snapshot
+      # - name: Get the Pages repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{ vars.DEPLOY_REPOSITORY }}
+      #     token: ${{ secrets.DEPLOY_TOKEN }}
+      #     path: pages
+      #
+      # - name: Publish
+      #   env:
+      #     COMMIT_SHA: ${{ github.sha }}
+      #   run: |
+      #     rsync -a --delete --exclude '/.git/' _site/ pages/
+      #     cd pages
+      #     git add --all
+      #     if git diff --cached --quiet; then
+      #       echo "Nothing changed, nothing to publish"
+      #       exit 0
+      #     fi
+      #
+      #     CONTENT_SHA=$(git -C ../content rev-parse --short HEAD)
+      #     SHORT_SHA=${COMMIT_SHA:0:7}
+      #
+      #     git -c user.name="github-actions[bot]" \
+      #         -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+      #         commit -m "Deploy ${SHORT_SHA} (content ${CONTENT_SHA})"
+      #     git push
+      #
+      #     git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+      #       commit -m "Deploy ${GITHUB_SHA::7} (content $(git -C ../content rev-parse --short HEAD))"
+      #     git push

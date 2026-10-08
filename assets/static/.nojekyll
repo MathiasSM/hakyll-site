@@ -1,0 +1,3 @@
+Just in case the site uses files starting with underscore,
+since Github Pages would otherwise compile with Jekyll,
+with treats these files differently.
