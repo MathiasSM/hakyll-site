@@ -1,5 +1,18 @@
 # Mathias' personal site
 
+[![CI](https://github.com/MathiasSM/hakyll-site/actions/workflows/ci.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/ci.yml)
+
+![](https://badgen.net/badge/:subject/:status/:color?icon=github)
+
+![](https://badgen.net/github/license/MathiasSM/hakyll-site)
+![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/lint)
+![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/format)
+![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/build)
+![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/build-site)
+![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/deploy)
+![](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)
+![](https://badgen.net/codecov/github/MathiasSM/hakyll-site)
+
 ## Setup
 
 1. Install ghcup (e.g. using `mise use -g ghcup`)

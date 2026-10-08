@@ -1,9 +1,10 @@
 name: CI
 
 on:
+  pull_request:
   push:
     branches: ["**"]
-  # The content repo (web-writings) asks for a redeploy when it changes, see .github/... there
+  # The content repo asks for a redeploy when it changes, see their .github/
   repository_dispatch:
     types: [content-updated]
   # Rebuild on a schedule to pick up anything that changed without a push
@@ -25,28 +26,27 @@ env:
   FOURMOLU_VERSION: "0.20.1.0"
   HLINT_VERSION: "3.10"
 
-  DEPENDENCIES: |
-    imagemagick
+  DEPENDENCIES: imagemagick
+
+  DOCS_SITE_PATH: "showcase/hakyll-site"
 
 jobs:
 
   lint:
-    name: Format and lint
+    name: Linting
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload results to GitHub code scanning.
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: haskell-actions/hlint-scan@v1
+
+  format:
+    name: Format
     runs-on: ubuntu-latest
     steps:
-      - name: Set up HLint
-        uses: haskell-actions/hlint-setup@v2
-        with:
-          version: ${{ env.HLINT_VERSION }}
-
-      - uses: actions/checkout@v3
-
-      - name: 'Run HLint'
-        uses: haskell-actions/hlint-run@v2
-        with:
-          path: src/
-          fail-on: warning
-
+      - uses: actions/checkout@v7
       - uses: haskell-actions/run-fourmolu@v13
         with:
           version: "${{ env.FOURMOLU_VERSION }}"
@@ -59,7 +59,7 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: haskell-actions/setup@v2
         id: setup
@@ -68,25 +68,120 @@ jobs:
           cabal-version: ${{ env.CABAL_VERSION }}
 
       - name: Install System Dependencies
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends $DEPENDENCIES
-
-      - name: Plan the build
         run: |
-          cabal update
+          sudo apt-get update
+          sudo apt-get install -y $DEPENDENCIES
+          cabal install hpc-codecov
+
+      - name: Configure the build
+        run: |
+          cabal configure --enable-tests --enable-benchmarks --disable-documentation
           cabal build all --dry-run
-          
-      - name: Upload static files as artifact
-        id: deployment
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        id: cache-cabal
+        env:
+          key: ${{ runner.os }}-ghc-${{ env.GHC_VERSION }}-${{ steps.setup.outputs.cabal-version }}
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ env.key }}-plan-${{ hashFiles('**/plan.json') }}
+          restore-keys: ${{ env.key }}-
+
+      - name: Install dependencies
+        if: ${{ steps.cache-cabal.outputs.cache-hit != 'true' }}
+        # If we had an exact cache hit, the dependencies will be up to date.
+        run: cabal build all --only-dependencies
+
+      - name: Build
+        run: |
+          cabal build all
+          cp "$(cabal list-bin exe:site)" artifact-executable
+
+      - name: Upload executable as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifact-executable
+          name: artifact-executable
+
+      - name: Run unit tests
+        run: cabal test spec --enable-coverage
+
+      - name: Transform coverage file
+        run: hpc-codecov cabal:spec -f cobertura -o cobertura.xml
+
+      - name: Upload coverage report
+        uses: actions/upload-code-coverage@v1
+        with:
+          file: cobertura.xml
+          language: Haskell
+          label: code-coverage/cabal
+
+      # - name: Run snapshot test
+      #   run: cabal test snapshot
+      
+      - name: Build documentation
+        run: |
+          cabal haddock all --disable-documentation
+          cp -r dist-newstyle/build/*/*/*-*/doc/html/* artifact-haddock
+
+      - name: Upload documentation as artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          name: docs
+          path: artifact-docs
+
+  build-site:
+    name: Build Site
+    runs-on: ubuntu-latest
+    needs: [build]
+    environment:
+      name: build
+    steps:
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y $DEPENDENCIES
+
+      - uses: actions/checkout@v7
+      - name: Get the content
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ vars.CONTENT_REPOSITORY }}
+          token: ${{ secrets.CONTENT_READ_TOKEN }}
+          path: content
+          # TODO: master, once I'm done filling the empty new pages
+          ref: new
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: artifact-executable
+      - run: chmod +x artifact-executable
+
+      - name: Build the site
+        run: ./artifact-executable build
+
+      - name: Check the generated _site
+        run: ./artifact-executable check
+
+      - uses: actions/download-artifact@v5
+        with:
+          name: docs
+          path: docs
+
+      - name: Copy site documentation into _site
+        run: cp -r docs _site/${DOCS_SITE_PATH}
+
+      - name: Upload whole _site as artifact
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site/
           include-hidden-files: true
 
-  deploy:
+  deploy-site:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: Deploy
-    needs: [build, lint]
-    if: github.ref == 'refs/heads/master'
-
+    needs: [lint, format, build, build-site]
     runs-on: ubuntu-latest
 
     permissions:
@@ -98,60 +193,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: haskell-actions/setup@v2
-        with:
-          ghc-version: ${{ env.GHC_VERSION }}
-          cabal-version: ${{ env.CABAL_VERSION }}
-
-      - name: Install System Dependencies
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends $DEPENDENCIES
-
-      - name: Get the content
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ secrets.CONTENT_REPOSITORY }}
-          token: ${{ secrets.DEPLOY_TOKEN }}
-          path: content
-
-      - name: Build the site
-        run: |
-          cabal run site -- build
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-        
-
-      # - name: Get the Pages repo
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ vars.DEPLOY_REPOSITORY }}
-      #     token: ${{ secrets.DEPLOY_TOKEN }}
-      #     path: pages
-      #
-      # - name: Publish
-      #   env:
-      #     COMMIT_SHA: ${{ github.sha }}
-      #   run: |
-      #     rsync -a --delete --exclude '/.git/' _site/ pages/
-      #     cd pages
-      #     git add --all
-      #     if git diff --cached --quiet; then
-      #       echo "Nothing changed, nothing to publish"
-      #       exit 0
-      #     fi
-      #
-      #     CONTENT_SHA=$(git -C ../content rev-parse --short HEAD)
-      #     SHORT_SHA=${COMMIT_SHA:0:7}
-      #
-      #     git -c user.name="github-actions[bot]" \
-      #         -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-      #         commit -m "Deploy ${SHORT_SHA} (content ${CONTENT_SHA})"
-      #     git push
-      #
-      #     git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-      #       commit -m "Deploy ${GITHUB_SHA::7} (content $(git -C ../content rev-parse --short HEAD))"
-      #     git push
