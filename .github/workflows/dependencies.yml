@@ -1,0 +1,61 @@
+# Weekly check for outdated Haskell dependencies.
+name: Outdated dependencies
+
+on:
+  push:
+    branches: [master, new]
+  pull_request:
+    branches: [master, new]
+  schedule:
+    - cron: "0 5 * * 1" # Mondays at 05:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  outdated:
+    name: Check for outdated dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "9.10.3"
+          cabal-version: "3.14"
+
+      - name: 'Dependency Review'
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v5
+        with:
+          # Block only high/critical vulnerabilities. Note: this action reviews
+          # the GitHub Actions dependencies, not the Haskell/Cabal ones.
+          fail-on-severity: high
+          # Only comment on the PR when there is something to report.
+          comment-summary-in-pr: on-failure
+          retry-on-snapshot-warnings: true
+          show-patched-versions: true
+
+      - name: Cabal outdated
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cabal update
+          set +e
+          cabal outdated > outdated.txt 2>&1
+          set -e
+          cat outdated.txt
+
+          BODY="$(cat outdated.txt)"
+          ISSUE_NUMBER="$(gh issue list --state open --json number,title \
+            -q '.[] | select(.title == "Outdated dependencies") | .number' | head -n 1)"
+
+          if [ -n "$ISSUE_NUMBER" ]; then
+            echo "Updating issue #$ISSUE_NUMBER"
+            gh issue edit "$ISSUE_NUMBER" --body "$BODY"
+          else
+            echo "Creating issue"
+            gh issue create --title "Outdated dependencies" --body "$BODY"
+          fi

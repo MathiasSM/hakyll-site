@@ -1,0 +1,24 @@
+# Reusable format job: checks Haskell sources are fourmolu-formatted.
+name: Format (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      fourmolu-version:
+        description: "fourmolu version to use"
+        type: string
+        required: true
+
+jobs:
+  format:
+    name: Fourmolu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: haskell-actions/run-fourmolu@v13
+        with:
+          version: ${{ inputs.fourmolu-version }}
+          pattern: |
+            src/**.hs
+            app/**.hs
+            test/**.hs

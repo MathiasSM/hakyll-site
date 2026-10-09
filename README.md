@@ -1,17 +1,12 @@
 # Mathias' personal site
 
 [![CI](https://github.com/MathiasSM/hakyll-site/actions/workflows/ci.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml)
 
-![](https://badgen.net/badge/:subject/:status/:color?icon=github)
-
-![](https://badgen.net/github/license/MathiasSM/hakyll-site)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/lint)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/format)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/build)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/build-site)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/deploy)
-![](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)
-![](https://badgen.net/codecov/github/MathiasSM/hakyll-site)
+[![License](https://badgen.net/github/license/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+[![Top language](https://img.shields.io/github/languages/top/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+[![Dependabot](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/MathiasSM/hakyll-site/badge)](https://securityscorecards.dev/viewer/?uri=github.com/MathiasSM/hakyll-site)
 
 ## Setup
 
@@ -36,24 +31,31 @@
 1. `cabal test spec` runs the fast unit tests (`test/`).
 2. `cabal test snapshot` builds a small fixture site (`test/fixtures/content`) in-process and compares the output with the baseline in `test/snapshot`. When a change to the output is intended, review the diff and run `cabal test snapshot --test-options=--update`. (Needs ImageMagick, like the build itself.) The two suites are independent: bare `cabal test` runs both, but each can be run on its own.
 
-CI (`.github/workflows/ci.yml`) builds and tests every pushed branch: build, `cabal test spec`, `cabal test snapshot`, `scripts/format --check` and `hlint`. It needs `ghc 9.10.3`, `cabal >= 3.14` and ImageMagick, and pins fourmolu 0.20.1.0 and hlint 3.10.
+CI is split across `.github/workflows/`:
+
+- `ci.yml` verifies and builds every pushed branch (lint, format, build, unit tests, coverage, docs) via the reusable `reusable-*.yml` jobs, and on `master` assembles the `site` executable + templates + assets into a rolling `latest` release ("kit").
+- `notify-content.yml` announces a newly published kit to `web-writings` so it can rebuild and deploy.
+- `codeql.yml` scans the workflow files for security issues, `dependencies.yml` reports stale Haskell packages and reviews dependency changes in PRs, and `scorecard.yml` reports the OpenSSF security score.
+
+It needs `ghc 9.10.3`, `cabal >= 3.14` and ImageMagick, and pins fourmolu 0.20.1.0 and hlint 3.10.
 
 ## Deploying
 
-On `master` the same workflow also publishes the site: it checks out the content repo into `content/`, runs `site build`, and mirrors `_site/` into a GitHub Pages repo (adding `.nojekyll`, since Jekyll would skip `.well-known` and `_`-prefixed files). The Pages repo is fully managed by CI: anything else in it is removed. It runs when:
+This repo no longer deploys the site; it ships a **generator kit** that `web-writings` uses to build and publish the content. On `master`, CI publishes a rolling `latest` release containing the `site` executable plus `templates/` and `assets/` (`site-kit.tar.gz` + a checksum); `notify-content.yml` then dispatches a `kit-released` event to `web-writings`.
 
-- this repo is pushed on `master`,
-- the content repo is pushed on `master` (`web-writings` has `.github/workflows/notify-site.yml`, which sends a `content-updated` event here),
-- on the 1st of every month (06:00 UTC), and
-- you start it by hand (Actions, Run workflow).
+`web-writings` (`.github/workflows/ci.yml`) downloads the kit, builds its own content (`CONTENT_DIR=.`, `SITE_DOMAIN` set per target), runs the checks, and deploys:
+
+- **gamma** — `web-writings`' own GitHub Pages (`mathiassm.github.io/web-writings`), on pushes to `new`.
+- **prod** — `mathiassm.github.io` (custom domain `mathiassm.dev`), on pushes to `master`.
+
+The domain each build uses is set at build time via the `SITE_DOMAIN` environment variable (see `src/MathiasSM/Config.hs`).
 
 One-time setup:
 
-1. In the Pages repo, enable GitHub Pages ("Deploy from a branch", its default branch). `CNAME` is part of the output.
-2. In this repo (Settings, Secrets and variables, Actions): the **variable** `DEPLOY_REPOSITORY` (`owner/name` of the Pages repo) and the **secret** `DEPLOY_TOKEN`, a fine-grained token with *Contents: read and write* on the Pages repo and *Contents: read* on `MathiasSM/web-writings`.
-3. In `web-writings`: the **secret** `SITE_DISPATCH_TOKEN`, a fine-grained token with *Contents: read and write* on `MathiasSM/hakyll-site` (GitHub requires that to send a dispatch event).
+1. In this repo: the **secret** `WEB_WRITINGS_DISPATCH_TOKEN`, a fine-grained token with *Contents: read and write* on `MathiasSM/web-writings` (used by `notify-content.yml`).
+2. In `web-writings`: enable GitHub Pages ("GitHub Actions"), create the `prod` environment, and add the **secret** `DEPLOY_TOKEN` (write on `MathiasSM/mathiassm.github.io`).
 
-Until `DEPLOY_REPOSITORY` and `DEPLOY_TOKEN` exist, the deploy steps are skipped with a warning and everything else still runs. GitHub disables scheduled workflows in a public repo after 60 days without repository activity; a push re-enables them.
+The `prod` environment and `DEPLOY_TOKEN` gate the real deployment. GitHub disables scheduled workflows in a public repo after 60 days without repository activity; a push re-enables them.
 
 ## Format and lint
 

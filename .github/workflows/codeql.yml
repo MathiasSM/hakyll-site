@@ -1,0 +1,37 @@
+# CodeQL code scanning for GitHub Actions workflows.
+name: CodeQL
+
+on:
+  push:
+    branches: [master, new]
+  pull_request:
+    branches: [master, new]
+  schedule:
+    - cron: "0 3 * * 0" # weekly
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # NOTE: CodeQL does NOT support Haskell as of writing
+        language: [actions]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4

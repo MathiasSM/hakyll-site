@@ -29,9 +29,12 @@ module MathiasSM.Config (
   postTemplate,
 ) where
 
+import Data.Maybe (fromMaybe)
 import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
+import System.Environment (lookupEnv)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
+import System.IO.Unsafe (unsafePerformIO)
 
 -- | Site-wide information, exposed to templates as @site-name@, @site-description@, ...
 siteName, siteDescription, siteAuthor, siteCopyrightYear :: String
@@ -40,9 +43,14 @@ siteDescription = "Software Development Engineer"
 siteAuthor = "Mathias San Miguel"
 siteCopyrightYear = "2013"
 
--- | The site's domain, without scheme
+-- | The site's domain, without scheme.
+--
+-- Overridable at build time via the @SITE_DOMAIN@ environment variable (CI uses
+-- this to build the gamma/preview deployment on a different domain). Read once,
+-- when the site executable starts.
+{-# NOINLINE siteDomain #-}
 siteDomain :: String
-siteDomain = "mathiassm.dev"
+siteDomain = fromMaybe "mathiassm.dev" (unsafePerformIO (lookupEnv "SITE_DOMAIN"))
 
 -- | Public origin of the site, without trailing slash
 baseUrl :: String
@@ -60,9 +68,14 @@ siteConfiguration = defaultConfiguration{ignoreFile = ignore}
  where
   ignore path = takeFileName path /= ".well-known" && ignoreFile defaultConfiguration path
 
--- | Where the content repo is cloned (git-ignored): pages/, projects/, tables/, and one folder per post group
+-- | Where the content lives: pages/, projects/, tables/, and one folder per post group.
+--
+-- Overridable at build time via the @CONTENT_DIR@ environment variable
+-- (web-writings builds with @CONTENT_DIR=.@ so it compiles its own checkout
+-- directly). Read once, when the site executable starts.
+{-# NOINLINE contentDir #-}
 contentDir :: FilePath
-contentDir = "content"
+contentDir = fromMaybe "content" (unsafePerformIO (lookupEnv "CONTENT_DIR"))
 
 -- | Site-owned files: `css/`, `images/`, and `static/` (published at the site root as is)
 assetsDir :: FilePath

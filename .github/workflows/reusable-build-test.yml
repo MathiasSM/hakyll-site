@@ -1,0 +1,91 @@
+name: Build & Test (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      ghc-version:
+        description: "GHC version to use"
+        type: string
+        required: false
+        default: "9.10.3"
+      cabal-version:
+        description: "cabal-install version to use"
+        type: string
+        required: false
+        default: "3.14"
+
+jobs:
+  build:
+    name: Cabal
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: haskell-actions/setup@v2
+        id: setup
+        with:
+          ghc-version: ${{ inputs.ghc-version }}
+          cabal-version: ${{ inputs.cabal-version }}
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          cabal install hpc-codecov
+
+      - name: Configure the build
+        run: |
+          cabal configure --enable-tests --enable-benchmarks --disable-documentation
+          cabal build all --dry-run
+
+      - name: Restore cached dependencies
+        uses: actions/cache@v4
+        id: cache-cabal
+        env:
+          key: ${{ runner.os }}-ghc-${{ inputs.ghc-version }}-${{ steps.setup.outputs.cabal-version }}
+        with:
+          path: ${{ steps.setup.outputs.cabal-store }}
+          key: ${{ env.key }}-plan-${{ hashFiles('**/plan.json') }}
+          restore-keys: ${{ env.key }}-
+
+      - name: Install dependencies
+        if: ${{ steps.cache-cabal.outputs.cache-hit != 'true' }}
+        # If we had an exact cache hit, the dependencies will be up to date.
+        run: cabal build all --only-dependencies
+
+      - name: Build
+        run: |
+          cabal build all
+          cp "$(cabal list-bin exe:site)" artifact-executable
+
+      - name: Upload executable as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifact-executable
+          name: artifact-executable
+
+      - name: Run unit tests
+        run: cabal test spec --enable-coverage
+
+      - name: Transform coverage file
+        run: hpc-codecov cabal:spec -f cobertura -o cobertura.xml
+
+      - name: Run snapshot tests
+        run: cabal test snapshot
+
+      - name: Upload coverage report
+        uses: actions/upload-code-coverage@v1
+        with:
+          file: cobertura.xml
+          language: Haskell
+          label: code-coverage/cabal
+
+      - name: Build documentation
+        run: |
+          cabal haddock all
+
+      - name: Upload documentation as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: artifact-docs
+          path: artifact-docs
