@@ -1,4 +1,4 @@
--- | The site's Hakyll rules, shared by the @site@ executable and the snapshot test
+-- | The site's Hakyll rules, shared by the @site@ executable and the golden test
 module MathiasSM.Site (rules) where
 
 import Hakyll (Rules, compile, match, templateBodyCompiler)
@@ -14,13 +14,13 @@ import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
 
 rules :: Rules ()
 rules = do
-  match "templates/*" $ compile templateBodyCompiler
-  validateHobbyPages
-  validateNavEntries
-  processAssets
-  mapM_ (processPage . page) (standalonePages <> ["_test"])
-  processShowcase showcaseName
-  mapM_ processPostGroup postGroups
-  processFeeds
-  processSitemap
-  processRedirects
+    match "templates/*" $ compile templateBodyCompiler
+    validateHobbyPages
+    validateNavEntries
+    processAssets
+    mapM_ (processPage . page) (standalonePages <> ["_test"])
+    processShowcase showcaseName
+    mapM_ processPostGroup postGroups
+    processFeeds
+    processSitemap
+    processRedirects

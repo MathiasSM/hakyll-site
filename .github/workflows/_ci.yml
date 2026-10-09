@@ -1,0 +1,89 @@
+# Verify, test, and ship the site generator.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  lint:
+    uses: ./.github/workflows/hlint.yml
+    permissions:
+      security-events: write
+
+  format:
+    uses: ./.github/workflows/fourmolu.yml
+    with:
+      fourmolu-version: ${{ vars.FOURMOLU_VERSION }}
+
+  build:
+    uses: ./.github/workflows/build-test.yml
+    with:
+      ghc-version: ${{ vars.GHC_VERSION }}
+      cabal-version: ${{ vars.CABAL_VERSION }}
+
+  release:
+    if: github.ref == 'refs/heads/new'
+    needs: [build, format, lint]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: artifact-executable
+
+      - name: Assemble the kit
+        run: |
+          chmod +x artifact-executable
+          mkdir -p kit
+          cp artifact-executable kit/site
+          cp -r templates kit/
+          cp -r assets kit/
+          tar -czf site-kit.tar.gz -C kit .
+          sha256sum site-kit.tar.gz > site-kit.tar.gz.sha256
+
+      - name: Publish rolling release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest \
+            --title "latest" \
+            --target "$GITHUB_SHA" \
+            --notes "site-generator: \`site\` executable + templates + assets" \
+            site-kit.tar.gz site-kit.tar.gz.sha256
+
+  deploy-docs:
+    if: github.ref_name == 'new'
+    needs: [build, release]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: artifact-docs
+          path: artifact-docs
+      - run: ls -R .
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: artifact-docs
+      - id: deployment
+        uses: actions/deploy-pages@v5

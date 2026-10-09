@@ -1,0 +1,48 @@
+# OpenSSF Scorecard: security posture for the repository.
+name: OpenSSF Scorecard
+
+on:
+  branch_protection_rule:
+  push:
+    branches: [master]
+  schedule:
+    - cron: "0 2 * * 0" # weekly
+
+permissions:
+  contents: read
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    if: github.event.repository.default_branch == github.ref_name || github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      # Needed to publish results to the Scorecard API and upload SARIF.
+      security-events: write
+      id-token: write
+      # Recommended reads for private repos to avoid GraphQL/SAST gaps
+      issues: read
+      pull-requests: read
+      checks: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run analysis
+        uses: ossf/scorecard-action@v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+
+      - name: Upload to code scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: results.sarif

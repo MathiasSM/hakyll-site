@@ -1,0 +1,20 @@
+name: Notify content repo
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger web-writings deployment
+        env:
+          GH_TOKEN: ${{ secrets.WEB_WRITINGS_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/MathiasSM/web-writings/dispatches \
+            -f event_type=kit-released \
+            -f "client_payload[tag]=${{ github.event.release.tag_name }}"

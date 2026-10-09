@@ -1,127 +1,60 @@
 # Mathias' personal site
+[![License](https://badgen.net/github/license/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+[![Top language](https://img.shields.io/github/languages/top/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
 
 [![CI](https://github.com/MathiasSM/hakyll-site/actions/workflows/ci.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/ci.yml)
-
-![](https://badgen.net/badge/:subject/:status/:color?icon=github)
-
-![](https://badgen.net/github/license/MathiasSM/hakyll-site)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/lint)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/format)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/build)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/build-site)
-![](https://badgen.net/github/checks/MathiasSM/hakyll-site/ci/deploy)
-![](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)
-![](https://badgen.net/codecov/github/MathiasSM/hakyll-site)
+[![CodeQL](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml)
+[![Dependabot](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/MathiasSM/hakyll-site/badge)](https://scorecard.dev/viewer/?uri=github.com/MathiasSM/hakyll-site)
 
 ## Setup
 
-1. Install ghcup (e.g. using `mise use -g ghcup`)
-2. Use ghcup to install `ghc`, `cabal`, possibly `hls`.
+1. Install ImageMagick (e.g. via `sudo apt instal imagemagick`).
+2. Install ghcup (e.g. using `mise use -g ghcup`).
+3. Use ghcup to install `ghc`, `cabal` (both required), `hls`, `fourmolu`, `hlint` (optional).
+  - Remember to `ghcup set <TOOL>` (in particular, you might need to `ghcup set cabal 3.14` because of hlint support)
 
 ## Build
 
-1. The content lives on a different git repo (see [Content](#content)).
-  - Clone it inside as `content/` (git-ignored): `git clone git@github.com:MathiasSM/web-writings.git content`
-2. `cabal build`
-3. `cabal exec site <CMD>`; these are hakyll commands
+1. `cabal build`: First time will take a while, but dependencies won't need to recompile often.
+
+## Format and lint
+
+Either
+
+- Via your editor (in my case, NeoVim's lsp registering the installed `hls`, `hlint` and `fourmolu`).
+- Calling the exeutables directly over `app/`, `src/`, `test/`.
+
+## Test
+
+1. `cabal test` runs all tests (unit + golden).
+  - Unit tests only: `cabal test --test-options='-p unit'`
+  - Golden tests only: `cabal test --test-options='-p golden'`
+  - Golden files are stored in `test/golden`
+  - Updating golden files: `cabal test --test-options='-p golden --accept'`
+
+## CI
+
+Configured via Github Actions within `.github` directory.
+
+- `_ci.yml` holds the main CI logic, while other files are either reusable pieces or workflows triggered separatedly. 
+- `notify-content.yml` announces a newly published kit to `web-writings` so it can rebuild and deploy. TODO: Can the content repo listen to this repo instead of this repo having to send a message?
+- Github doesn't support Haskell dependencies, so most dependency checks are focused on actions dependencies.
+
+## Deployment
+
+This project "deploys" as a release, via the CI workflow. Content repos can pull the latest release and execute it against their files. The release includes both the executable (not statically linked as of writing), as well as templates and assets.
+
+## Content-agnostic repo (some day...)
+
+The idea is for this repo to be content-agnostic, but the current customizations _require_ some minimum structure documented in `src/MathiasSM/Config.hs`'s `requiredContent`. Missing files will fail the site build.
+
+## Execution: Site build
+
+1. `cabal exec site <CMD>`:
   - `cabal exec site build` (generate site)
   - `cabal exec site clean` (cleanup and remove cache)
   - `cabal exec site rebuild` (clean and build again)
   - `cabal exec site server` (run server on what's built)
   - `cabal exec site watch` (recompile server)
-  - There's `-v` (verbose) and `-h` (help) flags
-
-## Test
-
-1. `cabal test spec` runs the fast unit tests (`test/`).
-2. `cabal test snapshot` builds a small fixture site (`test/fixtures/content`) in-process and compares the output with the baseline in `test/snapshot`. When a change to the output is intended, review the diff and run `cabal test snapshot --test-options=--update`. (Needs ImageMagick, like the build itself.) The two suites are independent: bare `cabal test` runs both, but each can be run on its own.
-
-CI (`.github/workflows/ci.yml`) builds and tests every pushed branch: build, `cabal test spec`, `cabal test snapshot`, `scripts/format --check` and `hlint`. It needs `ghc 9.10.3`, `cabal >= 3.14` and ImageMagick, and pins fourmolu 0.20.1.0 and hlint 3.10.
-
-## Deploying
-
-On `master` the same workflow also publishes the site: it checks out the content repo into `content/`, runs `site build`, and mirrors `_site/` into a GitHub Pages repo (adding `.nojekyll`, since Jekyll would skip `.well-known` and `_`-prefixed files). The Pages repo is fully managed by CI: anything else in it is removed. It runs when:
-
-- this repo is pushed on `master`,
-- the content repo is pushed on `master` (`web-writings` has `.github/workflows/notify-site.yml`, which sends a `content-updated` event here),
-- on the 1st of every month (06:00 UTC), and
-- you start it by hand (Actions, Run workflow).
-
-One-time setup:
-
-1. In the Pages repo, enable GitHub Pages ("Deploy from a branch", its default branch). `CNAME` is part of the output.
-2. In this repo (Settings, Secrets and variables, Actions): the **variable** `DEPLOY_REPOSITORY` (`owner/name` of the Pages repo) and the **secret** `DEPLOY_TOKEN`, a fine-grained token with *Contents: read and write* on the Pages repo and *Contents: read* on `MathiasSM/web-writings`.
-3. In `web-writings`: the **secret** `SITE_DISPATCH_TOKEN`, a fine-grained token with *Contents: read and write* on `MathiasSM/hakyll-site` (GitHub requires that to send a dispatch event).
-
-Until `DEPLOY_REPOSITORY` and `DEPLOY_TOKEN` exist, the deploy steps are skipped with a warning and everything else still runs. GitHub disables scheduled workflows in a public repo after 60 days without repository activity; a push re-enables them.
-
-## Format and lint
-
-1. Install the tools once (e.g. `ghcup install fourmolu` and `ghcup install hlint`, or `cabal install fourmolu hlint`).
-2. `scripts/format` formats the Haskell sources (fourmolu, configured in `fourmolu.yaml`); `scripts/format --check` only checks, and fails with a diff if something would change.
-3. `hlint app src test test-snapshot` lints them; it should report no hints.
-
-## Content
-
-The `content/` folder is its own git repo (`web-writings`), ignored by this one:
-
-```
-content/
-  pages/       standalone pages: about, contact, 404, showcase, and one index page per post group
-  projects/    one markdown file per showcase project (front matter only)
-  tables/      hobbies.tsv, socials.tsv, experience.tsv
-  blog/        posts
-  creative-writing/  posts
-```
-
-The build stops with a list of anything missing from this set (see `requiredContent` in `src/MathiasSM/Config.hs`).
-
-### Pages (`pages/<name>.md`)
-
-Registered by name in `app/Main.hs` (`standalonePages`) and routed by their `path:`: `/contact` becomes `contact/index.html`, and a path with an extension, like `/404.html`, is kept as is.
-
-| Key | Required | Meaning |
-| --- | --- | --- |
-| `title` | yes | Page title. |
-| `path` | yes | Public URL (e.g. `/contact`). |
-| `nav` | no | Puts the page in the site menu with this label (HTML allowed, e.g. `'<i>Es</i>critos'`). Needs `navOrder`. |
-| `navOrder` | with `nav` | Position in the menu, lowest first. |
-| `aliases` | no | Old paths that redirect here (a list like `["/old-name"]`, or a single string). Each must start with `/`; collisions with other pages fail the build. |
-| `description` | no | Summary shown on the page and in `<meta name="description">`. |
-| `type` | no | Kind of page (currently `page`). |
-| `language` | no | `en` (default), `es` or `jp`. |
-| `home` | no | `true` for the home page; gives it top sitemap priority. |
-| `templated` | no | `true` to allow template syntax (`$for(...)$`, `$partial(...)$`) in the body. |
-| `shareTitle` | no | Title used for social sharing cards (falls back to `title`). |
-| `shareDescription` | no | Description for social sharing cards (falls back to `description`). |
-
-### Posts (`blog/`, `creative-writing/`)
-
-Each group `<g>` needs an index page `pages/<g>.md`. Every file in a group is published unless marked `draft: true`, and the build fails (naming the file and every problem) if its front matter is invalid. Each hobby listed in `tables/hobbies.tsv` needs a blog post whose `path:` equals the row's `href`.
-
-| Key | Required | Meaning |
-| --- | --- | --- |
-| `title` | yes | Post title. |
-| `date` | yes | Publication date, `YYYY-MM-DD`. |
-| `path` | yes | Public URL (e.g. `/blog/my-post`). |
-| `aliases` | no | Old paths that redirect here (a list like `["/old-name"]`, or a single string). Each must start with `/`; collisions with other pages fail the build. |
-| `language` | no | `en` (default), `es` or `jp`. Anything else fails the build. |
-| `lastModifiedAt` | no | Last edit date, `YYYY-MM-DD`. |
-| `draft` | no | `true` to leave the post out of the site (and skip validation) while it's in progress. |
-| `description`, `TOC`, `project` | no | Passed through to templates. |
-
-### Projects (`projects/<name>.yaml`)
-
-One YAML file per project, listed on `/showcase` (no front matter fences, no body). A missing or invalid key fails the build, naming the file. Order: projects with a `priority` first (lowest number first), then the rest, newest `startDate` first.
-
-| Key | Required | Meaning |
-| --- | --- | --- |
-| `title` | yes | Project name. |
-| `href` | yes | Link target of the project card (`#` for none). |
-| `startDate` | yes | Start date, `YYYY-MM-DD`; shown as "Started on". |
-| `status` | yes | Shown as a badge: `ongoing`, `finished`, `alpha`, `unmaintained`. |
-| `shortDescription` | yes | One-line summary. |
-| `longDescription` | yes | Longer summary. |
-| `endDate` | no | End date, `YYYY-MM-DD`; shown as "Finished". |
-| `team` | no | List of collaborators. |
-| `priority` | no | Whole number; lower numbers come first. |
+  - `cabal exec site check` (check the built html for broken links)

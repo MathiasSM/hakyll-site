@@ -2,20 +2,20 @@ module MathiasSM.MetadataSpec (tests) where
 
 import Data.List (nub)
 import MathiasSM.Metadata (Key (..), keyName)
-import Support
-import Test.HUnit
+import Test.Tasty (TestTree, testGroup)
+import Test.Tasty.HUnit (testCase, (@?=))
 
-tests :: Test
+tests :: TestTree
 tests =
-  group
-    "Metadata"
-    [ group
-        "keyName"
-        [ it "spells keys as they appear in front matter" $
-            map keyName [Title, StartDate, ShortDescription, TOC]
-              ~?= ["title", "startDate", "shortDescription", "TOC"]
-        , it "gives every key a different spelling" $
-            let spellings = map keyName [minBound .. maxBound]
-             in length (nub spellings) ~?= length spellings
+    testGroup
+        "Metadata"
+        [ testGroup
+            "keyName"
+            [ testCase "spells keys as they appear in front matter" $
+                map keyName [Title, StartDate, ShortDescription, TOC]
+                    @?= ["title", "startDate", "shortDescription", "TOC"]
+            , testCase "gives every key a different spelling" $
+                let spellings = map keyName [minBound .. maxBound]
+                 in length (nub spellings) @?= length spellings
+            ]
         ]
-    ]

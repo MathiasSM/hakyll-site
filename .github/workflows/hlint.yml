@@ -1,0 +1,16 @@
+# Reusable lint job: runs HLint and uploads the result to GitHub code scanning.
+name: Lint (reusable)
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: HLint Scan
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload results to GitHub code scanning.
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: haskell-actions/hlint-scan@v1

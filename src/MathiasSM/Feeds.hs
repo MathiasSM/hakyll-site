@@ -11,13 +11,13 @@ import MathiasSM.Metadata (Key (Description, Path, Title), lookupKey)
 import System.FilePath.Posix (takeDirectory, (</>))
 
 data Feed = Feed
-  { feedGroup :: String
-  , feedTitle :: String
-  , feedDescription :: String
-  , feedFile :: FilePath
-  -- ^ Output file, relative to the site root (e.g. @blog/atom.xml@)
-  }
-  deriving (Eq, Show)
+    { feedGroup :: String
+    , feedTitle :: String
+    , feedDescription :: String
+    , feedFile :: FilePath
+    -- ^ Output file, relative to the site root (e.g. @blog/atom.xml@)
+    }
+    deriving (Eq, Show)
 
 -- | Where the feed is served from
 feedHref :: Feed -> String
@@ -30,28 +30,28 @@ takes its title and description from that page.
 -}
 feeds :: (MonadMetadata m) => m (Either [String] [Feed])
 feeds = collect <$> mapM feedOf postGroups
- where
-  collect results = case lefts results of
-    [] -> Right (rights results)
-    problems -> Left problems
+  where
+    collect results = case lefts results of
+        [] -> Right (rights results)
+        problems -> Left problems
 
 feedOf :: (MonadMetadata m) => String -> m (Either String Feed)
 feedOf group = do
-  indexPages <- getMatches (pagesPattern group)
-  case indexPages of
-    [] -> pure $ Left $ "no index page for the group " ++ group
-    page : _ -> do
-      metadata <- getMetadata page
-      pure $ case lookupKey Path metadata of
-        Nothing -> Left $ toFilePath page ++ ": needs a `path:` for the feed"
-        Just path ->
-          Right
-            Feed
-              { feedGroup = group
-              , feedTitle = fromMaybe group (lookupKey Title metadata) ++ " - " ++ siteName
-              , feedDescription = fromMaybe "" (lookupKey Description metadata)
-              , feedFile = takeDirectory (outputPath path) </> "atom.xml"
-              }
+    indexPages <- getMatches (pagesPattern group)
+    case indexPages of
+        [] -> pure $ Left $ "no index page for the group " ++ group
+        page : _ -> do
+            metadata <- getMetadata page
+            pure $ case lookupKey Path metadata of
+                Nothing -> Left $ toFilePath page ++ ": needs a `path:` for the feed"
+                Just path ->
+                    Right
+                        Feed
+                            { feedGroup = group
+                            , feedTitle = fromMaybe group (lookupKey Title metadata) ++ " - " ++ siteName
+                            , feedDescription = fromMaybe "" (lookupKey Description metadata)
+                            , feedFile = takeDirectory (outputPath path) </> "atom.xml"
+                            }
 
 {- | Makes a root-relative URL (`/contact`) absolute, as feed readers have no page to resolve it against.
 
@@ -59,5 +59,5 @@ Anything else (full URLs, `//host`, `#anchor`, `mailto:`, relative paths) is lef
 -}
 absoluteUrl :: String -> String -> String
 absoluteUrl root url
-  | "/" `isPrefixOf` url && not ("//" `isPrefixOf` url) = root ++ url
-  | otherwise = url
+    | "/" `isPrefixOf` url && not ("//" `isPrefixOf` url) = root ++ url
+    | otherwise = url
