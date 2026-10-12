@@ -25,6 +25,7 @@ data Key
     | HideDescription
     | Home
     | Href
+    | Index
     | Language
     | LastModifiedAt
     | LongDescription
@@ -57,6 +58,7 @@ keyName key = case key of
     HideDescription -> "hideDescription"
     Home -> "home"
     Href -> "href"
+    Index -> "index"
     Language -> "language"
     LastModifiedAt -> "lastModifiedAt"
     LongDescription -> "longDescription"

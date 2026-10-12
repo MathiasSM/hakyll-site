@@ -1,5 +1,6 @@
 ---
 title: "Blog"
+index: true
 description: "Fixture blog index."
 type: page
 path: "/blog"

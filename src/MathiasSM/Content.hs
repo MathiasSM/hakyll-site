@@ -8,6 +8,7 @@ module MathiasSM.Content (
     Project (..),
     NavEntry (..),
     isDraft,
+    isIndex,
     aliasesOf,
     parseAliasesYaml,
     parsePost,
@@ -128,6 +129,10 @@ languageOf o = fromMaybe En <$> optional o K.Language
 -- | Whether an item is marked `draft: true`, and so left out of the site
 isDraft :: Metadata -> Bool
 isDraft o = runCheck (optional o K.Draft) == Right (Just True)
+
+-- | Whether an item is a group index page (`index: true` in its front matter)
+isIndex :: Metadata -> Bool
+isIndex o = runCheck (optional o K.Index) == Right (Just True)
 
 {- | Old paths an item should redirect from (`aliases: [/old]`, or a single `aliases: /old`)
 

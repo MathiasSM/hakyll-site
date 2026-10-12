@@ -16,7 +16,7 @@ Runs when the rules are set up, not for every page that lists the hobbies.
 validateHobbyPages :: SiteConfig -> Rules ()
 validateHobbyPages cfg = do
     table <- preprocess $ readFile $ toFilePath (hobbiesTable cfg)
-    posts <- getAllMetadata $ postsPattern cfg "blog"
+    posts <- getAllMetadata $ postsPattern cfg "*"
     let paths = [path | (_, metadata) <- posts, not (isDraft metadata), Just path <- [lookupKey Path metadata]]
         missing = missingHobbyPages (parseTsv table) paths
     unless (null missing)

@@ -9,7 +9,6 @@ module MathiasSM.Config (
     mediaDir,
     discoverPostGroups,
     showcaseName,
-    standalonePages,
     pagesPattern,
     postsPattern,
     postSnapshot,
@@ -92,38 +91,29 @@ assetsDir = "assets"
 mediaDir :: SiteConfig -> FilePath
 mediaDir cfg = contentDir cfg </> "media"
 
--- | The post groups found under @dir@: every directory other than the known non-group folders
+-- | The post groups: the directories under @dir/writings/@
 discoverPostGroups :: FilePath -> IO [String]
 discoverPostGroups dir = do
-    entries <- listDirectory dir
-    sort <$> filterM isGroup entries
-  where
-    isGroup name = do
-        isDir <- doesDirectoryExist (dir </> name)
-        pure (isDir && name `notElem` nonGroupDirs)
-    nonGroupDirs = ["pages", "projects", "tables", "config", "media", ".git", ".github"]
+    let writingsDir = dir </> "writings"
+    entries <- listDirectory writingsDir
+    sort <$> filterM (doesDirectoryExist . (writingsDir </>)) entries
 
 -- | Name of the page listing the projects in content/projects
 showcaseName :: String
 showcaseName = "showcase"
 
--- | Plain pages, each content/pages/<name>.*, routed by its `path:`
-standalonePages :: [String]
-standalonePages = ["about", "contact", "404"]
-
 -- | Files the site cannot build without, relative to the repo root
 requiredContent :: SiteConfig -> [FilePath]
 requiredContent cfg =
-    [contentDir cfg </> "pages" </> name <.> "md" | name <- standalonePages <> [showcaseName] <> postGroups cfg]
-        <> [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
+    [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
 
--- | Standalone page named @name@
+-- | A standalone page or group index page (a flat file under `writings/`) named @name@
 pagesPattern :: SiteConfig -> String -> Pattern
-pagesPattern cfg name = fromString $ contentDir cfg </> "pages" </> name <.> "*"
+pagesPattern cfg name = fromString $ contentDir cfg </> "writings" </> name <.> "*"
 
 -- | Items of a post group
 postsPattern :: SiteConfig -> String -> Pattern
-postsPattern cfg group = fromString $ contentDir cfg </> group </> "**"
+postsPattern cfg group = fromString $ contentDir cfg </> "writings" </> group </> "**"
 
 -- | The snapshot holding each published post of a group, as rendered HTML (before the page templates)
 postSnapshot :: String -> Snapshot
