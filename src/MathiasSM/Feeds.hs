@@ -29,7 +29,7 @@ Each feed lives next to the group's index page (`/blog` has `/blog/atom.xml`) an
 takes its title and description from that page.
 -}
 feeds :: (MonadMetadata m) => SiteConfig -> m (Either [String] [Feed])
-feeds cfg = collect <$> mapM (feedOf cfg) postGroups
+feeds cfg = collect <$> mapM (feedOf cfg) (postGroups cfg)
   where
     collect results = case lefts results of
         [] -> Right (rights results)

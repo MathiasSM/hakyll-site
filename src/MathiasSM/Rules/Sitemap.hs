@@ -21,7 +21,7 @@ processSitemap :: SiteConfig -> Rules ()
 processSitemap cfg = create ["sitemap.xml"] $ do
     route idRoute
     compile $ do
-        posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern cfg group)) postGroups
+        posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern cfg group)) (postGroups cfg)
         pages <- loadAll $ pagesPattern cfg "*"
         let allItems = return $ pages <> concat posts
             sitemapCtx = listField "entries" (minimalCtx cfg) allItems <> minimalCtx cfg

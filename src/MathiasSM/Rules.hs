@@ -22,7 +22,7 @@ rules cfg website = do
     processStaticFiles cfg website
     mapM_ (processPage cfg . page cfg) (standalonePages <> ["_test"])
     processShowcase cfg showcaseName
-    mapM_ (processPostGroup cfg) postGroups
+    mapM_ (processPostGroup cfg) (postGroups cfg)
     processFeeds cfg
     processSitemap cfg
     processRedirects cfg

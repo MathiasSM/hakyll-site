@@ -30,7 +30,7 @@ Invalid aliases fail the build.
 -}
 processRedirects :: SiteConfig -> Rules ()
 processRedirects cfg = do
-    items <- concat <$> mapM getAllMetadata (pagesPattern cfg "*" : map (postsPattern cfg) postGroups)
+    items <- concat <$> mapM getAllMetadata (pagesPattern cfg "*" : map (postsPattern cfg) (postGroups cfg))
     let parsed = [(toFilePath ident, metadata, aliasesOf metadata) | (ident, metadata) <- items, not (isDraft metadata)]
         entries = [Entry file (lookupKey Path metadata) aliases | (file, metadata, Right aliases) <- parsed]
         planned = planRedirects entries
