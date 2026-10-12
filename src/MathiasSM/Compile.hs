@@ -1,23 +1,23 @@
 module MathiasSM.Compile (runPandoc, applyTemplates, finish) where
 
-import Control.Monad (foldM, (<=<))
-import Data.List (find)
+import Control.Monad (foldM, unless)
 import Data.Text qualified as T
 import Hakyll (
     Compiler,
     Context,
     Identifier,
-    Item,
+    Item (itemBody),
     defaultHakyllReaderOptions,
     defaultHakyllWriterOptions,
+    getUnderlying,
     loadAndApplyTemplate,
     relativizeUrls,
     renderPandocWithTransform,
-    withTags,
+    toFilePath,
  )
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
-import Text.HTML.TagSoup (Tag (TagOpen))
+import Text.HTML.TagSoup (Tag (TagOpen), parseTags)
 import Text.Pandoc (Inline (Link, RawInline, Str))
 import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
 import Text.Pandoc.Walk (walk)
@@ -25,11 +25,10 @@ import Text.Pandoc.Walk (walk)
 -- | Custom configuration for Pandoc
 runPandoc :: Item String -> Compiler (Item String)
 runPandoc =
-    titleToAlt
-        <=< renderPandocWithTransform
-            defaultHakyllReaderOptions
-            writerOptions
-            transforms
+    renderPandocWithTransform
+        defaultHakyllReaderOptions
+        writerOptions
+        transforms
   where
     transforms = walk processRubyText
     writerOptions =
@@ -48,30 +47,18 @@ finish context item =
         >>= relativizeUrls
         >>= cleanIndexUrls
         >>= cleanIndexHtmls
+        >>= checkImageAlts
 
-{- | Set the @alt@ of each @img@ tag to the text in its @title@ and
-remove the @title@ attribute altogether.
-
-Pandoc doesn't support specifying alt tags and captions separately,
-but it does support specifying an img tag's title. This hack lets
-me repurpose the title functionality to specify alt tags instead.
-
-Taken from
-https://github.com/TikhonJelvis/website/blob/master/website.hs
--}
-titleToAlt :: Item String -> Compiler (Item String)
-titleToAlt item = pure $ withTags fixImg <$> item
+-- | Fails the build if the page has an `img` without a non-empty `alt`
+checkImageAlts :: Item String -> Compiler (Item String)
+checkImageAlts item = do
+    ident <- getUnderlying
+    let missing = [attrs | TagOpen "img" attrs <- parseTags (itemBody item), missingAlt attrs]
+    unless (null missing) $
+        fail $ toFilePath ident ++ ": image missing a non-empty `alt`"
+    pure item
   where
-    fixImg (TagOpen "img" attributes) = TagOpen "img" $ swapTitle attributes
-    fixImg other = other
-
-    swapTitle attributes = ("alt", titleText) : clean attributes
-      where
-        clean = filter $ not . oneOf ["alt", "title"]
-        titleText = case find (oneOf ["title"]) attributes of
-            Just ("title", t) -> t
-            _ -> ""
-        oneOf atts (att, _) = att `elem` atts
+    missingAlt attrs = maybe True null (lookup "alt" attrs)
 
 {- | Change special syntax (overloading Links) into ruby-annotated text
 

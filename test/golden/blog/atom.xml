@@ -23,8 +23,11 @@
     <id>https://example.com/blog/hello</id>
     <published>2025-06-01T00:00:00Z</published>
     <updated>2025-07-02T00:00:00Z</updated>
-    <content type="html"><![CDATA[<p>First post, with an image title becoming alt:</p>
-<p><img alt="The logo" src="https://example.com/images/logo.svg" /></p>]]></content>
+    <content type="html"><![CDATA[<p>First post, with an image and its alt text:</p>
+<figure>
+<img src="https://example.com/images/logo.svg" alt="The logo" />
+<figcaption aria-hidden="true">The logo</figcaption>
+</figure>]]></content>
 </entry>
 
 </feed>

@@ -7,6 +7,6 @@ path: /blog/hello
 aliases: ["/old-hello"]
 ---
 
-First post, with an image title becoming alt:
+First post, with an image and its alt text:
 
-![](/images/logo.svg "The logo")
+![The logo](/images/logo.svg)
