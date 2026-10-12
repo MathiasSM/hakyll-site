@@ -6,6 +6,7 @@ module MathiasSM.Config (
     siteConfiguration,
     requiredContent,
     assetsDir,
+    mediaDir,
     postGroups,
     showcaseName,
     standalonePages,
@@ -77,9 +78,13 @@ siteConfiguration = defaultConfiguration{ignoreFile = ignore}
   where
     ignore path = takeFileName path /= ".well-known" && ignoreFile defaultConfiguration path
 
--- | Site-owned files: `css/`, `images/`, and `static/` (published at the site root as is)
+-- | Site-owned files: the stylesheets live here (`assets/css/`, published as `styles.css`)
 assetsDir :: FilePath
 assetsDir = "assets"
+
+-- | Where the site's media lives: `branding/`, `icons/`, `photos/` (published at `images/`)
+mediaDir :: SiteConfig -> FilePath
+mediaDir cfg = contentDir cfg </> "media"
 
 -- | Groups of posts, each with an index page (content/pages/<group>.*) and items (content/<group>/**)
 postGroups :: [String]
