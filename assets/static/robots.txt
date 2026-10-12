@@ -1,6 +1,0 @@
-User-Agent: *
-
-Disallow: /_test.html
-Disallow: /404.html
-
-Sitemap: $site-baseUrl$/sitemap.xml

@@ -6,9 +6,7 @@ import Hakyll (
     Pattern,
     Routes,
     Rules,
-    applyAsTemplate,
     compile,
-    complement,
     composeRoutes,
     compressCssCompiler,
     copyFileCompiler,
@@ -25,11 +23,9 @@ import Hakyll (
     templateBodyCompiler,
     unixFilterLBS,
     version,
-    (.&&.),
     (.||.),
  )
 import MathiasSM.Config (SiteConfig, assetsDir, tablesPattern)
-import MathiasSM.Context (minimalCtx)
 import MathiasSM.Rules.Favicon (faviconRules)
 import System.FilePath.Posix ((</>))
 
@@ -40,19 +36,9 @@ processAssets cfg = do
     processSvgImages
     processDotImages
     processFavicon
-    processStaticFiles cfg
-    processTables cfg
-
-{- | Copies files directly to output folder
-This includes those in `assets/static/`, and final versions of `assets/images/`
-Should NOT include SVGs, and unprocessed images (.dot, etc)
--}
-processStaticFiles :: SiteConfig -> Rules ()
-processStaticFiles cfg = do
     justCopy (imagesPattern ["jpg", "png", "gif"]) assetRoute
     justCopy "favicon.ico" idRoute
-    justCopy (staticPattern .&&. complement templatedStatic) staticRoute
-    processTemplatedStatic cfg
+    processTables cfg
 
 -- | Makes tables (TSV) loadable by contexts and rules; they are not routed
 processTables :: SiteConfig -> Rules ()
@@ -90,31 +76,6 @@ processFavicon :: Rules ()
 processFavicon = do
     faviconRules $ fromString $ assetsDir </> "images" </> "logo.svg"
 
-{- | Static files that mention the site's address or name; they are filled in from
-the site context (`$site-baseUrl$`, `$site-domain$`, ...) instead of copied as is
--}
-templatedStatic :: Pattern
-templatedStatic =
-    foldr1
-        (.||.)
-        [ staticFile name
-        | name <-
-            [ "CNAME"
-            , "robots.txt"
-            , "funding.json"
-            , "manifest.webmanifest"
-            , ".well-known/security.txt"
-            , ".well-known/trust.txt"
-            , ".well-known/funding-manifest-urls"
-            ]
-        ]
-
-processTemplatedStatic :: SiteConfig -> Rules ()
-processTemplatedStatic cfg = match templatedStatic $
-    version "raw" $ do
-        route staticRoute
-        compile $ getResourceString >>= applyAsTemplate (minimalCtx cfg)
-
 -- | Rule to copy static files
 justCopy :: Pattern -> Routes -> Rules ()
 justCopy something routes = match something $
@@ -123,13 +84,8 @@ justCopy something routes = match something $
         compile copyFileCompiler
 
 -- | Where the site's own files live (see 'assetsDir')
-cssFiles, staticPattern :: Pattern
+cssFiles :: Pattern
 cssFiles = fromString $ assetsDir </> "css" </> "*.css"
-staticPattern = fromString $ assetsDir </> "static" </> "**"
-
--- | A file under `assets/static/`
-staticFile :: FilePath -> Pattern
-staticFile name = fromString $ assetsDir </> "static" </> name
 
 -- | Files with one of the extensions, anywhere under `assets/images/`
 imagesPattern :: [String] -> Pattern
@@ -138,7 +94,3 @@ imagesPattern extensions = foldr1 (.||.) [fromString $ assetsDir </> "images" </
 -- | Publishes `assets/images/x` as `images/x`
 assetRoute :: Routes
 assetRoute = gsubRoute ("^" ++ assetsDir ++ "/") (const "")
-
--- | Publishes `assets/static/x` as `x`, at the site root
-staticRoute :: Routes
-staticRoute = gsubRoute ("^" ++ assetsDir ++ "/static/") (const "")

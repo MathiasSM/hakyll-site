@@ -2,6 +2,7 @@
 module MathiasSM.Config (
     SiteConfig (..),
     baseUrl,
+    mkSiteConfig,
     siteConfiguration,
     requiredContent,
     assetsDir,
@@ -26,6 +27,7 @@ where
 
 import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
+import MathiasSM.Website qualified as Web
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
 {- | Build-time site configuration, gathered once from the environment by
@@ -52,6 +54,20 @@ data SiteConfig = SiteConfig
 -- | Public origin of the site, without trailing slash
 baseUrl :: SiteConfig -> String
 baseUrl cfg = "https://" ++ siteDomain cfg
+
+-- | Builds a 'SiteConfig' from a parsed @website.yaml@ (no environment overrides)
+mkSiteConfig :: FilePath -> Web.Website -> SiteConfig
+mkSiteConfig dir website =
+    let site = Web.websiteSite website
+     in SiteConfig
+            { siteName = Web.siteName site
+            , siteDescription = Web.siteDescription site
+            , siteAuthor = Web.siteAuthor site
+            , siteCopyrightYear = Web.siteCopyrightYear site
+            , siteDomain = Web.siteDomain site
+            , twitterHandle = Web.siteTwitterHandle site
+            , contentDir = dir
+            }
 
 {- | Hakyll's defaults, except that `.well-known` folders are not ignored
 (Hakyll skips every dot-folder, but `assets/static/.well-known/` must be published)

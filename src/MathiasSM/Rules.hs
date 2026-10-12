@@ -9,14 +9,17 @@ import MathiasSM.Rules.Redirects (processRedirects)
 import MathiasSM.Rules.Showcase (processShowcase)
 import MathiasSM.Rules.SinglePages (page, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
+import MathiasSM.Rules.Static (processStaticFiles)
 import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
+import MathiasSM.Website (Website)
 
-rules :: SiteConfig -> Rules ()
-rules cfg = do
+rules :: SiteConfig -> Website -> Rules ()
+rules cfg website = do
     match "templates/*" $ compile templateBodyCompiler
     validateHobbyPages cfg
     validateNavEntries cfg
     processAssets cfg
+    processStaticFiles cfg website
     mapM_ (processPage cfg . page cfg) (standalonePages <> ["_test"])
     processShowcase cfg showcaseName
     mapM_ (processPostGroup cfg) postGroups

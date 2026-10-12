@@ -19,8 +19,9 @@ import Data.List (sort)
 import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
-import MathiasSM.Config (SiteConfig (..), siteConfiguration)
+import MathiasSM.Config (mkSiteConfig, siteConfiguration)
 import MathiasSM.Rules (rules)
+import MathiasSM.Website (loadWebsite)
 import System.Directory (
     copyFile,
     createDirectoryIfMissing,
@@ -34,19 +35,6 @@ import System.IO.Temp (createTempDirectory, getCanonicalTemporaryDirectory)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsFile, writeBinaryFile)
 
--- | A fixed, valid site config so the golden build does not depend on the environment
-testSiteConfig :: SiteConfig
-testSiteConfig =
-    SiteConfig
-        { siteName = "Example"
-        , siteDescription = "An example site"
-        , siteAuthor = "Example Author"
-        , siteCopyrightYear = "2020"
-        , siteDomain = "example.com"
-        , twitterHandle = "example"
-        , contentDir = "content"
-        }
-
 {- | Builds the fixture site in a fresh temporary directory and mirrors its
 output into a comparable snapshot. Returns the work directory and the
 snapshot directory inside it; the caller is responsible for removing the
@@ -57,6 +45,9 @@ buildSiteSnapshot root = do
     work <- getCanonicalTemporaryDirectory >>= \tmp -> createTempDirectory tmp "golden"
     let buildDir = work </> "build"
         snapshot = work </> "snapshot"
+    -- The fixture's own website.yaml drives the build, so the golden output does not depend on the environment
+    website <- loadWebsite (root </> "test" </> "fixtures" </> "content")
+    let cfg = mkSiteConfig "content" website
     createDirectoryIfMissing True buildDir
     copyTree (root </> "templates") (buildDir </> "templates")
     copyTree (root </> "assets") (buildDir </> "assets")
@@ -64,7 +55,7 @@ buildSiteSnapshot root = do
     withCurrentDirectory buildDir $ do
         -- An Error-only logger keeps the build silent on success, like the old script
         logger <- Logger.new Logger.Error
-        Commands.build RunModeNormal siteConfiguration logger (rules testSiteConfig) >>= \case
+        Commands.build RunModeNormal siteConfiguration logger (rules cfg website) >>= \case
             ExitSuccess -> pure ()
             _ -> exitFailure
     buildSnapshot (buildDir </> "_site") snapshot

@@ -26,10 +26,12 @@ Note: build commands check for required content before running.
 cli :: IO ()
 cli = do
     args <- getArgs
-    cfg <- loadSiteConfig
+    dir <- fromMaybe "content" <$> lookupEnv "CONTENT_DIR"
+    website <- Web.loadWebsite dir
+    cfg <- loadSiteConfig dir website
     -- `clean` only removes generated files, so it works without the content
     unless ("clean" `elem` args) (ensureContentExists cfg)
-    hakyllWith siteConfiguration (rules cfg)
+    hakyllWith siteConfiguration (rules cfg website)
 
 {- | Throws if the content repo is missing, or lacks a file the site needs
 
@@ -46,15 +48,14 @@ ensureContentExists cfg = do
         $ die
         $ "Missing required content:\n" ++ unlines (map ("  " ++) missing)
 
-{- | Reads the site configuration from @contentDir/website.yaml@, with each
-identity field overridable by an environment variable (e.g. @SITE_DOMAIN@ for a
-preview deployment). @CONTENT_DIR@ is the only required variable; it locates the
-content repo.
+{- | Builds the site configuration from @website.yaml@, with each identity field
+overridable by an environment variable (e.g. @SITE_DOMAIN@ for a preview
+deployment). @CONTENT_DIR@ is the only variable the builder reads directly; it
+locates the content repo.
 -}
-loadSiteConfig :: IO SiteConfig
-loadSiteConfig = do
-    dir <- fromMaybe "content" <$> lookupEnv "CONTENT_DIR"
-    site <- Web.websiteSite <$> Web.loadWebsite dir
+loadSiteConfig :: FilePath -> Web.Website -> IO SiteConfig
+loadSiteConfig dir website = do
+    let site = Web.websiteSite website
     name <- override "SITE_NAME" (Web.siteName site)
     description <- override "SITE_DESCRIPTION" (Web.siteDescription site)
     author <- override "SITE_AUTHOR" (Web.siteAuthor site)

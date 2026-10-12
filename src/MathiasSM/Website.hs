@@ -1,5 +1,20 @@
 -- | The site configuration read from @website.yaml@ in the content repo
-module MathiasSM.Website (Website (..), Site (..), loadWebsite) where
+module MathiasSM.Website (
+    Website (..),
+    Site (..),
+    Contact (..),
+    Manifest (..),
+    Funding (..),
+    FundingEntity (..),
+    FundingProject (..),
+    FundingChannel (..),
+    FundingPlan (..),
+    Security (..),
+    Robots (..),
+    Trust (..),
+    loadWebsite,
+)
+where
 
 import Control.Monad (unless)
 import Data.Aeson (FromJSON (parseJSON), withObject, (.:))
@@ -8,7 +23,7 @@ import System.Directory (doesFileExist)
 import System.Exit (die)
 import System.FilePath.Posix ((</>))
 
--- | The @site:@ section of @website.yaml@: the site's identity
+-- | The @site:@ section: the site's identity
 data Site = Site
     { siteName :: String
     , siteDescription :: String
@@ -19,8 +34,91 @@ data Site = Site
     }
     deriving (Eq, Show)
 
--- | Everything @website.yaml@ describes (identity now; more sections later)
-data Website = Website {websiteSite :: Site}
+-- | The @contact:@ section: how to reach the site owner
+data Contact = Contact
+    { contactEmail :: String
+    , contactPage :: String
+    }
+    deriving (Eq, Show)
+
+-- | The @manifest:@ section: web app manifest colours
+data Manifest = Manifest
+    { manifestBackgroundColor :: String
+    , manifestThemeColor :: String
+    }
+    deriving (Eq, Show)
+
+-- | The @funding:@ section: data behind @funding.json@
+data Funding = Funding
+    { fundingEntity :: FundingEntity
+    , fundingProjects :: [FundingProject]
+    , fundingChannels :: [FundingChannel]
+    , fundingPlans :: [FundingPlan]
+    }
+    deriving (Eq, Show)
+
+data FundingEntity = FundingEntity
+    { fundingEntityEmail :: String
+    , fundingEntityDescription :: String
+    }
+    deriving (Eq, Show)
+
+data FundingProject = FundingProject
+    { fundingProjectGuid :: String
+    , fundingProjectName :: String
+    , fundingProjectDescription :: String
+    , fundingProjectRepositoryUrl :: String
+    , fundingProjectRepositoryWellKnown :: String
+    , fundingProjectLicenses :: [String]
+    , fundingProjectTags :: [String]
+    }
+    deriving (Eq, Show)
+
+data FundingChannel = FundingChannel
+    { fundingChannelGuid :: String
+    , fundingChannelType :: String
+    , fundingChannelAddress :: String
+    , fundingChannelDescription :: String
+    }
+    deriving (Eq, Show)
+
+data FundingPlan = FundingPlan
+    { fundingPlanGuid :: String
+    , fundingPlanStatus :: String
+    , fundingPlanName :: String
+    , fundingPlanDescription :: String
+    , fundingPlanAmount :: Int
+    , fundingPlanCurrency :: String
+    , fundingPlanFrequency :: String
+    , fundingPlanChannels :: [String]
+    }
+    deriving (Eq, Show)
+
+-- | The @security:@ section: data behind @.well-known/security.txt@
+data Security = Security
+    { securityPreferredLanguages :: String
+    , securityExpires :: String
+    }
+    deriving (Eq, Show)
+
+-- | The @robots:@ section: data behind @robots.txt@
+data Robots = Robots {robotsDisallow :: [String]}
+    deriving (Eq, Show)
+
+-- | The @trust:@ section: data behind @.well-known/trust.txt@
+data Trust = Trust {trustTrainingAllowed :: String}
+    deriving (Eq, Show)
+
+-- | Everything @website.yaml@ describes
+data Website = Website
+    { websiteSite :: Site
+    , websiteContact :: Contact
+    , websiteManifest :: Manifest
+    , websiteFunding :: Funding
+    , websiteSecurity :: Security
+    , websiteRobots :: Robots
+    , websiteTrust :: Trust
+    }
     deriving (Eq, Show)
 
 instance FromJSON Site where
@@ -33,8 +131,77 @@ instance FromJSON Site where
             <*> o .: "domain"
             <*> o .: "twitterHandle"
 
+instance FromJSON Contact where
+    parseJSON = withObject "contact" $ \o ->
+        Contact <$> o .: "email" <*> o .: "page"
+
+instance FromJSON Manifest where
+    parseJSON = withObject "manifest" $ \o ->
+        Manifest <$> o .: "backgroundColor" <*> o .: "themeColor"
+
+instance FromJSON Funding where
+    parseJSON = withObject "funding" $ \o ->
+        Funding
+            <$> o .: "entity"
+            <*> o .: "projects"
+            <*> o .: "channels"
+            <*> o .: "plans"
+
+instance FromJSON FundingEntity where
+    parseJSON = withObject "funding.entity" $ \o ->
+        FundingEntity <$> o .: "email" <*> o .: "description"
+
+instance FromJSON FundingProject where
+    parseJSON = withObject "funding.project" $ \o ->
+        FundingProject
+            <$> o .: "guid"
+            <*> o .: "name"
+            <*> o .: "description"
+            <*> o .: "repositoryUrl"
+            <*> o .: "repositoryWellKnown"
+            <*> o .: "licenses"
+            <*> o .: "tags"
+
+instance FromJSON FundingChannel where
+    parseJSON = withObject "funding.channel" $ \o ->
+        FundingChannel
+            <$> o .: "guid"
+            <*> o .: "type"
+            <*> o .: "address"
+            <*> o .: "description"
+
+instance FromJSON FundingPlan where
+    parseJSON = withObject "funding.plan" $ \o ->
+        FundingPlan
+            <$> o .: "guid"
+            <*> o .: "status"
+            <*> o .: "name"
+            <*> o .: "description"
+            <*> o .: "amount"
+            <*> o .: "currency"
+            <*> o .: "frequency"
+            <*> o .: "channels"
+
+instance FromJSON Security where
+    parseJSON = withObject "security" $ \o ->
+        Security <$> o .: "preferredLanguages" <*> o .: "expires"
+
+instance FromJSON Robots where
+    parseJSON = withObject "robots" $ \o -> Robots <$> o .: "disallow"
+
+instance FromJSON Trust where
+    parseJSON = withObject "trust" $ \o -> Trust <$> o .: "trainingAllowed"
+
 instance FromJSON Website where
-    parseJSON = withObject "website" $ \o -> Website <$> o .: "site"
+    parseJSON = withObject "website" $ \o ->
+        Website
+            <$> o .: "site"
+            <*> o .: "contact"
+            <*> o .: "manifest"
+            <*> o .: "funding"
+            <*> o .: "security"
+            <*> o .: "robots"
+            <*> o .: "trust"
 
 -- | Reads and parses @<contentDir>/website.yaml@, failing with a clear message
 loadWebsite :: FilePath -> IO Website
