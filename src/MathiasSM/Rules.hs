@@ -1,8 +1,7 @@
--- | The site's Hakyll rules, shared by the @site@ executable and the golden test
-module MathiasSM.Site (rules) where
+module MathiasSM.Rules (rules) where
 
 import Hakyll (Rules, compile, match, templateBodyCompiler)
-import MathiasSM.Config (postGroups, showcaseName, standalonePages)
+import MathiasSM.Config (SiteConfig, postGroups, showcaseName, standalonePages)
 import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.Feed (processFeeds)
 import MathiasSM.Rules.PostGroup (processPostGroup)
@@ -12,15 +11,15 @@ import MathiasSM.Rules.SinglePages (page, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
 import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
 
-rules :: Rules ()
-rules = do
+rules :: SiteConfig -> Rules ()
+rules cfg = do
     match "templates/*" $ compile templateBodyCompiler
-    validateHobbyPages
-    validateNavEntries
-    processAssets
-    mapM_ (processPage . page) (standalonePages <> ["_test"])
-    processShowcase showcaseName
-    mapM_ processPostGroup postGroups
-    processFeeds
-    processSitemap
-    processRedirects
+    validateHobbyPages cfg
+    validateNavEntries cfg
+    processAssets cfg
+    mapM_ (processPage cfg . page cfg) (standalonePages <> ["_test"])
+    processShowcase cfg showcaseName
+    mapM_ (processPostGroup cfg) postGroups
+    processFeeds cfg
+    processSitemap cfg
+    processRedirects cfg

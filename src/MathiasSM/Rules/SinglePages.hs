@@ -16,7 +16,7 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
-import MathiasSM.Config (minimalTemplate, pageTemplate, pagesPattern)
+import MathiasSM.Config (SiteConfig, minimalTemplate, pageTemplate, pagesPattern)
 import MathiasSM.Context (minimalCtx)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
@@ -31,12 +31,12 @@ data Page = Page
     }
 
 -- | A page with the minimal context and no extra templates
-page :: String -> Page
-page name = Page{pageName = name, pageContext = return minimalCtx, pageTemplates = []}
+page :: SiteConfig -> String -> Page
+page cfg name = Page{pageName = name, pageContext = return (minimalCtx cfg), pageTemplates = []}
 
 -- | Processes a standalone page, routed by its `path:` front matter
-processPage :: Page -> Rules ()
-processPage Page{pageName, pageContext, pageTemplates} = match (pagesPattern pageName) $ do
+processPage :: SiteConfig -> Page -> Rules ()
+processPage cfg Page{pageName, pageContext, pageTemplates} = match (pagesPattern cfg pageName) $ do
     route $ metadataRoute pathRoute
     compile $ do
         ctx <- pageContext
@@ -45,7 +45,7 @@ processPage Page{pageName, pageContext, pageTemplates} = match (pagesPattern pag
             >>= (if templated then applyAsTemplate ctx else return)
             >>= runPandoc
             >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
-            >>= finish (navContext pageName <> ctx)
+            >>= finish (navContext cfg pageName <> ctx)
   where
     -- Pages with `templated: true` may use template syntax in their body
     isTemplated = do

@@ -25,42 +25,42 @@ import Hakyll (
     withUrls,
  )
 import MathiasSM.CleanURL (cleanIndex)
-import MathiasSM.Config (baseUrl, feedItemLimit, postSnapshot, postsPattern, siteAuthor)
+import MathiasSM.Config (SiteConfig, baseUrl, feedItemLimit, postSnapshot, postsPattern, siteAuthor)
 import MathiasSM.Content (Post (..), requirePostOf)
 import MathiasSM.Feeds (Feed (..), absoluteUrl, feeds)
 
 -- | Builds the Atom feed of every post group: its newest posts, in full
-processFeeds :: Rules ()
-processFeeds = do
-    found <- feeds
+processFeeds :: SiteConfig -> Rules ()
+processFeeds cfg = do
+    found <- feeds cfg
     case found of
         Left problems -> preprocess $ ioError $ userError $ "Invalid feeds:\n" ++ unlines (map ("  " ++) problems)
         Right all' -> forM_ all' $ \feed ->
             create [fromFilePath $ feedFile feed] $ do
                 route idRoute
                 compile $ do
-                    posts <- recentFirst =<< loadAllSnapshots (postsPattern $ feedGroup feed) (postSnapshot $ feedGroup feed)
+                    posts <- recentFirst =<< loadAllSnapshots (postsPattern cfg $ feedGroup feed) (postSnapshot $ feedGroup feed)
                     feedTemplate <- loadBody "templates/atom-feed.xml"
                     itemTemplate <- loadBody "templates/atom-item.xml"
-                    renderAtomWithTemplates feedTemplate itemTemplate (configuration feed) itemContext (take feedItemLimit posts)
+                    renderAtomWithTemplates feedTemplate itemTemplate (configuration cfg feed) (itemContext cfg) (take feedItemLimit posts)
 
-configuration :: Feed -> FeedConfiguration
-configuration feed =
+configuration :: SiteConfig -> Feed -> FeedConfiguration
+configuration cfg feed =
     FeedConfiguration
         { feedTitle = MathiasSM.Feeds.feedTitle feed
         , feedDescription = MathiasSM.Feeds.feedDescription feed
-        , feedAuthorName = siteAuthor
+        , feedAuthorName = siteAuthor cfg
         , feedAuthorEmail = ""
-        , feedRoot = baseUrl
+        , feedRoot = baseUrl cfg
         }
 
 {- | What each entry reads: its clean URL, its full text with absolute links
 (`description`, the feed templates' name for the content), and its dates
 -}
-itemContext :: Context String
-itemContext =
+itemContext :: SiteConfig -> Context String
+itemContext cfg =
     mapContext cleanIndex (urlField "url")
-        <> field "description" (return . withUrls (absoluteUrl baseUrl) . itemBody)
+        <> field "description" (return . withUrls (absoluteUrl (baseUrl cfg)) . itemBody)
         <> timestampField "published" postDate
         <> timestampField "updated" (\post -> fromMaybe (postDate post) (postLastModified post))
         <> defaultContext

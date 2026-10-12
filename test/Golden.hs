@@ -19,8 +19,8 @@ import Data.List (sort)
 import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
-import MathiasSM.Config (siteConfiguration)
-import MathiasSM.Site (rules)
+import MathiasSM.Config (SiteConfig (..), siteConfiguration)
+import MathiasSM.Rules (rules)
 import System.Directory (
     copyFile,
     createDirectoryIfMissing,
@@ -33,6 +33,19 @@ import System.FilePath (takeDirectory, takeExtension, (</>))
 import System.IO.Temp (createTempDirectory, getCanonicalTemporaryDirectory)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsFile, writeBinaryFile)
+
+-- | A fixed, valid site config so the golden build does not depend on the environment
+testSiteConfig :: SiteConfig
+testSiteConfig =
+    SiteConfig
+        { siteName = "Example"
+        , siteDescription = "An example site"
+        , siteAuthor = "Example Author"
+        , siteCopyrightYear = "2020"
+        , siteDomain = "example.com"
+        , twitterHandle = "example"
+        , contentDir = "content"
+        }
 
 {- | Builds the fixture site in a fresh temporary directory and mirrors its
 output into a comparable snapshot. Returns the work directory and the
@@ -51,7 +64,7 @@ buildSiteSnapshot root = do
     withCurrentDirectory buildDir $ do
         -- An Error-only logger keeps the build silent on success, like the old script
         logger <- Logger.new Logger.Error
-        Commands.build RunModeNormal siteConfiguration logger rules >>= \case
+        Commands.build RunModeNormal siteConfiguration logger (rules testSiteConfig) >>= \case
             ExitSuccess -> pure ()
             _ -> exitFailure
     buildSnapshot (buildDir </> "_site") snapshot

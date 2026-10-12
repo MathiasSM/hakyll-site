@@ -1,19 +1,13 @@
--- | Site-wide constants: where content lives, what groups exist, shared templates
+-- | Site-wide configuration: identity, where content lives, what groups exist, shared templates
 module MathiasSM.Config (
-    siteName,
-    siteDescription,
-    siteAuthor,
-    siteCopyrightYear,
-    siteDomain,
+    SiteConfig (..),
     baseUrl,
-    twitterHandle,
     siteConfiguration,
-    contentDir,
+    requiredContent,
     assetsDir,
     postGroups,
     showcaseName,
     standalonePages,
-    requiredContent,
     pagesPattern,
     postsPattern,
     postSnapshot,
@@ -30,37 +24,34 @@ module MathiasSM.Config (
 )
 where
 
-import Data.Maybe (fromMaybe)
 import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
-import System.Environment (lookupEnv)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
-import System.IO.Unsafe (unsafePerformIO)
 
--- | Site-wide information, exposed to templates as @site-name@, @site-description@, ...
-siteName, siteDescription, siteAuthor, siteCopyrightYear :: String
-siteName = "MathiasSM"
-siteDescription = "Software Development Engineer"
-siteAuthor = "Mathias San Miguel"
-siteCopyrightYear = "2013"
-
-{- | The site's domain, without scheme.
-
-Overridable at build time via the @SITE_DOMAIN@ environment variable (CI uses
-this to build the gamma/preview deployment on a different domain). Read once,
-when the site executable starts.
+{- | Build-time site configuration, gathered once from the environment by
+"MathiasSM.Cli". Every field maps to an environment variable; see @.env.example@
+for the names and the values they default to.
 -}
-{-# NOINLINE siteDomain #-}
-siteDomain :: String
-siteDomain = fromMaybe "mathiassm.dev" (unsafePerformIO (lookupEnv "SITE_DOMAIN"))
+data SiteConfig = SiteConfig
+    { siteName :: String
+    -- ^ Site name, exposed to templates as @site-name@
+    , siteDescription :: String
+    -- ^ Site tagline, exposed as @site-description@
+    , siteAuthor :: String
+    -- ^ Site author, exposed as @site-author@
+    , siteCopyrightYear :: String
+    -- ^ Copyright year, exposed as @site-copyrightYear@
+    , siteDomain :: String
+    -- ^ Domain without scheme, exposed as @site-domain@
+    , twitterHandle :: String
+    -- ^ Twitter handle (without @@), used for the social cards of posts
+    , contentDir :: FilePath
+    -- ^ Where the content lives: pages/, projects/, tables/, and one folder per post group
+    }
 
 -- | Public origin of the site, without trailing slash
-baseUrl :: String
-baseUrl = "https://" ++ siteDomain
-
--- | Twitter handle (without @) used for the social cards of posts
-twitterHandle :: String
-twitterHandle = "mathiassm"
+baseUrl :: SiteConfig -> String
+baseUrl cfg = "https://" ++ siteDomain cfg
 
 {- | Hakyll's defaults, except that `.well-known` folders are not ignored
 (Hakyll skips every dot-folder, but `assets/static/.well-known/` must be published)
@@ -69,16 +60,6 @@ siteConfiguration :: Configuration
 siteConfiguration = defaultConfiguration{ignoreFile = ignore}
   where
     ignore path = takeFileName path /= ".well-known" && ignoreFile defaultConfiguration path
-
-{- | Where the content lives: pages/, projects/, tables/, and one folder per post group.
-
-Overridable at build time via the @CONTENT_DIR@ environment variable
-(web-writings builds with @CONTENT_DIR=.@ so it compiles its own checkout
-directly). Read once, when the site executable starts.
--}
-{-# NOINLINE contentDir #-}
-contentDir :: FilePath
-contentDir = fromMaybe "content" (unsafePerformIO (lookupEnv "CONTENT_DIR"))
 
 -- | Site-owned files: `css/`, `images/`, and `static/` (published at the site root as is)
 assetsDir :: FilePath
@@ -97,18 +78,18 @@ standalonePages :: [String]
 standalonePages = ["about", "contact", "404"]
 
 -- | Files the site cannot build without, relative to the repo root
-requiredContent :: [FilePath]
-requiredContent =
-    [contentDir </> "pages" </> name <.> "md" | name <- standalonePages <> [showcaseName] <> postGroups]
-        <> [contentDir </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
+requiredContent :: SiteConfig -> [FilePath]
+requiredContent cfg =
+    [contentDir cfg </> "pages" </> name <.> "md" | name <- standalonePages <> [showcaseName] <> postGroups]
+        <> [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
 
 -- | Standalone page named @name@
-pagesPattern :: String -> Pattern
-pagesPattern name = fromString $ contentDir </> "pages" </> name <.> "*"
+pagesPattern :: SiteConfig -> String -> Pattern
+pagesPattern cfg name = fromString $ contentDir cfg </> "pages" </> name <.> "*"
 
 -- | Items of a post group
-postsPattern :: String -> Pattern
-postsPattern group = fromString $ contentDir </> group </> "**"
+postsPattern :: SiteConfig -> String -> Pattern
+postsPattern cfg group = fromString $ contentDir cfg </> group </> "**"
 
 -- | The snapshot holding each published post of a group, as rendered HTML (before the page templates)
 postSnapshot :: String -> Snapshot
@@ -119,18 +100,18 @@ feedItemLimit :: Int
 feedItemLimit = 20
 
 -- | All showcase projects
-projectsPattern :: Pattern
-projectsPattern = fromString $ contentDir </> "projects" </> "*.yaml"
+projectsPattern :: SiteConfig -> Pattern
+projectsPattern cfg = fromString $ contentDir cfg </> "projects" </> "*.yaml"
 
 -- | All tables (TSV)
-tablesPattern :: Pattern
-tablesPattern = fromString $ contentDir </> "tables" </> "*.tsv"
+tablesPattern :: SiteConfig -> Pattern
+tablesPattern cfg = fromString $ contentDir cfg </> "tables" </> "*.tsv"
 
 -- | Tables (TSV) read by contexts
-hobbiesTable, socialsTable, experienceTable :: Identifier
-hobbiesTable = fromFilePath $ contentDir </> "tables" </> "hobbies.tsv"
-socialsTable = fromFilePath $ contentDir </> "tables" </> "socials.tsv"
-experienceTable = fromFilePath $ contentDir </> "tables" </> "experience.tsv"
+hobbiesTable, socialsTable, experienceTable :: SiteConfig -> Identifier
+hobbiesTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "hobbies.tsv"
+socialsTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "socials.tsv"
+experienceTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "experience.tsv"
 
 -- | Templates every kind of page goes through
 siteTemplate, minimalTemplate, pageTemplate, postTemplate :: Identifier

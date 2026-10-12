@@ -9,26 +9,26 @@ import Hakyll (
     openGraphField,
     twitterCardField,
  )
-import MathiasSM.Config (twitterHandle)
+import MathiasSM.Config (SiteConfig, twitterHandle)
 import MathiasSM.Context.Feeds (feedsContext)
 import MathiasSM.Context.Language (languageContext)
 import MathiasSM.Context.Site (siteContext)
 import MathiasSM.Context.Tables (experienceContext, hobbiesContext, socialMediaContext)
 
 -- | "Minimal" context all pages should know about
-minimalCtx :: Context String
-minimalCtx =
-    siteContext
-        <> socialMediaContext
-        <> hobbiesContext
-        <> experienceContext
+minimalCtx :: SiteConfig -> Context String
+minimalCtx cfg =
+    siteContext cfg
+        <> socialMediaContext cfg
+        <> hobbiesContext cfg
+        <> experienceContext cfg
         <> languageContext
-        <> feedsContext
+        <> feedsContext cfg
         <> defaultContext
 
 -- | Sets HTML (as context) for article metadata
-postSocialTagsContext :: Context String
-postSocialTagsContext =
+postSocialTagsContext :: SiteConfig -> Context String
+postSocialTagsContext cfg =
     mconcat
         [ twitterCardField "twitter" ctx
         , openGraphField "opengraph" ctx
@@ -37,7 +37,7 @@ postSocialTagsContext =
   where
     ctx =
         mconcat
-            [ constField "twitter-creator" twitterHandle
-            , constField "twitter-site" twitterHandle
-            , minimalCtx
+            [ constField "twitter-creator" (twitterHandle cfg)
+            , constField "twitter-site" (twitterHandle cfg)
+            , minimalCtx cfg
             ]

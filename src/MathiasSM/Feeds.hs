@@ -6,7 +6,7 @@ import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Hakyll (MonadMetadata (getMatches, getMetadata), toFilePath)
 import MathiasSM.CleanURL (outputPath)
-import MathiasSM.Config (pagesPattern, postGroups, siteName)
+import MathiasSM.Config (SiteConfig, pagesPattern, postGroups, siteName)
 import MathiasSM.Metadata (Key (Description, Path, Title), lookupKey)
 import System.FilePath.Posix (takeDirectory, (</>))
 
@@ -28,16 +28,16 @@ feedHref feed = '/' : feedFile feed
 Each feed lives next to the group's index page (`/blog` has `/blog/atom.xml`) and
 takes its title and description from that page.
 -}
-feeds :: (MonadMetadata m) => m (Either [String] [Feed])
-feeds = collect <$> mapM feedOf postGroups
+feeds :: (MonadMetadata m) => SiteConfig -> m (Either [String] [Feed])
+feeds cfg = collect <$> mapM (feedOf cfg) postGroups
   where
     collect results = case lefts results of
         [] -> Right (rights results)
         problems -> Left problems
 
-feedOf :: (MonadMetadata m) => String -> m (Either String Feed)
-feedOf group = do
-    indexPages <- getMatches (pagesPattern group)
+feedOf :: (MonadMetadata m) => SiteConfig -> String -> m (Either String Feed)
+feedOf cfg group = do
+    indexPages <- getMatches (pagesPattern cfg group)
     case indexPages of
         [] -> pure $ Left $ "no index page for the group " ++ group
         page : _ -> do
@@ -48,7 +48,7 @@ feedOf group = do
                     Right
                         Feed
                             { feedGroup = group
-                            , feedTitle = fromMaybe group (lookupKey Title metadata) ++ " - " ++ siteName
+                            , feedTitle = fromMaybe group (lookupKey Title metadata) ++ " - " ++ siteName cfg
                             , feedDescription = fromMaybe "" (lookupKey Description metadata)
                             , feedFile = takeDirectory (outputPath path) </> "atom.xml"
                             }

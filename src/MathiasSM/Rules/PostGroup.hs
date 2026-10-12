@@ -16,41 +16,41 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
-import MathiasSM.Config (minimalTemplate, postSnapshot, postTemplate, postsPattern)
+import MathiasSM.Config (SiteConfig, minimalTemplate, postSnapshot, postTemplate, postsPattern)
 import MathiasSM.Content (isDraft, requirePost)
 import MathiasSM.Context (minimalCtx, postSocialTagsContext)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
 -- | Processes a group: its index page and all the item pages
-processPostGroup :: String -> Rules ()
-processPostGroup groupName = do
-    processPostGroupIndex groupName
-    processPostGroupItems groupName
+processPostGroup :: SiteConfig -> String -> Rules ()
+processPostGroup cfg groupName = do
+    processPostGroupIndex cfg groupName
+    processPostGroupItems cfg groupName
 
 -- | Builds the group index page as an archive page
-processPostGroupIndex :: String -> Rules ()
-processPostGroupIndex groupName =
-    processPage (page groupName){pageContext = getCtx groupName, pageTemplates = ["templates/with-posts.html"]}
+processPostGroupIndex :: SiteConfig -> String -> Rules ()
+processPostGroupIndex cfg groupName =
+    processPage cfg (page cfg groupName){pageContext = getCtx cfg groupName, pageTemplates = ["templates/with-posts.html"]}
 
 {- | Builds each item/post page
 
 Anything but a draft must have valid front matter, or the build fails.
 -}
-processPostGroupItems :: String -> Rules ()
-processPostGroupItems groupName =
-    matchMetadata (postsPattern groupName) (not . isDraft) $ do
+processPostGroupItems :: SiteConfig -> String -> Rules ()
+processPostGroupItems cfg groupName =
+    matchMetadata (postsPattern cfg groupName) (not . isDraft) $ do
         route $ metadataRoute pathRoute
         compile $
             requirePost
                 >> getResourceString
                 >>= runPandoc
                 >>= saveSnapshot (postSnapshot groupName)
-                >>= applyTemplates minimalCtx [minimalTemplate, postTemplate]
-                >>= finish (postSocialTagsContext <> navContext groupName <> minimalCtx)
+                >>= applyTemplates (minimalCtx cfg) [minimalTemplate, postTemplate]
+                >>= finish (postSocialTagsContext cfg <> navContext cfg groupName <> minimalCtx cfg)
 
 -- | Build context for archive page
-getCtx :: String -> Compiler (Context String)
-getCtx groupName = do
-    posts <- recentFirst =<< loadAllSnapshots (postsPattern groupName) (postSnapshot groupName)
-    return $ listField "posts" minimalCtx (return posts) <> minimalCtx
+getCtx :: SiteConfig -> String -> Compiler (Context String)
+getCtx cfg groupName = do
+    posts <- recentFirst =<< loadAllSnapshots (postsPattern cfg groupName) (postSnapshot groupName)
+    return $ listField "posts" (minimalCtx cfg) (return posts) <> minimalCtx cfg

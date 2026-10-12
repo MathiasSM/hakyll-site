@@ -1,24 +1,17 @@
 module MathiasSM.Context.Site (siteContext) where
 
 import Hakyll (Context, constField)
-import MathiasSM.Config (
-    baseUrl,
-    siteAuthor,
-    siteCopyrightYear,
-    siteDescription,
-    siteDomain,
-    siteName,
- )
+import MathiasSM.Config (SiteConfig, baseUrl, siteAuthor, siteCopyrightYear, siteDescription, siteDomain, siteName)
 
 -- | Sets site-wide information (site-<info>)
-siteContext :: Context a
-siteContext =
+siteContext :: SiteConfig -> Context a
+siteContext cfg =
     mconcat
-        [ constField "site-name" siteName
-        , constField "site-description" siteDescription
-        , constField "site-author" siteAuthor
-        , constField "site-copyrightYear" siteCopyrightYear
-        , constField "site-baseUrl" baseUrl
-        , constField "site-domain" siteDomain
-        , constField "root" baseUrl -- read by Hakyll's own social cards
+        [ constField "site-name" (siteName cfg)
+        , constField "site-description" (siteDescription cfg)
+        , constField "site-author" (siteAuthor cfg)
+        , constField "site-copyrightYear" (siteCopyrightYear cfg)
+        , constField "site-baseUrl" (baseUrl cfg)
+        , constField "site-domain" (siteDomain cfg)
+        , constField "root" (baseUrl cfg) -- read by Hakyll's own social cards
         ]

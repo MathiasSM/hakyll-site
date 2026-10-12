@@ -12,7 +12,7 @@ import Hakyll (
     version,
  )
 import MathiasSM.CleanURL (outputPath)
-import MathiasSM.Config (pagesPattern, postGroups, postsPattern)
+import MathiasSM.Config (SiteConfig, pagesPattern, postGroups, postsPattern)
 import MathiasSM.Content (aliasesOf, isDraft)
 import MathiasSM.Metadata (Key (Path), lookupKey)
 
@@ -28,9 +28,9 @@ data Entry = Entry
 
 Invalid aliases fail the build.
 -}
-processRedirects :: Rules ()
-processRedirects = do
-    items <- concat <$> mapM getAllMetadata (pagesPattern "*" : map postsPattern postGroups)
+processRedirects :: SiteConfig -> Rules ()
+processRedirects cfg = do
+    items <- concat <$> mapM getAllMetadata (pagesPattern cfg "*" : map (postsPattern cfg) postGroups)
     let parsed = [(toFilePath ident, metadata, aliasesOf metadata) | (ident, metadata) <- items, not (isDraft metadata)]
         entries = [Entry file (lookupKey Path metadata) aliases | (file, metadata, Right aliases) <- parsed]
         planned = planRedirects entries

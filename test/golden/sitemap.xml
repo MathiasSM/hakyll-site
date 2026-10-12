@@ -9,63 +9,63 @@
 >
 
   <url>
-    <loc>https://mathiassm.dev/404.html</loc>
+    <loc>https://example.com/404.html</loc>
     <lastmod></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev</loc>
+    <loc>https://example.com</loc>
     <lastmod></lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/blog</loc>
+    <loc>https://example.com/blog</loc>
     <lastmod></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/contact</loc>
+    <loc>https://example.com/contact</loc>
     <lastmod></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/escritos</loc>
+    <loc>https://example.com/escritos</loc>
     <lastmod></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/showcase</loc>
+    <loc>https://example.com/showcase</loc>
     <lastmod></lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/hobbies/drawing</loc>
+    <loc>https://example.com/hobbies/drawing</loc>
     <lastmod>2026-01-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/blog/hello</loc>
+    <loc>https://example.com/blog/hello</loc>
     <lastmod>2025-07-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://mathiassm.dev/escritos/una-noche</loc>
+    <loc>https://example.com/escritos/una-noche</loc>
     <lastmod>2024-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

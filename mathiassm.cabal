@@ -35,6 +35,7 @@ library
                   , MathiasSM.Config
                   , MathiasSM.Content
                   , MathiasSM.Feeds
+                  , MathiasSM.Filters
                   , MathiasSM.Cli
                   , MathiasSM.Context
                   , MathiasSM.Context.Feeds
@@ -52,7 +53,7 @@ library
                   , MathiasSM.Rules.Showcase
                   , MathiasSM.Rules.SinglePages
                   , MathiasSM.Rules.Sitemap
-                  , MathiasSM.Site
+                  , MathiasSM.Rules
                   , MathiasSM.Tsv
                   , MathiasSM.Validate
   other-modules: Paths_mathiassm

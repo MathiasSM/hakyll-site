@@ -13,18 +13,18 @@ import Hakyll (
     route,
  )
 import MathiasSM.CleanURL (cleanIndexHtmls)
-import MathiasSM.Config (pagesPattern, postGroups, postsPattern)
+import MathiasSM.Config (SiteConfig, pagesPattern, postGroups, postsPattern)
 import MathiasSM.Context (minimalCtx)
 
 -- | Builds sitemap.xml from the standalone pages and every post group
-processSitemap :: Rules ()
-processSitemap = create ["sitemap.xml"] $ do
+processSitemap :: SiteConfig -> Rules ()
+processSitemap cfg = create ["sitemap.xml"] $ do
     route idRoute
     compile $ do
-        posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern group)) postGroups
-        pages <- loadAll $ pagesPattern "*"
+        posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern cfg group)) postGroups
+        pages <- loadAll $ pagesPattern cfg "*"
         let allItems = return $ pages <> concat posts
-            sitemapCtx = listField "entries" minimalCtx allItems <> minimalCtx
+            sitemapCtx = listField "entries" (minimalCtx cfg) allItems <> minimalCtx cfg
         makeItem ""
             >>= loadAndApplyTemplate "templates/sitemap.xml" sitemapCtx
             >>= cleanIndexHtmls

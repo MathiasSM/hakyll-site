@@ -28,35 +28,35 @@ import Hakyll (
     (.&&.),
     (.||.),
  )
-import MathiasSM.Config (assetsDir, tablesPattern)
+import MathiasSM.Config (SiteConfig, assetsDir, tablesPattern)
 import MathiasSM.Context (minimalCtx)
 import MathiasSM.Rules.Favicon (faviconRules)
 import System.FilePath.Posix ((</>))
 
 -- | Processes all assets (images or otherwise) into final site
-processAssets :: Rules ()
-processAssets = do
+processAssets :: SiteConfig -> Rules ()
+processAssets cfg = do
     processCss
     processSvgImages
     processDotImages
     processFavicon
-    processStaticFiles
-    processTables
+    processStaticFiles cfg
+    processTables cfg
 
 {- | Copies files directly to output folder
 This includes those in `assets/static/`, and final versions of `assets/images/`
 Should NOT include SVGs, and unprocessed images (.dot, etc)
 -}
-processStaticFiles :: Rules ()
-processStaticFiles = do
+processStaticFiles :: SiteConfig -> Rules ()
+processStaticFiles cfg = do
     justCopy (imagesPattern ["jpg", "png", "gif"]) assetRoute
     justCopy "favicon.ico" idRoute
     justCopy (staticPattern .&&. complement templatedStatic) staticRoute
-    processTemplatedStatic
+    processTemplatedStatic cfg
 
 -- | Makes tables (TSV) loadable by contexts and rules; they are not routed
-processTables :: Rules ()
-processTables = match tablesPattern $ compile getResourceString
+processTables :: SiteConfig -> Rules ()
+processTables cfg = match (tablesPattern cfg) $ compile getResourceString
 
 -- | Compress all CSS as one file
 processCss :: Rules ()
@@ -109,11 +109,11 @@ templatedStatic =
             ]
         ]
 
-processTemplatedStatic :: Rules ()
-processTemplatedStatic = match templatedStatic $
+processTemplatedStatic :: SiteConfig -> Rules ()
+processTemplatedStatic cfg = match templatedStatic $
     version "raw" $ do
         route staticRoute
-        compile $ getResourceString >>= applyAsTemplate minimalCtx
+        compile $ getResourceString >>= applyAsTemplate (minimalCtx cfg)
 
 -- | Rule to copy static files
 justCopy :: Pattern -> Routes -> Rules ()

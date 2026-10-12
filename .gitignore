@@ -4,3 +4,4 @@
 /content
 /.repro
 /haddocks
+/.env
