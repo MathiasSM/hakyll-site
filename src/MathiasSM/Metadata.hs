@@ -38,6 +38,7 @@ data Key
     | ShareDescription
     | ShareTitle
     | ShortDescription
+    | Sitemap
     | StartDate
     | Status
     | Team
@@ -72,6 +73,7 @@ keyName key = case key of
     ShareDescription -> "shareDescription"
     ShareTitle -> "shareTitle"
     ShortDescription -> "shortDescription"
+    Sitemap -> "sitemap"
     StartDate -> "startDate"
     Status -> "status"
     Team -> "team"

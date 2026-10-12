@@ -9,6 +9,7 @@ module MathiasSM.Content (
     NavEntry (..),
     isDraft,
     isIndex,
+    isSitemapExcluded,
     groupOf,
     aliasesOf,
     parseAliasesYaml,
@@ -135,6 +136,10 @@ isDraft o = runCheck (optional o K.Draft) == Right (Just True)
 -- | Whether an item is a group index page (`index: true` in its front matter)
 isIndex :: Metadata -> Bool
 isIndex o = runCheck (optional o K.Index) == Right (Just True)
+
+-- | Whether an item is marked `sitemap: false`, and so left out of the sitemap
+isSitemapExcluded :: Metadata -> Bool
+isSitemapExcluded o = runCheck (optional o K.Sitemap) == Right (Just False)
 
 -- | The group an item belongs to: its `group:` front matter, or the folder it sits in under `writings/`
 groupOf :: FilePath -> Identifier -> Metadata -> Maybe String
