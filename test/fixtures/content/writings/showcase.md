@@ -1,5 +1,7 @@
 ---
 title: "Projects"
+index: true
+group: showcase
 description: "Fixture showcase."
 type: page
 path: "/showcase"

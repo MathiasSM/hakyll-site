@@ -6,8 +6,9 @@ import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Hakyll (MonadMetadata (getMatches, getMetadata), toFilePath)
 import MathiasSM.CleanURL (outputPath)
-import MathiasSM.Config (SiteConfig, pagesPattern, postGroups, siteName)
+import MathiasSM.Config (SiteConfig, pagesPattern, projectsGroup, siteName)
 import MathiasSM.Metadata (Key (Description, Path, Title), lookupKey)
+import MathiasSM.Writings (discoverGroups)
 import System.FilePath.Posix (takeDirectory, (</>))
 
 data Feed = Feed
@@ -29,7 +30,9 @@ Each feed lives next to the group's index page (`/blog` has `/blog/atom.xml`) an
 takes its title and description from that page.
 -}
 feeds :: (MonadMetadata m) => SiteConfig -> m (Either [String] [Feed])
-feeds cfg = collect <$> mapM (feedOf cfg) (postGroups cfg)
+feeds cfg = do
+    groups <- discoverGroups cfg
+    collect <$> mapM (feedOf cfg) (filter (/= projectsGroup) groups)
   where
     collect results = case lefts results of
         [] -> Right (rights results)

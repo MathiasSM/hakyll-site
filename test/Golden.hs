@@ -19,7 +19,7 @@ import Data.List (sort)
 import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
-import MathiasSM.Config (discoverPostGroups, mkSiteConfig, siteConfiguration)
+import MathiasSM.Config (mkSiteConfig, siteConfiguration)
 import MathiasSM.Rules (rules)
 import MathiasSM.Website (loadWebsite)
 import System.Directory (
@@ -45,10 +45,9 @@ buildSiteSnapshot root = do
     work <- getCanonicalTemporaryDirectory >>= \tmp -> createTempDirectory tmp "golden"
     let buildDir = work </> "build"
         snapshot = work </> "snapshot"
-    -- The fixture's own website.yaml and folders drive the build, so the golden output does not depend on the environment
+    -- The fixture's own website.yaml drives the build, so the golden output does not depend on the environment
     website <- loadWebsite (root </> "test" </> "fixtures" </> "content")
-    groups <- discoverPostGroups (root </> "test" </> "fixtures" </> "content")
-    let cfg = mkSiteConfig "content" groups website
+    let cfg = mkSiteConfig "content" website
     createDirectoryIfMissing True buildDir
     copyTree (root </> "templates") (buildDir </> "templates")
     copyTree (root </> "assets") (buildDir </> "assets")

@@ -1,20 +1,18 @@
 module MathiasSM.Rules (rules) where
 
-import Data.List (sort)
-import Hakyll (Rules, compile, getAllMetadata, match, templateBodyCompiler, toFilePath)
-import MathiasSM.Config (SiteConfig, pagesPattern, postGroups, showcaseName)
-import MathiasSM.Content (isIndex)
+import Hakyll (Rules, compile, match, templateBodyCompiler)
+import MathiasSM.Config (SiteConfig, projectsGroup)
 import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.Feed (processFeeds)
 import MathiasSM.Rules.PostGroup (processPostGroup)
 import MathiasSM.Rules.Redirects (processRedirects)
-import MathiasSM.Rules.Showcase (processShowcase)
+import MathiasSM.Rules.Showcase (processShowcaseGroup)
 import MathiasSM.Rules.SinglePages (page, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
 import MathiasSM.Rules.Static (processStaticFiles)
 import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
 import MathiasSM.Website (Website)
-import System.FilePath.Posix (takeBaseName)
+import MathiasSM.Writings (discoverGroups, discoverStandalonePages)
 
 rules :: SiteConfig -> Website -> Rules ()
 rules cfg website = do
@@ -25,20 +23,14 @@ rules cfg website = do
     processStaticFiles cfg website
     standalone <- discoverStandalonePages cfg
     mapM_ (processPage cfg . page cfg) standalone
-    processShowcase cfg showcaseName
-    mapM_ (processPostGroup cfg) (postGroups cfg)
+    groups <- discoverGroups cfg
+    mapM_ (processGroup cfg) groups
     processFeeds cfg
     processSitemap cfg
     processRedirects cfg
 
--- | The standalone pages: flat writings files that are neither group indexes nor the showcase
-discoverStandalonePages :: SiteConfig -> Rules [String]
-discoverStandalonePages cfg = do
-    pages <- getAllMetadata (pagesPattern cfg "*")
-    pure
-        $ sort
-            [ takeBaseName (toFilePath ident)
-            | (ident, metadata) <- pages
-            , not (isIndex metadata)
-            , takeBaseName (toFilePath ident) /= showcaseName
-            ]
+-- | Processes a group: posts for most groups, projects for the showcase
+processGroup :: SiteConfig -> String -> Rules ()
+processGroup cfg group
+    | group == projectsGroup = processShowcaseGroup cfg
+    | otherwise = processPostGroup cfg group

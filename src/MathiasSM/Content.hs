@@ -9,6 +9,7 @@ module MathiasSM.Content (
     NavEntry (..),
     isDraft,
     isIndex,
+    groupOf,
     aliasesOf,
     parseAliasesYaml,
     parsePost,
@@ -43,6 +44,7 @@ import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, get
 import MathiasSM.Metadata (Key, keyName)
 import MathiasSM.Metadata qualified as K
 import Prelude hiding (lookup)
+import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 
 -- | Language a page is written in
 data Language = En | Es | Jp
@@ -133,6 +135,17 @@ isDraft o = runCheck (optional o K.Draft) == Right (Just True)
 -- | Whether an item is a group index page (`index: true` in its front matter)
 isIndex :: Metadata -> Bool
 isIndex o = runCheck (optional o K.Index) == Right (Just True)
+
+-- | The group an item belongs to: its `group:` front matter, or the folder it sits in under `writings/`
+groupOf :: FilePath -> Identifier -> Metadata -> Maybe String
+groupOf contentDir ident metadata =
+    case K.lookupKey K.Group metadata of
+        Just group -> Just group
+        Nothing -> do
+            rest <- stripPrefix (addTrailingPathSeparator (contentDir </> "writings")) (toFilePath ident)
+            case break (== '/') rest of
+                (group, '/' : _) -> Just group
+                _ -> Nothing
 
 {- | Old paths an item should redirect from (`aliases: [/old]`, or a single `aliases: /old`)
 

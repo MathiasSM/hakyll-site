@@ -22,6 +22,7 @@ data Key
     | Aliases
     | Draft
     | EndDate
+    | Group
     | HideDescription
     | Home
     | Href
@@ -55,6 +56,7 @@ keyName key = case key of
     Aliases -> "aliases"
     Draft -> "draft"
     EndDate -> "endDate"
+    Group -> "group"
     HideDescription -> "hideDescription"
     Home -> "home"
     Href -> "href"

@@ -58,6 +58,7 @@ library
                   , MathiasSM.Tsv
                   , MathiasSM.Validate
                   , MathiasSM.Website
+                  , MathiasSM.Writings
   other-modules: Paths_mathiassm
   autogen-modules: Paths_mathiassm
   build-depends:    base         >= 4 && < 5

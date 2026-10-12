@@ -7,8 +7,8 @@ module MathiasSM.Config (
     requiredContent,
     assetsDir,
     mediaDir,
-    discoverPostGroups,
-    showcaseName,
+    projectsGroup,
+    writingsPattern,
     pagesPattern,
     postsPattern,
     postSnapshot,
@@ -25,12 +25,9 @@ module MathiasSM.Config (
 )
 where
 
-import Control.Monad (filterM)
-import Data.List (sort)
 import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
 import MathiasSM.Website qualified as Web
-import System.Directory (doesDirectoryExist, listDirectory)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
 {- | Build-time site configuration, gathered once from the environment by
@@ -51,18 +48,16 @@ data SiteConfig = SiteConfig
     , twitterHandle :: String
     -- ^ Twitter handle (without @@), used for the social cards of posts
     , contentDir :: FilePath
-    -- ^ Where the content lives: pages/, projects/, tables/, and one folder per post group
-    , postGroups :: [String]
-    -- ^ The post groups found under `contentDir/`
+    -- ^ Where the content lives: writings/, projects/, tables/, media/
     }
 
 -- | Public origin of the site, without trailing slash
 baseUrl :: SiteConfig -> String
 baseUrl cfg = "https://" ++ siteDomain cfg
 
--- | Builds a 'SiteConfig' from a parsed @website.yaml@ and discovered post groups (no environment overrides)
-mkSiteConfig :: FilePath -> [String] -> Web.Website -> SiteConfig
-mkSiteConfig dir groups website =
+-- | Builds a 'SiteConfig' from a parsed @website.yaml@ (no environment overrides)
+mkSiteConfig :: FilePath -> Web.Website -> SiteConfig
+mkSiteConfig dir website =
     let site = Web.websiteSite website
      in SiteConfig
             { siteName = Web.siteName site
@@ -72,7 +67,6 @@ mkSiteConfig dir groups website =
             , siteDomain = Web.siteDomain site
             , twitterHandle = Web.siteTwitterHandle site
             , contentDir = dir
-            , postGroups = groups
             }
 
 {- | Hakyll's defaults, except that `.well-known` folders are not ignored
@@ -91,21 +85,18 @@ assetsDir = "assets"
 mediaDir :: SiteConfig -> FilePath
 mediaDir cfg = contentDir cfg </> "media"
 
--- | The post groups: the directories under @dir/writings/@
-discoverPostGroups :: FilePath -> IO [String]
-discoverPostGroups dir = do
-    let writingsDir = dir </> "writings"
-    entries <- listDirectory writingsDir
-    sort <$> filterM (doesDirectoryExist . (writingsDir </>)) entries
-
--- | Name of the page listing the projects in content/projects
-showcaseName :: String
-showcaseName = "showcase"
+-- | The group whose items are the projects (its index page lists `projects/`)
+projectsGroup :: String
+projectsGroup = "showcase"
 
 -- | Files the site cannot build without, relative to the repo root
 requiredContent :: SiteConfig -> [FilePath]
 requiredContent cfg =
     [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
+
+-- | Every file under `writings/`
+writingsPattern :: SiteConfig -> Pattern
+writingsPattern cfg = fromString $ contentDir cfg </> "writings" </> "**"
 
 -- | A standalone page or group index page (a flat file under `writings/`) named @name@
 pagesPattern :: SiteConfig -> String -> Pattern

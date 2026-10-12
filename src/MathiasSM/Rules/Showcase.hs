@@ -1,4 +1,4 @@
-module MathiasSM.Rules.Showcase (processShowcase) where
+module MathiasSM.Rules.Showcase (processShowcaseGroup) where
 
 import Data.List (sortOn)
 import Hakyll (
@@ -12,22 +12,22 @@ import Hakyll (
     loadAll,
     match,
  )
-import MathiasSM.Config (SiteConfig, projectsPattern)
+import MathiasSM.Config (SiteConfig, projectsGroup, projectsPattern)
 import MathiasSM.Content (requireProject, showcaseKey)
 import MathiasSM.Context (minimalCtx)
 import MathiasSM.Context.Project (projectContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
--- | Processes the showcase: its index page and the projects it lists
-processShowcase :: SiteConfig -> String -> Rules ()
-processShowcase cfg name = do
+-- | Processes the projects group: its index page and the projects it lists
+processShowcaseGroup :: SiteConfig -> Rules ()
+processShowcaseGroup cfg = do
     processShowcaseItems cfg
-    processShowcaseIndex cfg name
+    processShowcaseIndex cfg
 
 -- | Builds the index page, listing all projects
-processShowcaseIndex :: SiteConfig -> String -> Rules ()
-processShowcaseIndex cfg name =
-    processPage cfg (page cfg name){pageContext = getProjectsCtx cfg, pageTemplates = ["templates/with-projects.html"]}
+processShowcaseIndex :: SiteConfig -> Rules ()
+processShowcaseIndex cfg =
+    processPage cfg (page cfg projectsGroup){pageContext = getProjectsCtx cfg, pageTemplates = ["templates/with-projects.html"]}
 
 {- | Compiles each project (not routed), so the index can list it
 

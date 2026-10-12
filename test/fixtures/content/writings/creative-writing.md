@@ -1,6 +1,7 @@
 ---
 title: "Escritura Creativa"
 index: true
+group: creative-writing
 description: "Fixture de escritos."
 path: "/escritos"
 nav: '<i><mark>Es</mark>critos</i>'
