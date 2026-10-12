@@ -1,9 +1,10 @@
-module MathiasSM.Rules.SinglePages (Page (..), page, processPage) where
+module MathiasSM.Rules.SinglePages (Page (..), page, processPage, pageCompiler) where
 
 import Hakyll (
     Compiler,
     Context,
     Identifier,
+    Item,
     Rules,
     applyAsTemplate,
     compile,
@@ -21,7 +22,7 @@ import MathiasSM.Context (minimalCtx)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
 
--- | A standalone page, backed by content/pages/<pageName>.* and routed by its `path:`
+-- | A standalone page, backed by content/writings/<pageName>.* and routed by its `path:`
 data Page = Page
     { pageName :: String
     , pageContext :: Compiler (Context String)
@@ -34,20 +35,24 @@ data Page = Page
 page :: SiteConfig -> String -> Page
 page cfg name = Page{pageName = name, pageContext = return (minimalCtx cfg), pageTemplates = []}
 
--- | Processes a standalone page, routed by its `path:` front matter
-processPage :: SiteConfig -> Page -> Rules ()
-processPage cfg Page{pageName, pageContext, pageTemplates} = match (pagesPattern cfg pageName) $ do
-    route $ metadataRoute pathRoute
-    compile $ do
-        ctx <- pageContext
-        templated <- isTemplated
-        getResourceString
-            >>= (if templated then applyAsTemplate ctx else return)
-            >>= runPandoc
-            >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
-            >>= finish (navContext cfg pageName <> ctx)
+-- | Compiles a standalone page's body (shared by 'processPage' and the dev example pages)
+pageCompiler :: SiteConfig -> Page -> Compiler (Item String)
+pageCompiler cfg Page{pageName, pageContext, pageTemplates} = do
+    ctx <- pageContext
+    templated <- isTemplated
+    getResourceString
+        >>= (if templated then applyAsTemplate ctx else return)
+        >>= runPandoc
+        >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
+        >>= finish (navContext cfg pageName <> ctx)
   where
     -- Pages with `templated: true` may use template syntax in their body
     isTemplated = do
         metadata <- getUnderlying >>= getMetadata
         return $ lookupKey Templated metadata == Just "true"
+
+-- | Processes a standalone page, routed by its `path:` front matter
+processPage :: SiteConfig -> Page -> Rules ()
+processPage cfg page'@Page{pageName} = match (pagesPattern cfg pageName) $ do
+    route $ metadataRoute pathRoute
+    compile $ pageCompiler cfg page'

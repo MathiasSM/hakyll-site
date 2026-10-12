@@ -1,6 +1,7 @@
 -- | Site-wide configuration: identity, where content lives, what groups exist, shared templates
 module MathiasSM.Config (
     SiteConfig (..),
+    Env (..),
     baseUrl,
     mkSiteConfig,
     siteConfiguration,
@@ -30,6 +31,10 @@ import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaul
 import MathiasSM.Website qualified as Web
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
+-- | The build environment: @Dev@ also publishes the preview pages under @/example/@
+data Env = Dev | Prod
+    deriving (Eq, Show)
+
 {- | Build-time site configuration, gathered once from the environment by
 "MathiasSM.Cli". Every field maps to an environment variable; see @.env.example@
 for the names and the values they default to.
@@ -49,6 +54,8 @@ data SiteConfig = SiteConfig
     -- ^ Twitter handle (without @@), used for the social cards of posts
     , contentDir :: FilePath
     -- ^ Where the content lives: writings/, projects/, tables/, media/
+    , siteEnv :: Env
+    -- ^ Whether this is a dev build (publishes @/example/@ preview pages)
     }
 
 -- | Public origin of the site, without trailing slash
@@ -56,8 +63,8 @@ baseUrl :: SiteConfig -> String
 baseUrl cfg = "https://" ++ siteDomain cfg
 
 -- | Builds a 'SiteConfig' from a parsed @website.yaml@ (no environment overrides)
-mkSiteConfig :: FilePath -> Web.Website -> SiteConfig
-mkSiteConfig dir website =
+mkSiteConfig :: FilePath -> Env -> Web.Website -> SiteConfig
+mkSiteConfig dir env website =
     let site = Web.websiteSite website
      in SiteConfig
             { siteName = Web.siteName site
@@ -67,6 +74,7 @@ mkSiteConfig dir website =
             , siteDomain = Web.siteDomain site
             , twitterHandle = Web.siteTwitterHandle site
             , contentDir = dir
+            , siteEnv = env
             }
 
 {- | Hakyll's defaults, except that `.well-known` folders are not ignored

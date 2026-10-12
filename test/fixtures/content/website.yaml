@@ -21,7 +21,7 @@ security:
   expires: "2027-12-31T22:59:00.000Z"
 
 robots:
-  disallow: [/_test.html, /404.html]
+  disallow: [/example, /404.html]
 
 trust:
   trainingAllowed: "no"

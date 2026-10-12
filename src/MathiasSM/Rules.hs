@@ -1,13 +1,15 @@
 module MathiasSM.Rules (rules) where
 
-import Hakyll (Rules, compile, match, templateBodyCompiler)
-import MathiasSM.Config (SiteConfig, projectsGroup)
+import Control.Monad (when)
+import Hakyll (Rules, compile, match, metadataRoute, route, templateBodyCompiler)
+import MathiasSM.CleanURL (pathRoute)
+import MathiasSM.Config (Env (Dev), SiteConfig, projectsGroup, siteEnv)
 import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.Feed (processFeeds)
 import MathiasSM.Rules.PostGroup (processPostGroup)
 import MathiasSM.Rules.Redirects (processRedirects)
 import MathiasSM.Rules.Showcase (processShowcaseGroup)
-import MathiasSM.Rules.SinglePages (page, processPage)
+import MathiasSM.Rules.SinglePages (page, pageCompiler, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
 import MathiasSM.Rules.Static (processStaticFiles)
 import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
@@ -28,9 +30,16 @@ rules cfg website = do
     processFeeds cfg
     processSitemap cfg
     processRedirects cfg
+    when (siteEnv cfg == Dev) (processExamplePages cfg)
 
 -- | Processes a group: posts for most groups, projects for the showcase
 processGroup :: SiteConfig -> String -> Rules ()
 processGroup cfg group
     | group == projectsGroup = processShowcaseGroup cfg
     | otherwise = processPostGroup cfg group
+
+-- | The dev-only preview pages under @dev/example/@, each routed by its own `path:`
+processExamplePages :: SiteConfig -> Rules ()
+processExamplePages cfg = match "dev/example/**" $ do
+    route $ metadataRoute pathRoute
+    compile $ pageCompiler cfg (page cfg "example")

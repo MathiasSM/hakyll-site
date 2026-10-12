@@ -19,7 +19,7 @@ import Data.List (sort)
 import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
-import MathiasSM.Config (mkSiteConfig, siteConfiguration)
+import MathiasSM.Config (Env (Prod), mkSiteConfig, siteConfiguration)
 import MathiasSM.Rules (rules)
 import MathiasSM.Website (loadWebsite)
 import System.Directory (
@@ -47,7 +47,7 @@ buildSiteSnapshot root = do
         snapshot = work </> "snapshot"
     -- The fixture's own website.yaml drives the build, so the golden output does not depend on the environment
     website <- loadWebsite (root </> "test" </> "fixtures" </> "content")
-    let cfg = mkSiteConfig "content" website
+    let cfg = mkSiteConfig "content" Prod website
     createDirectoryIfMissing True buildDir
     copyTree (root </> "templates") (buildDir </> "templates")
     copyTree (root </> "assets") (buildDir </> "assets")

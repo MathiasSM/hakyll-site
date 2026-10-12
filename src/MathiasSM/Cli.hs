@@ -5,7 +5,7 @@ module MathiasSM.Cli (cli) where
 import Control.Monad (filterM, unless)
 import Data.Maybe (fromMaybe)
 import Hakyll (hakyllWith)
-import MathiasSM.Config (SiteConfig (..), requiredContent, siteConfiguration)
+import MathiasSM.Config (Env (..), SiteConfig (..), requiredContent, siteConfiguration)
 import MathiasSM.Rules (rules)
 import MathiasSM.Website qualified as Web
 import System.Directory (doesDirectoryExist, doesFileExist)
@@ -56,6 +56,7 @@ locates the content repo.
 loadSiteConfig :: FilePath -> Web.Website -> IO SiteConfig
 loadSiteConfig dir website = do
     let site = Web.websiteSite website
+    env <- siteEnv <$> lookupEnv "SITE_ENV"
     name <- override "SITE_NAME" (Web.siteName site)
     description <- override "SITE_DESCRIPTION" (Web.siteDescription site)
     author <- override "SITE_AUTHOR" (Web.siteAuthor site)
@@ -71,6 +72,9 @@ loadSiteConfig dir website = do
             , siteDomain = domain
             , twitterHandle = twitter
             , contentDir = dir
+            , siteEnv = env
             }
   where
     override var fallback = fromMaybe fallback <$> lookupEnv var
+
+    siteEnv = maybe Prod (\value -> if value == "dev" then Dev else Prod)
