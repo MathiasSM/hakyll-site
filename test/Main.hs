@@ -3,6 +3,7 @@ module Main (main) where
 
 import Control.Exception (bracket)
 import Golden (buildSiteSnapshot, goldenTests, relativeFiles)
+import MathiasSM.AccessibilitySpec qualified as Accessibility
 import MathiasSM.CleanURLSpec qualified as CleanURL
 import MathiasSM.ContentSpec qualified as Content
 import MathiasSM.FeedsSpec qualified as Feeds
@@ -29,7 +30,8 @@ tests root snapshotDir files =
         "mathiassm"
         [ testGroup
             "unit"
-            [ CleanURL.tests
+            [ Accessibility.tests
+            , CleanURL.tests
             , Content.tests
             , Feeds.tests
             , Metadata.tests

@@ -1,23 +1,21 @@
 module MathiasSM.Compile (runPandoc, applyTemplates, finish) where
 
-import Control.Monad (foldM, unless)
+import Control.Monad (foldM)
 import Data.Text qualified as T
 import Hakyll (
     Compiler,
     Context,
     Identifier,
-    Item (itemBody),
+    Item,
     defaultHakyllReaderOptions,
     defaultHakyllWriterOptions,
-    getUnderlying,
     loadAndApplyTemplate,
     relativizeUrls,
     renderPandocWithTransform,
-    toFilePath,
  )
+import MathiasSM.Accessibility (checkAccessibility)
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
-import Text.HTML.TagSoup (Tag (TagOpen), parseTags)
 import Text.Pandoc (Inline (Link, RawInline, Str))
 import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
 import Text.Pandoc.Walk (walk)
@@ -47,18 +45,7 @@ finish context item =
         >>= relativizeUrls
         >>= cleanIndexUrls
         >>= cleanIndexHtmls
-        >>= checkImageAlts
-
--- | Fails the build if the page has an `img` without a non-empty `alt`
-checkImageAlts :: Item String -> Compiler (Item String)
-checkImageAlts item = do
-    ident <- getUnderlying
-    let missing = [attrs | TagOpen "img" attrs <- parseTags (itemBody item), missingAlt attrs]
-    unless (null missing) $
-        fail $ toFilePath ident ++ ": image missing a non-empty `alt`"
-    pure item
-  where
-    missingAlt attrs = maybe True null (lookup "alt" attrs)
+        >>= checkAccessibility
 
 {- | Change special syntax (overloading Links) into ruby-annotated text
 
