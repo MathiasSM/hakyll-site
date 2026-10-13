@@ -91,6 +91,7 @@
             },
             "globalOn": true
         },
+        "hlint": {},
         "importLens": {
             "codeActionsOn": true,
             "codeLensOn": true,

@@ -51,6 +51,8 @@ data SiteConfig = SiteConfig
     siteDomain :: String,
     -- | Twitter handle (without @@), used for the social cards of posts
     twitterHandle :: String,
+    -- | MathJax CDN version (from @mathjax:@ in @website.yaml@), exposed as @mathjax-version@
+    mathjaxVersion :: String,
     -- | Where the content lives: writings/, projects/, tables/, media/
     contentDir :: FilePath,
     -- | Whether this is a dev build (publishes @/example/@ preview pages)
@@ -72,6 +74,7 @@ mkSiteConfig dir env website =
           siteCopyrightYear = Web.siteCopyrightYear site,
           siteDomain = Web.siteDomain site,
           twitterHandle = Web.siteTwitterHandle site,
+          mathjaxVersion = Web.mathjaxVersion (Web.websiteMathjax website),
           contentDir = dir,
           siteEnv = env
         }

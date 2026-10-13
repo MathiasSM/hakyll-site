@@ -4,8 +4,6 @@ description: "Headings, lists, quotes, code, and more"
 path: "/example/markdown"
 ---
 
-# Markdown
-
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. This page shows the core Markdown constructs, each set in a paragraph or two of filler text.
 
 ## Headings
@@ -82,7 +80,7 @@ Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo
 
 Omnis voluptas assumenda est, omnis dolor repellendus.
 
-## Footnotes
+## A footnote
 
 Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet.[^1]
 

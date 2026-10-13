@@ -4,8 +4,6 @@ description: "Aligned and captioned tables"
 path: "/example/tables"
 ---
 
-# Tables
-
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tables render as regular HTML tables, with optional alignment and captions.
 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris:

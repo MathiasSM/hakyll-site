@@ -50,5 +50,4 @@ blockquote {position:relative; border-left: 5px solid var(--color-accent-light);
 /* other elements */
 hr {border:0; border-bottom: 1px solid var(--color-main-dark); width:90%; margin: 1em auto;}
 
-svg, svg * {fill:currentcolor;}
 dfn {font-style: normal;}

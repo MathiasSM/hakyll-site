@@ -4,8 +4,6 @@ description: "Inline images, figures, and captions"
 path: "/example/images"
 ---
 
-# Images
-
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Images can appear inline within a paragraph, like this: ![the site logo](/images/logo.svg) right here among the text.
 
 The `title` attribute is repurposed as the accessibility `alt`, so you can spell it out separately: ![the logo](/images/logo.svg "A geometric monogram").

@@ -4,9 +4,7 @@ description: "MathJax inline and display math"
 path: "/example/math"
 ---
 
-# Math
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Mathematics is rendered with MathJax, inline like $E = mc^2$ or $e^{i\pi} + 1 = 0$ within a sentence.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Mathematics is rendered with MathJax, inline like $E = mc^2$ or $e^{i\pi} + 1 = 0$ within a sentence. MathJax is loaded automatically only for pages that contain math, so there is no front matter to set.
 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Display math is set on its own line:
 

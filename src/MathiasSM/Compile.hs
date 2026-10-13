@@ -10,6 +10,8 @@ import Hakyll
     Item,
     defaultHakyllReaderOptions,
     defaultHakyllWriterOptions,
+    getMetadata,
+    getUnderlying,
     loadAndApplyTemplate,
     relativizeUrls,
     renderPandocWithTransform,
@@ -17,17 +19,27 @@ import Hakyll
 import MathiasSM.Accessibility (checkAccessibility)
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
+import MathiasSM.Metadata (Key (TOC), lookupKey)
 import Text.Pandoc (Inline (Link, RawInline, Str))
-import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
+import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod, writerTableOfContents)
 import Text.Pandoc.Walk (walk)
+
+-- TODO(citeproc): Citations are left unprocessed today -- `Ext_citations` is on
+-- via `pandocExtensions`, but no citeproc/bibliography is configured, so `@key`
+-- in prose renders as a bare `<span class="citation">`. If a bibliography (or
+-- citeproc) is ever added, literal `@` in content must be escaped as `\@`, or
+-- those fragments will silently turn into citations.
 
 -- | Custom configuration for Pandoc
 runPandoc :: Item String -> Compiler (Item String)
-runPandoc =
-  renderPandocWithTransform
-    defaultHakyllReaderOptions
-    writerOptions
-    transforms
+runPandoc item = do
+  metadata <- getUnderlying >>= getMetadata
+  let toc = lookupKey TOC metadata == Just "true"
+      opts =
+        writerOptions
+          { writerTableOfContents = toc
+          }
+  renderPandocWithTransform defaultHakyllReaderOptions opts transforms item
   where
     transforms = walk processRubyText
     writerOptions =

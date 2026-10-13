@@ -47,6 +47,30 @@
 .main-article p:first-child {margin-top:0}
 .main-article > footer {padding:1em 0;margin-top:2em;border-top:1px solid var(--color-main-dark)}
 
+/* table of contents ***********************************************************/
+nav#TOC {
+  background: var(--color-accent-white);
+  border: 1px solid var(--color-accent-light);
+  border-radius: var(--round-corners);
+  padding: 0.5em 1em;
+  margin: 0 0 1.5em;
+}
+nav#TOC ul {
+  list-style: none;
+  padding-left: 1.2em;
+  margin: 0.25em 0;
+}
+nav#TOC > ul {
+  padding-left: 0;
+}
+nav#TOC a {
+  color: inherit;
+}
+nav#TOC a:hover,
+nav#TOC a:active {
+  color: var(--color-accent);
+}
+
 /* Add icon to external links within main content */
 .main-article div a[href^=http]::after {
   width:1em;

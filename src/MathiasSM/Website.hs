@@ -4,6 +4,7 @@ module MathiasSM.Website
     Site (..),
     Contact (..),
     Manifest (..),
+    Mathjax (..),
     Funding (..),
     FundingEntity (..),
     FundingProject (..),
@@ -49,6 +50,12 @@ data Contact = Contact
 data Manifest = Manifest
   { manifestBackgroundColor :: String,
     manifestThemeColor :: String
+  }
+  deriving (Eq, Show)
+
+-- | The @mathjax:@ section: which MathJax CDN version renders the site's math
+data Mathjax = Mathjax
+  { mathjaxVersion :: String
   }
   deriving (Eq, Show)
 
@@ -123,6 +130,7 @@ data Website = Website
   { websiteSite :: Site,
     websiteContact :: Contact,
     websiteManifest :: Manifest,
+    websiteMathjax :: Mathjax,
     websiteFunding :: Funding,
     websiteSecurity :: Security,
     websiteRobots :: Robots,
@@ -147,6 +155,10 @@ instance FromJSON Contact where
 instance FromJSON Manifest where
   parseJSON = withObject "manifest" $ \o ->
     Manifest <$> o .: "backgroundColor" <*> o .: "themeColor"
+
+instance FromJSON Mathjax where
+  parseJSON = withObject "mathjax" $ \o ->
+    Mathjax <$> o .: "version"
 
 instance FromJSON Funding where
   parseJSON = withObject "funding" $ \o ->
@@ -207,6 +219,7 @@ instance FromJSON Website where
       <$> o .: "site"
       <*> o .: "contact"
       <*> o .: "manifest"
+      <*> o .: "mathjax"
       <*> o .: "funding"
       <*> o .: "security"
       <*> o .: "robots"

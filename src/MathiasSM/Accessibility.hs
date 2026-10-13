@@ -113,10 +113,12 @@ checkEmptyHeadings tags =
   ]
 
 -- | Every @a@ has an accessible name: text, `aria-label`, @title@, or an inner image @alt@
+-- (links marked `aria-hidden="true"`, like pandoc's code-block line anchors, are skipped)
 checkLinks :: [Tag String] -> [String]
 checkLinks tags =
   [ "link has no accessible name" ++ hrefOf attrs
   | (TagOpen "a" attrs : rest) <- sections (isTagOpenName "a") tags,
+    lookup "aria-hidden" attrs /= Just "true",
     let content = takeWhile (not . isTagCloseName "a") rest,
     not (hasAccessibleName attrs content)
   ]

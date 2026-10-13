@@ -62,6 +62,7 @@ loadSiteConfig dir website = do
   year <- override "SITE_COPYRIGHT_YEAR" (Web.siteCopyrightYear site)
   domain <- override "SITE_DOMAIN" (Web.siteDomain site)
   twitter <- override "TWITTER_HANDLE" (Web.siteTwitterHandle site)
+  mathjax <- override "MATHJAX_VERSION" (Web.mathjaxVersion (Web.websiteMathjax website))
   pure
     SiteConfig
       { siteName = name,
@@ -70,6 +71,7 @@ loadSiteConfig dir website = do
         siteCopyrightYear = year,
         siteDomain = domain,
         twitterHandle = twitter,
+        mathjaxVersion = mathjax,
         contentDir = dir,
         siteEnv = env
       }

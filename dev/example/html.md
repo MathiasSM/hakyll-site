@@ -4,8 +4,6 @@ description: "Definition lists, fenced divs, and raw HTML"
 path: "/example/html"
 ---
 
-# HTML
-
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Besides plain Markdown, the site supports a few richer block constructs.
 
 ## Definition lists

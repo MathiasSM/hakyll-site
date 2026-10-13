@@ -1,8 +1,11 @@
 -- | The context every page is rendered with, and the contexts that depend on it
 module MathiasSM.Context (minimalCtx, postSocialTagsContext) where
 
+import Data.List (isInfixOf)
 import Hakyll
   ( Context,
+    Item (itemBody),
+    boolField,
     constField,
     defaultContext,
     jsonldField,
@@ -24,7 +27,14 @@ minimalCtx cfg =
     <> experienceContext cfg
     <> languageContext
     <> feedsContext cfg
+    <> mathContext
     <> defaultContext
+
+-- | True when the page's rendered body contains math, so templates can load MathJax
+mathContext :: Context String
+mathContext =
+  boolField "math" $ \item ->
+    "class=\"math " `isInfixOf` itemBody item
 
 -- | Sets HTML (as context) for article metadata
 postSocialTagsContext :: SiteConfig -> Context String
