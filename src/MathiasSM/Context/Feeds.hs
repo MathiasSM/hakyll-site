@@ -5,7 +5,7 @@ import Hakyll (Context, Item (Item, itemBody), field, fromFilePath, listField)
 import MathiasSM.Config (SiteConfig)
 import MathiasSM.Feeds (Feed (..), feedHref, feeds)
 
--- | The site's Atom feeds as a `feeds` list (`title`, `href`), for the page head
+-- | The site's Atom feeds as a `feeds` list (@title@, @href@), for the page head
 feedsContext :: SiteConfig -> Context a
 feedsContext cfg = listField "feeds" feedContext $ do
     found <- feeds cfg

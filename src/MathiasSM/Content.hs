@@ -51,7 +51,7 @@ import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 data Language = En | Es | Jp
     deriving (Eq, Show, Enum, Bounded)
 
--- | The code used in front matter and in `lang` attributes
+-- | The code used in front matter and in @lang@ attributes
 languageCode :: Language -> String
 languageCode En = "en"
 languageCode Es = "es"
@@ -74,7 +74,7 @@ statusName Unmaintained = "unmaintained"
 instance FromJSON Status where
     parseJSON = enumFromJSON "status" statusName
 
--- | Accepts exactly the spellings 'render' produces
+-- | Accepts exactly the spellings @render@ produces
 enumFromJSON :: (Enum a, Bounded a) => String -> (a -> String) -> Value -> Parser a
 enumFromJSON what render = withText what $ \t ->
     case [x | x <- [minBound .. maxBound], render x == T.unpack t] of
@@ -207,13 +207,13 @@ data NavEntry = NavEntry
     -- ^ What the menu link says; may contain HTML
     , navOrder :: Int
     , navHref :: FilePath
-    -- ^ The page's `path`
+    -- ^ The page's @path@
     , navLanguage :: Language
     }
     deriving (Eq, Show)
 
 {- | The menu entry a page asks for, if it has a `nav:` label (it then also needs `navOrder`
-and `path`)
+and @path@)
 -}
 parseNavEntry :: Metadata -> Either [String] (Maybe NavEntry)
 parseNavEntry o = do
@@ -227,7 +227,7 @@ parseNavEntry o = do
                     <*> required o K.Path
                     <*> languageOf o
 
-{- | Sort key for the showcase: projects with a `priority` first (lowest number
+{- | Sort key for the showcase: projects with a @priority@ first (lowest number
 first), then the rest, newest start first
 -}
 showcaseKey :: Project -> (Int, Down Day)

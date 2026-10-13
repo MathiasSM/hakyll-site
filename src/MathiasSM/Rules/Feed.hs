@@ -56,7 +56,7 @@ configuration cfg feed =
         }
 
 {- | What each entry reads: its clean URL, its full text with absolute links
-(`description`, the feed templates' name for the content), and its dates
+(@description@, the feed templates' name for the content), and its dates
 -}
 itemContext :: SiteConfig -> Context String
 itemContext cfg =

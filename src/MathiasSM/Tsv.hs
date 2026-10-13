@@ -7,7 +7,7 @@ import Hakyll (Context (Context), ContextField (StringField), Item (itemBody), n
 type Row = [(String, String)]
 
 {- | Parses tab-separated text. The first line is the header; blank lines and
-lines starting with `#` are skipped.
+lines starting with @#@ are skipped.
 -}
 parseTsv :: String -> [Row]
 parseTsv text = case filter relevant (lines text) of

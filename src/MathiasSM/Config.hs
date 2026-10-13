@@ -62,7 +62,7 @@ data SiteConfig = SiteConfig
 baseUrl :: SiteConfig -> String
 baseUrl cfg = "https://" ++ siteDomain cfg
 
--- | Builds a 'SiteConfig' from a parsed @website.yaml@ (no environment overrides)
+-- | Builds a @SiteConfig@ from a parsed @website.yaml@ (no environment overrides)
 mkSiteConfig :: FilePath -> Env -> Web.Website -> SiteConfig
 mkSiteConfig dir env website =
     let site = Web.websiteSite website

@@ -47,12 +47,12 @@ checkAccessibility item = do
 
 -- Checks ---------------------------------------------------------------------
 
--- | Every `img` must have an `alt` attribute (empty is allowed for decorative images)
+-- | Every @img@ must have an @alt@ attribute (empty is allowed for decorative images)
 checkImages :: [Tag String] -> [String]
 checkImages tags =
     ["image missing an `alt` attribute" | TagOpen "img" attrs <- tags, lookup "alt" attrs == Nothing]
 
--- | Exactly one non-empty `title`
+-- | Exactly one non-empty @title@
 checkTitle :: [Tag String] -> [String]
 checkTitle tags =
     case innerTextsOf "title" tags of
@@ -62,7 +62,7 @@ checkTitle tags =
             | otherwise -> []
         _ -> ["multiple <title> elements"]
 
--- | A non-empty `lang` on the single `html` element
+-- | A non-empty @lang@ on the single @html@ element
 checkLanguage :: [Tag String] -> [String]
 checkLanguage tags =
     case [lookup "lang" attrs | TagOpen "html" attrs <- tags] of
@@ -71,7 +71,7 @@ checkLanguage tags =
             | not (all isSpace lang) -> []
         _ -> ["missing non-empty `lang` on <html>"]
 
--- | Exactly one `h1` (its content is checked by 'checkEmptyHeadings')
+-- | Exactly one @h1@ (its content is checked by 'checkEmptyHeadings')
 checkH1 :: [Tag String] -> [String]
 checkH1 tags =
     case length (filter (isTagOpenName "h1") tags) of
@@ -79,7 +79,7 @@ checkH1 tags =
         1 -> []
         _ -> ["multiple <h1> elements"]
 
--- | No skipped heading levels (e.g. `h1` straight to `h3`)
+-- | No skipped heading levels (e.g. @h1@ straight to @h3@)
 checkHeadingOrder :: [Tag String] -> [String]
 checkHeadingOrder =
     skipProblems . mapMaybe headingLevel
@@ -112,7 +112,7 @@ checkEmptyHeadings tags =
     , all isSpace text
     ]
 
--- | Every `a` has an accessible name: text, `aria-label`, `title`, or an inner image `alt`
+-- | Every @a@ has an accessible name: text, `aria-label`, @title@, or an inner image @alt@
 checkLinks :: [Tag String] -> [String]
 checkLinks tags =
     [ "link has no accessible name" ++ hrefOf attrs
@@ -145,7 +145,7 @@ checkIds tags =
     | (i : _ : _) <- group (sort [i | TagOpen _ attrs <- tags, Just i <- [lookup "id" attrs]])
     ]
 
--- | Exactly one `main`
+-- | Exactly one @main@
 checkMain :: [Tag String] -> [String]
 checkMain tags =
     case length (filter (isTagOpenName "main") tags) of

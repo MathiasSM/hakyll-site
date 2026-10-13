@@ -44,7 +44,7 @@ experienceContext cfg = listField "experience" rowCtx $ tableItems (experienceTa
     rowCtx = iconContext (mediaDir cfg) "images/icons/" "icon"
 
 {- | Row context with every column, plus the SVG named by the row's @column@ under
-@prefix@ (a path inside `images/`): `iconPath` is its URL path, `iconSource` the
+@prefix@ (a path inside `images/`): @iconPath@ is its URL path, @iconSource@ the
 identifier to `$partial(...)$` it inline
 -}
 iconContext :: FilePath -> String -> String -> Context Row

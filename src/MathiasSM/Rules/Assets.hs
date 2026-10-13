@@ -97,7 +97,7 @@ mediaPattern :: SiteConfig -> String -> [String] -> Pattern
 mediaPattern cfg category extensions =
     foldr1 (.||.) [fromString $ mediaDir cfg </> category </> ("**." ++ ext) | ext <- extensions]
 
-{- | Publishes `media/<category>/x` as `images/<category>/x`, except `branding`
+{- | Publishes `media/<category>/x` as `images/<category>/x`, except @branding@
 which is published at the `images/` root (so the logo stays `images/logo.svg`).
 -}
 mediaRoute :: FilePath -> Routes

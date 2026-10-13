@@ -52,7 +52,7 @@ finish context item =
 
 Ex. `[飯](-はん)` into `<ruby lang=jp>飯<rt>はん</rt></ruby>`
 
-NOTE: `jp` is hardcoded into the ruby tag "just in case"
+NOTE: @jp@ is hardcoded into the ruby tag "just in case"
 
 NOTE: Uses RawInline since there's no native AST representation
 -}

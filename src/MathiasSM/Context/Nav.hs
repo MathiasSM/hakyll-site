@@ -18,11 +18,11 @@ import MathiasSM.Config (SiteConfig, pagesPattern)
 import MathiasSM.Content (Language (En), NavEntry (..), languageCode, requireNav)
 import System.FilePath.Posix (takeBaseName)
 
-{- | The site menu as a `nav` list (`label`, `href`, `active`, `lang`), built from the
+{- | The site menu as a @nav@ list (@label@, @href@, @active@, @lang@), built from the
 pages that declare `nav:` and ordered by `navOrder`
 
 @current@ is the name of the page being rendered (its file name without extension, or
-its post group); that menu entry is `active`.
+its post group); that menu entry is @active@.
 -}
 navContext :: SiteConfig -> String -> Context a
 navContext cfg current = listField "nav" entryContext (navItems cfg)

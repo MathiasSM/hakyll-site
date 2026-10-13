@@ -42,6 +42,6 @@ validateNavEntries cfg = do
         $ userError
         $ "Invalid menu entries:\n" ++ unlines (map ("  " ++) problems)
 
--- | The `href` of every hobby that no post `path` matches
+-- | The @href@ of every hobby that no post @path@ matches
 missingHobbyPages :: [Row] -> [FilePath] -> [FilePath]
 missingHobbyPages hobbies paths = [href | row <- hobbies, Just href <- [lookup "href" row], href `notElem` paths]
