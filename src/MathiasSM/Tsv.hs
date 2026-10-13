@@ -1,3 +1,4 @@
+-- | Parsing tab-separated tables and exposing them as template contexts
 module MathiasSM.Tsv (Row, parseTsv, rowContext, isYes) where
 
 import Hakyll (Context (Context), ContextField (StringField), Item (itemBody), noResult)

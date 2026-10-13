@@ -61,12 +61,14 @@ data Funding = Funding
     }
     deriving (Eq, Show)
 
+-- | The entity being funded (the @funding.entity@ section)
 data FundingEntity = FundingEntity
     { fundingEntityEmail :: String
     , fundingEntityDescription :: String
     }
     deriving (Eq, Show)
 
+-- | A project listed in @funding.json@
 data FundingProject = FundingProject
     { fundingProjectGuid :: String
     , fundingProjectName :: String
@@ -78,6 +80,7 @@ data FundingProject = FundingProject
     }
     deriving (Eq, Show)
 
+-- | A funding channel in @funding.json@
 data FundingChannel = FundingChannel
     { fundingChannelGuid :: String
     , fundingChannelType :: String
@@ -86,6 +89,7 @@ data FundingChannel = FundingChannel
     }
     deriving (Eq, Show)
 
+-- | A funding plan in @funding.json@
 data FundingPlan = FundingPlan
     { fundingPlanGuid :: String
     , fundingPlanStatus :: String

@@ -1,3 +1,4 @@
+-- | The site's Atom feeds as a context, for the page head
 module MathiasSM.Context.Feeds (feedsContext) where
 
 import Hakyll (Context, Item (Item, itemBody), field, fromFilePath, listField)

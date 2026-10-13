@@ -1,3 +1,4 @@
+-- | Rules that build the sitemap
 module MathiasSM.Rules.Sitemap (processSitemap) where
 
 import Control.Monad (filterM)

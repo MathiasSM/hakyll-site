@@ -1,3 +1,4 @@
+-- | Rules that generate the favicons from the logo
 module MathiasSM.Rules.Favicon (faviconRules) where
 
 import Hakyll (

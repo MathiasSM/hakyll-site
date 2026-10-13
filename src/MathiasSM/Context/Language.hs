@@ -1,3 +1,4 @@
+-- | Language variables exposed to templates
 module MathiasSM.Context.Language (languageContext) where
 
 import Hakyll (Context, Item (itemIdentifier), field, noResult)

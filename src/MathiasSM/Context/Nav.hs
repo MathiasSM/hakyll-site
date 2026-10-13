@@ -1,3 +1,4 @@
+-- | The site menu, built from the pages that declare a nav entry
 module MathiasSM.Context.Nav (navContext) where
 
 import Data.List (sortOn)

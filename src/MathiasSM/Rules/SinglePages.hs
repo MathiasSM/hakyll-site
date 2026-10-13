@@ -1,3 +1,4 @@
+-- | Rules for standalone pages
 module MathiasSM.Rules.SinglePages (Page (..), page, processPage, pageCompiler) where
 
 import Hakyll (

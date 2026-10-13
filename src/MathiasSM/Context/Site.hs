@@ -1,3 +1,4 @@
+-- | Site-wide information (name, description, author, URLs) as template fields
 module MathiasSM.Context.Site (siteContext) where
 
 import Hakyll (Context, constField)

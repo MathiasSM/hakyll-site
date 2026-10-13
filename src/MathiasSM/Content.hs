@@ -64,6 +64,7 @@ instance FromJSON Language where
 data Status = Alpha | Finished | Ongoing | Unmaintained
     deriving (Eq, Show, Enum, Bounded)
 
+-- | How a project status is spelled
 statusName :: Status -> String
 statusName Alpha = "alpha"
 statusName Finished = "finished"

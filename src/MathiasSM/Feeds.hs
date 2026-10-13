@@ -11,6 +11,7 @@ import MathiasSM.Metadata (Key (Description, Path, Title), lookupKey)
 import MathiasSM.Writings (discoverGroups)
 import System.FilePath.Posix (takeDirectory, (</>))
 
+-- | An Atom feed, described by its group's index page
 data Feed = Feed
     { feedGroup :: String
     , feedTitle :: String

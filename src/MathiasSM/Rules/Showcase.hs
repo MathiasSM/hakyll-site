@@ -1,3 +1,4 @@
+-- | Rules for the projects group: its index page and the projects
 module MathiasSM.Rules.Showcase (processShowcaseGroup) where
 
 import Data.List (sortOn)

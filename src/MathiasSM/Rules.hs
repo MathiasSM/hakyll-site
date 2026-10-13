@@ -1,3 +1,4 @@
+-- | The site's rules: how every source file is compiled, routed, and combined
 module MathiasSM.Rules (rules) where
 
 import Control.Monad (when)
@@ -16,6 +17,7 @@ import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
 import MathiasSM.Website (Website)
 import MathiasSM.Writings (discoverGroups, discoverStandalonePages)
 
+-- | Assembles the whole site from the content and configuration
 rules :: SiteConfig -> Website -> Rules ()
 rules cfg website = do
     match "templates/*" $ compile templateBodyCompiler

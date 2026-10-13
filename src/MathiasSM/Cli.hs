@@ -1,5 +1,6 @@
 {-# LANGUAGE Trustworthy #-}
 
+-- | The command-line interface and its subcommands
 module MathiasSM.Cli (cli) where
 
 import Control.Monad (filterM, unless)

@@ -1,3 +1,4 @@
+-- | Rules for the assets: styles, media, and tables
 module MathiasSM.Rules.Assets (processAssets) where
 
 import Data.List (stripPrefix)

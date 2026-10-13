@@ -1,3 +1,4 @@
+-- | A showcase project's fields as a template context
 module MathiasSM.Context.Project (projectContext) where
 
 import Hakyll (Context, Item (itemBody), field, noResult)

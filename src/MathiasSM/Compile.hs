@@ -1,3 +1,4 @@
+-- | Pandoc compilation and the post-processing shared by every page
 module MathiasSM.Compile (runPandoc, applyTemplates, finish) where
 
 import Control.Monad (foldM)

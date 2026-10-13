@@ -1,3 +1,4 @@
+-- | Rules that build the Atom feeds
 module MathiasSM.Rules.Feed (processFeeds) where
 
 import Control.Monad (forM_)

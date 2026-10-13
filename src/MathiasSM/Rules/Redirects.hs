@@ -1,3 +1,4 @@
+-- | Rules that build redirect pages from aliases
 module MathiasSM.Rules.Redirects (processRedirects, Entry (..), planRedirects) where
 
 import Data.Either (fromLeft)

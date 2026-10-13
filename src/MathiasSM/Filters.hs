@@ -1,3 +1,4 @@
+-- | Custom Pandoc filters, like the ruby-text transform
 module MathiasSM.Filters (processRubyText) where
 
 import Data.Text qualified as T

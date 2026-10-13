@@ -1,3 +1,4 @@
+-- | Rules for a post group: its index page and its posts
 module MathiasSM.Rules.PostGroup (processPostGroup) where
 
 import Hakyll (

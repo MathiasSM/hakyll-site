@@ -1,5 +1,6 @@
 {-# LANGUAGE Trustworthy #-}
 
+-- | Clean URLs: routing and the stripping of the @index.html@ suffix
 module MathiasSM.CleanURL (outputPath, pathRoute, cleanIndex, cleanIndexUrls, cleanIndexHtmls) where
 
 import Data.List (isSuffixOf)
