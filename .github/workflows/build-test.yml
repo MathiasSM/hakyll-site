@@ -85,8 +85,7 @@ jobs:
         run: |
           cabal haddock-project --hackage --all \
             --haddock-options="--show-all" \
-            --haddock-options="--quickjump" \
-            --haddock-options="--print-missing-docs"
+            --haddock-options="--quickjump"
 
       - name: Upload documentation as artifact
         uses: actions/upload-artifact@v7
