@@ -1,3 +1,4 @@
+-- | Tests for the content parsers (posts, aliases, menus, projects)
 module MathiasSM.ContentSpec (tests) where
 
 import Data.Either (fromRight, isLeft)
@@ -7,6 +8,7 @@ import MathiasSM.TestUtils
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 
+-- | The content-parsing tests
 tests :: TestTree
 tests =
     testGroup

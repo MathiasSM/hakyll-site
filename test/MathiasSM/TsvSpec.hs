@@ -1,9 +1,11 @@
+-- | Tests for the TSV parser
 module MathiasSM.TsvSpec (tests) where
 
 import MathiasSM.Tsv (isYes, parseTsv)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 
+-- | The TSV-parsing tests
 tests :: TestTree
 tests =
     testGroup

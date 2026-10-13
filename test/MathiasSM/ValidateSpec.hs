@@ -1,9 +1,11 @@
+-- | Tests for the build-time validations
 module MathiasSM.ValidateSpec (tests) where
 
 import MathiasSM.Validate (missingHobbyPages)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 
+-- | The validation tests
 tests :: TestTree
 tests =
     testGroup

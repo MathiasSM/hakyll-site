@@ -1,3 +1,4 @@
+-- | Tests for the clean-URL helpers
 module MathiasSM.CleanURLSpec (tests) where
 
 import MathiasSM.CleanURL (cleanIndex, outputPath)
@@ -5,6 +6,7 @@ import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 import Test.Tasty.QuickCheck (testProperty)
 
+-- | The clean-URL tests
 tests :: TestTree
 tests =
     testGroup

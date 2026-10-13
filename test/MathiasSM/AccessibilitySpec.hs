@@ -1,3 +1,4 @@
+-- | Tests for the accessibility checks
 module MathiasSM.AccessibilitySpec (tests) where
 
 import MathiasSM.Accessibility (checkHtml)
@@ -5,6 +6,7 @@ import Data.List (isPrefixOf)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (Assertion, assertBool, testCase, (@?=))
 
+-- | The accessibility checks
 tests :: TestTree
 tests =
     testGroup

@@ -1,9 +1,11 @@
+-- | Tests for redirect planning
 module MathiasSM.RedirectsSpec (tests) where
 
 import MathiasSM.Rules.Redirects (Entry (..), planRedirects)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 
+-- | The redirect-planning tests
 tests :: TestTree
 tests =
     testGroup

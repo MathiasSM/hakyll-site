@@ -1,3 +1,4 @@
+-- | Tests for the feed helpers
 module MathiasSM.FeedsSpec (tests) where
 
 import MathiasSM.Feeds (absoluteUrl)
@@ -5,6 +6,7 @@ import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 import Test.Tasty.QuickCheck (testProperty)
 
+-- | The feed tests
 tests :: TestTree
 tests =
     testGroup

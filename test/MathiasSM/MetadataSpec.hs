@@ -1,3 +1,4 @@
+-- | Tests for the front-matter keys
 module MathiasSM.MetadataSpec (tests) where
 
 import Data.List (nub)
@@ -5,6 +6,7 @@ import MathiasSM.Metadata (Key (..), keyName)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 
+-- | The metadata-key tests
 tests :: TestTree
 tests =
     testGroup

@@ -30,5 +30,6 @@ set key value fields
 without :: [String] -> Fields -> Fields
 without keys = filter ((`notElem` keys) . fst)
 
+-- | A date from year, month and day
 day :: Integer -> Int -> Int -> Day
 day = fromGregorian

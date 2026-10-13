@@ -17,6 +17,7 @@ import Test.Tasty (TestTree, defaultMain, testGroup)
 -- TODO: add tasty-ant-xml and wire a JUnit XML ingredient into CI for prettier
 -- results. Something like:
 --   defaultMainWithIngredients (antXMLRunner : defaultIngredients) tests
+-- | Builds the fixture site snapshot, then runs the unit and golden tests
 main :: IO ()
 main = do
     root <- getCurrentDirectory
