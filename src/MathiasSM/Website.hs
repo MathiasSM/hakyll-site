@@ -13,11 +13,15 @@ module MathiasSM.Website (
     Robots (..),
     Trust (..),
     loadWebsite,
+    validateSecurityExpiration,
 )
 where
 
-import Control.Monad (unless)
+import Control.Monad (unless, when)
 import Data.Aeson (FromJSON (parseJSON), withObject, (.:))
+import Data.Time (getCurrentTime, utctDay)
+import Data.Time.Calendar (Day, addDays)
+import Data.Time.Format (defaultTimeLocale, parseTimeM)
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
 import System.Directory (doesFileExist)
 import System.Exit (die)
@@ -98,6 +102,7 @@ data FundingPlan = FundingPlan
 data Security = Security
     { securityPreferredLanguages :: String
     , securityExpires :: String
+    , securityExpirationMarginDays :: Int
     }
     deriving (Eq, Show)
 
@@ -184,7 +189,7 @@ instance FromJSON FundingPlan where
 
 instance FromJSON Security where
     parseJSON = withObject "security" $ \o ->
-        Security <$> o .: "preferredLanguages" <*> o .: "expires"
+        Security <$> o .: "preferredLanguages" <*> o .: "expires" <*> o .: "expirationMarginDays"
 
 instance FromJSON Robots where
     parseJSON = withObject "robots" $ \o -> Robots <$> o .: "disallow"
@@ -211,3 +216,20 @@ loadWebsite contentDir = do
     unless exists $ die $ path ++ " not found"
     result <- decodeFileEither path
     either (\e -> die $ "Invalid " ++ path ++ ":\n" ++ prettyPrintParseException e) pure result
+
+-- | Fails if the @security.txt@ expiration is within the configured margin (or already passed)
+validateSecurityExpiration :: Website -> IO ()
+validateSecurityExpiration website = do
+    today <- utctDay <$> getCurrentTime
+    let security = websiteSecurity website
+        margin = securityExpirationMarginDays security
+        deadline = addDays (fromIntegral margin) today
+    case parseExpiryDate (securityExpires security) of
+        Nothing -> die $ "Invalid security.expires date: " ++ securityExpires security
+        Just expires ->
+            when (expires <= deadline) $
+                die $ "security.txt expires on " ++ show expires ++ " (within " ++ show margin ++ " days); renew it"
+
+-- | Parses the leading @YYYY-MM-DD@ of an ISO timestamp
+parseExpiryDate :: String -> Maybe Day
+parseExpiryDate = parseTimeM True defaultTimeLocale "%Y-%m-%d" . take 10

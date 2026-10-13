@@ -19,6 +19,7 @@ manifest:
 security:
   preferredLanguages: en, es
   expires: "2027-12-31T22:59:00.000Z"
+  expirationMarginDays: 90
 
 robots:
   disallow: [/example, /404.html]

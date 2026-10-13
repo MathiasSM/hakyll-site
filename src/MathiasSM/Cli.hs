@@ -28,6 +28,7 @@ cli = do
     args <- getArgs
     dir <- fromMaybe "content" <$> lookupEnv "CONTENT_DIR"
     website <- Web.loadWebsite dir
+    Web.validateSecurityExpiration website
     cfg <- loadSiteConfig dir website
     -- `clean` only removes generated files, so it works without the content
     unless ("clean" `elem` args) (ensureContentExists cfg)
