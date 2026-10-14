@@ -52,15 +52,21 @@ checkImages :: [Tag String] -> [String]
 checkImages tags =
   ["image missing an `alt` attribute" | TagOpen "img" attrs <- tags, isNothing (lookup "alt" attrs)]
 
--- | Exactly one non-empty @title@
+-- | Exactly one non-empty document @title@ (the one in @head@).
+--
+-- @<title>@ elements inside inline SVGs (e.g. the site logo) are SVG accessible
+-- names, not document titles, so they are ignored.
 checkTitle :: [Tag String] -> [String]
 checkTitle tags =
-  case innerTextsOf "title" tags of
+  case innerTextsOf "title" headTags of
     [] -> ["no <title>"]
     [t]
       | all isSpace t -> ["empty <title>"]
       | otherwise -> []
     _ -> ["multiple <title> elements"]
+  where
+    -- The document title always lives in @head@, before the @body@ opens.
+    headTags = takeWhile (not . isTagOpenName "body") tags
 
 -- | A non-empty @lang@ on the single @html@ element
 checkLanguage :: [Tag String] -> [String]
