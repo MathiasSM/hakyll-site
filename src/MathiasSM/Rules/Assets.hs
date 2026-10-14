@@ -36,7 +36,7 @@ import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 -- | Processes all assets (media, styles, tables) into the final site
 processAssets :: SiteConfig -> Rules ()
 processAssets cfg = do
-  processCss
+  processCss cfg
   processSvgImages cfg
   processDotImages cfg
   processFavicon cfg
@@ -48,13 +48,13 @@ processTables :: SiteConfig -> Rules ()
 processTables cfg = match (tablesPattern cfg) $ compile getResourceString
 
 -- | Compress all CSS as one file
-processCss :: Rules ()
-processCss = do
-  match cssFiles $ compile compressCssCompiler
+processCss :: SiteConfig -> Rules ()
+processCss cfg = do
+  match  (cssFiles cfg) (compile compressCssCompiler)
   create ["styles.css"] $ do
     route idRoute
     compile $ do
-      css <- loadAll cssFiles
+      css <- loadAll $ cssFiles cfg
       makeItem $ unlines $ map itemBody css
 
 -- | Uses unix external filter (dot) to compile them as png
@@ -89,8 +89,8 @@ justCopy something routes = match something $
     compile copyFileCompiler
 
 -- | Where the site's own stylesheets live (see 'assetsDir')
-cssFiles :: Pattern
-cssFiles = fromString $ assetsDir </> "css" </> "*.css"
+cssFiles :: SiteConfig -> Pattern
+cssFiles cfg = fromString $ assetsDir cfg </> "css" </> "*.css"
 
 -- | Files with one of the extensions, anywhere under a media category
 mediaPattern :: SiteConfig -> String -> [String] -> Pattern

@@ -1,16 +1,16 @@
-# Example site configuration. Copy this file to `content/website.yaml` and adjust.
+# Example site configuration. A content repo needs a proper website.yaml
 #
 # This is the source of truth for the site's identity and the data behind the
-# generated static files (funding.json, security.txt, robots.txt, ...).
-# Build-time environment variables only override the `site:` section; see
-# `.env.example`.
+# metadata used to generate this final files.
+#
+# Some fields can be overriden via env variables. See .env.example
 
 # The site's identity.
 site:
   name: MathiasSM
   description: Software Development Engineer
   author: Mathias San Miguel
-  copyrightYear: "2013"
+  copyrightYear: 2013
   domain: mathiassm.dev
   twitterHandle: mathiassm
 
@@ -27,6 +27,10 @@ manifest:
 # MathJax CDN version used to render math on pages that use it. Required.
 mathjax:
   version: "4.1.3"
+
+# atom feed 
+feed:
+  size: 20
 
 # security.txt, including how far in advance the expiration must be renewed.
 security:

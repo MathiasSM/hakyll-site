@@ -18,7 +18,7 @@ import Data.List (sort)
 import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
-import MathiasSM.Config (Env (Prod), mkSiteConfig, siteConfiguration)
+import MathiasSM.Config (Env (Dev), siteConfiguration, SiteConfig(..))
 import MathiasSM.Rules (rules)
 import MathiasSM.Website (loadWebsite)
 import System.Directory
@@ -33,6 +33,25 @@ import System.FilePath (takeDirectory, takeExtension, (</>))
 import System.IO.Temp (createTempDirectory, getCanonicalTemporaryDirectory)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsFile, writeBinaryFile)
+import qualified MathiasSM.Website as Web
+
+-- | Builds a 'SiteConfig' from a parsed @website.yaml@ (no environment overrides)
+mkSiteConfig :: Web.Website -> SiteConfig
+mkSiteConfig website =
+  let site = Web.websiteSite website
+   in SiteConfig
+        { siteName = Web.siteName site,
+          siteDescription = Web.siteDescription site,
+          siteAuthor = Web.siteAuthor site,
+          siteCopyrightYear = Web.siteCopyrightYear site,
+          siteDomain = Web.siteDomain site,
+          twitterHandle = Web.siteTwitterHandle site,
+          mathjaxVersion = Web.mathjaxVersion (Web.websiteMathjax website),
+          contentDir = "content",
+          assetsDir = "assets",
+          templatesDir = "templates",
+          siteEnv = Dev
+        }
 
 -- | Builds the fixture site in a fresh temporary directory and mirrors its
 -- output into a comparable snapshot. Returns the work directory and the
@@ -45,11 +64,12 @@ buildSiteSnapshot root = do
       snapshot = work </> "snapshot"
   -- The fixture's own website.yaml drives the build, so the golden output does not depend on the environment
   website <- loadWebsite (root </> "test" </> "fixtures" </> "content")
-  let cfg = mkSiteConfig "content" Prod website
+  let cfg = mkSiteConfig website
   createDirectoryIfMissing True buildDir
   copyTree (root </> "templates") (buildDir </> "templates")
   copyTree (root </> "assets") (buildDir </> "assets")
   copyTree (root </> "test" </> "fixtures" </> "content") (buildDir </> "content")
+  copyTree (root </> "dev") (buildDir </> "dev")
   withCurrentDirectory buildDir $ do
     -- An Error-only logger keeps the build silent on success, like the old script
     logger <- Logger.new Logger.Error

@@ -4,7 +4,7 @@ site:
   name: Example
   description: An example site
   author: Example Author
-  copyrightYear: "2020"
+  copyrightYear: 2020
   domain: example.com
   twitterHandle: example
 
@@ -29,6 +29,9 @@ robots:
 
 trust:
   trainingAllowed: "no"
+
+feed:
+  size: 20
 
 funding:
   entity:

@@ -29,7 +29,7 @@ rules cfg website = do
   mapM_ (processPage cfg . page cfg) standalone
   groups <- discoverGroups cfg
   mapM_ (processGroup cfg) groups
-  processFeeds cfg
+  processFeeds cfg website
   processSitemap cfg
   processRedirects cfg
   when (siteEnv cfg == Dev) (processExamplePages cfg)

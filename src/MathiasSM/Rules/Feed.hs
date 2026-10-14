@@ -26,14 +26,16 @@ import Hakyll
     withUrls,
   )
 import MathiasSM.CleanURL (cleanIndex)
-import MathiasSM.Config (SiteConfig, baseUrl, feedItemLimit, postSnapshot, postsPattern, siteAuthor)
+import MathiasSM.Config (SiteConfig, baseUrl, postSnapshot, postsPattern, siteAuthor)
 import MathiasSM.Content (Post (..), requirePostOf)
 import MathiasSM.Feeds (Feed (..), absoluteUrl, feeds)
+import MathiasSM.Website (Website (websiteFeed), feedSize)
 
 -- | Builds the Atom feed of every post group: its newest posts, in full
-processFeeds :: SiteConfig -> Rules ()
-processFeeds cfg = do
+processFeeds :: SiteConfig -> Website -> Rules ()
+processFeeds cfg website = do
   found <- feeds cfg
+  let feedSize' = feedSize $ websiteFeed website
   case found of
     Left problems -> preprocess $ ioError $ userError $ "Invalid feeds:\n" ++ unlines (map ("  " ++) problems)
     Right all' -> forM_ all' $ \feed ->
@@ -43,7 +45,7 @@ processFeeds cfg = do
           posts <- recentFirst =<< loadAllSnapshots (postsPattern cfg $ feedGroup feed) (postSnapshot $ feedGroup feed)
           feedTemplate <- loadBody "templates/atom-feed.xml"
           itemTemplate <- loadBody "templates/atom-item.xml"
-          renderAtomWithTemplates feedTemplate itemTemplate (configuration cfg feed) (itemContext cfg) (take feedItemLimit posts)
+          renderAtomWithTemplates feedTemplate itemTemplate (configuration cfg feed) (itemContext cfg) (take feedSize' posts)
 
 configuration :: SiteConfig -> Feed -> FeedConfiguration
 configuration cfg feed =

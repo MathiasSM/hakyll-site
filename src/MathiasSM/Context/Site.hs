@@ -11,7 +11,7 @@ siteContext cfg =
     [ constField "site-name" (siteName cfg),
       constField "site-description" (siteDescription cfg),
       constField "site-author" (siteAuthor cfg),
-      constField "site-copyrightYear" (siteCopyrightYear cfg),
+      constField "site-copyrightYear" (show $ siteCopyrightYear cfg),
       constField "site-baseUrl" (baseUrl cfg),
       constField "site-domain" (siteDomain cfg),
       constField "mathjax-version" (mathjaxVersion cfg),
