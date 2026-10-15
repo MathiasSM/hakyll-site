@@ -10,6 +10,13 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 ### Added
 
 - This CHANGELOG file. Added to the .cabal file to include in sdist package.
+- A pre-commit git hook, opt-in, that runs hlint and fourmolu before a commit, and fails if it needed changes.
+- A RELEASE-CHECKLIST, listing the steps to "release" a new version of this project.
+- A CONTRIBUTING file, explaining briefly the expected workflow, the use of githooks and referencing RELEASE-CHECKLIST
+
+### Changed
+
+- README: Mentioning new githooks, referencing new CONTRIBUTING, RELEASE-CHECKLIST.
 
 ## [0.4.0.0] - 2026-10-15
 

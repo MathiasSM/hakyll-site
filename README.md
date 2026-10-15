@@ -58,6 +58,11 @@ ASSETS_DIR=assets
 2. Install ghcup (e.g. using `mise use -g ghcup`).
 3. Use ghcup to install `ghc`, `cabal` (both required), `hls`, `fourmolu`, `hlint` (optional).
   - Remember to `ghcup set <TOOL>` (in particular, you might need to `ghcup set cabal 3.14` because of hlint support)
+4. Enable the git hooks (runs `fourmolu` and `hlint` before each commit):
+
+   ```sh
+   git config core.hooksPath .githooks
+   ```
 
 #### Build
 
@@ -79,6 +84,13 @@ Using [Tasty](https://hackage.haskell.org/package/tasty) to organize/run tests.
 - Only Golden tests: `cabal test --test-options='-p golden'`
   - Golden files are stored in `test/golden`
   - Updating golden files: `cabal test --test-options='-p golden --accept'`
+
+### Workflow
+
+Changes land on `master` through pull requests from short-lived feature
+branches named `type/description`. See [CONTRIBUTING.md](CONTRIBUTING.md) for
+details, and [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) for the release
+process.
 
 ### CI
 
