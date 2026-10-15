@@ -12,6 +12,11 @@ jobs:
     if: startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
+
       - name: Trigger web-writings deployment
         env:
           GH_TOKEN: ${{ secrets.WEB_WRITINGS_DISPATCH_TOKEN }}
