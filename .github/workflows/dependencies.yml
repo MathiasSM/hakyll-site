@@ -3,9 +3,9 @@ name: Outdated dependencies
 
 on:
   push:
-    branches: [master, new]
+    branches: [master]
   pull_request:
-    branches: [master, new]
+    branches: [master]
   schedule:
     - cron: "0 5 * * 1" # Mondays at 05:00 UTC
   workflow_dispatch:
@@ -23,8 +23,8 @@ jobs:
 
       - uses: haskell-actions/setup@v2
         with:
-          ghc-version: "9.10.3"
-          cabal-version: "3.14"
+          ghc-version: ${{ vars.GHC_VERSION }}
+          cabal-version: ${{ vars.CABAL_VERSION }}
 
       - name: 'Dependency Review'
         if: github.event_name == 'pull_request'
@@ -44,12 +44,28 @@ jobs:
         run: |
           cabal update
           set +e
-          cabal outdated > outdated.txt 2>&1
+          cabal outdated --exit-code > outdated.txt 2>&1
+          HAS_OUTDATED=$?
           set -e
           cat outdated.txt
 
-          BODY="$(cat outdated.txt)"
-          ISSUE_NUMBER="8" # NOTE: HARDCODED AFTER FIRST CREATION
+          TITLE="Outdated Cabal dependencies"
+          LABEL="automation/outdated"
 
-          echo "Updating issue #$ISSUE_NUMBER"
-          gh issue edit "$ISSUE_NUMBER" --body "$BODY"
+          gh label create "$LABEL" --color "D93F0B" 2>/dev/null || true
+
+          ISSUE=$(gh issue list --label "$LABEL" --app github-actions \
+            --state all --json number --jq '.[0].number')
+
+          if [ "$HAS_OUTDATED" -ne 0 ]; then
+            if [ -z "$ISSUE" ]; then
+              gh issue create --title "$TITLE" \
+                --label "$LABEL" \
+                --body "$(cat outdated.txt)"
+            else
+              gh issue reopen "$ISSUE" 2>/dev/null || true
+              gh issue edit "$ISSUE" --body "$(cat outdated.txt)"
+            fi
+          elif [ -n "$ISSUE" ]; then
+            gh issue close "$ISSUE"
+          fi

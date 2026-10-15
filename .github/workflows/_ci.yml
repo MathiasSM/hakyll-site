@@ -1,10 +1,8 @@
-# Verify, test, and ship the site generator.
+# Verify and test the site generator.
 name: CI
 
 on:
   pull_request:
-  push:
-    branches: ["**"]
   workflow_dispatch:
 
 permissions:
@@ -38,10 +36,10 @@ jobs:
       contents: read
       code-quality: write
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
         with:
           name: artifact-coverage
-
       - name: Upload coverage report
         uses: actions/upload-code-coverage@v1
         with:
@@ -50,59 +48,29 @@ jobs:
           language: Haskell
           label: code-coverage/cabal
 
-  release:
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    needs: [build, format, lint]
+  changelog-gate:
+    name: Verify version in Changelog
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v7
-
-      - uses: actions/download-artifact@v8
         with:
-          name: artifact-executable
+          fetch-depth: 0
 
-      - name: Assemble the kit
+      - name: Require a changelog entry for version bumps
         run: |
-          chmod +x artifact-executable
-          mkdir -p kit
-          cp artifact-executable kit/site
-          cp -r templates kit/
-          cp -r assets kit/
-          tar -czf site-kit.tar.gz -C kit .
-          sha256sum site-kit.tar.gz > site-kit.tar.gz.sha256
+          BASE="${{ github.event.pull_request.base.sha }}"
+          old_version="$(git show "$BASE:mathiassm.cabal" | awk '/^version:/{print $2}')"
+          new_version="$(awk '/^version:/{print $2}' mathiassm.cabal)"
 
-      - name: Publish rolling release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
-          gh release create latest \
-            --title "latest" \
-            --target "$GITHUB_SHA" \
-            --notes "site-generator: \`site\` executable + templates + assets" \
-            site-kit.tar.gz site-kit.tar.gz.sha256
+          if [ "$old_version" = "$new_version" ]; then
+            echo "Version unchanged ($new_version); no changelog entry required."
+            exit 0
+          fi
 
-  deploy-docs:
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    needs: [build, release]
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/download-artifact@v8
-        with:
-          name: artifact-docs
-          path: artifact-docs
-      - run: ls -R .
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: artifact-docs
-      - id: deployment
-        uses: actions/deploy-pages@v5
+          if grep -Fq "[$new_version]" CHANGELOG.md; then
+            echo "CHANGELOG.md has an entry for $new_version."
+          else
+            echo "::error::Version bumped to $new_version but CHANGELOG.md has no [$new_version] entry."
+            exit 1
+          fi
