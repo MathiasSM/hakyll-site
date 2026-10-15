@@ -18,9 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ======================================================== Setup
-      - uses: actions/checkout@v7
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
+        with:
+          egress-policy: audit
 
-      - uses: haskell-actions/setup@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2.12.1
         id: setup
         with:
           ghc-version: ${{ inputs.ghc-version }}
@@ -41,7 +46,7 @@ jobs:
           cabal build all --dry-run
 
       - name: Restore cached dependencies
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: cache-cabal
         env:
           key: ${{ runner.os }}-ghc-${{ inputs.ghc-version }}-${{ steps.setup.outputs.cabal-version }}
@@ -61,7 +66,7 @@ jobs:
           cp "$(cabal list-bin exe:site)" artifact-executable
 
       - name: Upload executable as artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           path: artifact-executable
           name: artifact-executable
@@ -74,7 +79,7 @@ jobs:
         run: hpc-codecov cabal:test -f cobertura -o cobertura.xml
 
       - name: Upload coverage report as artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           path: cobertura.xml
           name: artifact-coverage
@@ -86,7 +91,7 @@ jobs:
             --haddock-options="--show-all" \
             --haddock-options="--quickjump"
       - name: Upload documentation as artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           path: haddocks
           name: artifact-docs
