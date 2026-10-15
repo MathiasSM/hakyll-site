@@ -73,12 +73,11 @@ jobs:
       - name: Transform coverage file
         run: hpc-codecov cabal:test -f cobertura -o cobertura.xml
 
-      - name: Upload coverage report
-        uses: actions/upload-code-coverage@v1
+      - name: Upload coverage report as artifact
+        uses: actions/upload-artifact@v7
         with:
-          file: cobertura.xml
-          language: Haskell
-          label: code-coverage/cabal
+          path: cobertura.xml
+          name: artifact-coverage
 
       # ======================================================== Documentation
       - name: Build documentation
@@ -86,7 +85,6 @@ jobs:
           cabal haddock-project --hackage --all \
             --haddock-options="--show-all" \
             --haddock-options="--quickjump"
-
       - name: Upload documentation as artifact
         uses: actions/upload-artifact@v7
         with:

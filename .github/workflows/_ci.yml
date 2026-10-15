@@ -31,8 +31,27 @@ jobs:
       ghc-version: ${{ vars.GHC_VERSION }}
       cabal-version: ${{ vars.CABAL_VERSION }}
 
+  upload-coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      code-quality: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: artifact-coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-code-coverage@v1
+        with:
+          fail-on-error: false # TODO: Fix failing runs
+          file: cobertura.xml
+          language: Haskell
+          label: code-coverage/cabal
+
   release:
-    if: github.ref == 'refs/heads/new'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     needs: [build, format, lint]
     runs-on: ubuntu-latest
     permissions:
@@ -66,7 +85,7 @@ jobs:
             site-kit.tar.gz site-kit.tar.gz.sha256
 
   deploy-docs:
-    if: github.ref_name == 'new'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     needs: [build, release]
     runs-on: ubuntu-latest
     permissions:
