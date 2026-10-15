@@ -14,7 +14,7 @@ category:           Data, Web
 author:             Mathias San Miguel
 maintainer:         mathiassanmiguel@gmail.com
 
-extra-doc-files:    README.md
+extra-doc-files:    README.md, CHANGELOG.md
 extra-source-files:
     templates/*.html
     templates/*.xml
