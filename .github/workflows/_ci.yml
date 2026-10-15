@@ -17,6 +17,7 @@ jobs:
     uses: ./.github/workflows/hlint.yml
     permissions:
       security-events: write
+      contents: read
 
   format:
     uses: ./.github/workflows/fourmolu.yml
