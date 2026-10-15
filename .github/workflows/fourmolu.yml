@@ -9,6 +9,9 @@ on:
         type: string
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   format:
     name: Fourmolu
@@ -18,7 +21,6 @@ jobs:
         uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25 # v2.22.1
         with:
           egress-policy: audit
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: haskell-actions/run-fourmolu@1b9df64b784203126500372730b9725c97e4040b # v13
         with:
