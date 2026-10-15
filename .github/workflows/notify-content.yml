@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   notify:
+    if: startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     steps:
       - name: Trigger web-writings deployment

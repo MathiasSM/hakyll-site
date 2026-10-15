@@ -1,0 +1,132 @@
+# Release the site generator: on a version bump, tag it, publish a versioned
+# GitHub release (marked latest) and a Hackage candidate, and deploy the docs.
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  autotag:
+    name: Tag version bump
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      created: ${{ steps.tag.outputs.created }}
+      name: ${{ steps.tag.outputs.name }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Create tag if the version was bumped
+        id: tag
+        run: |
+          git fetch --tags --force
+          VERSION="$(grep '^version:' mathiassm.cabal | awk '{print $2}')"
+          TAG="v${VERSION}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+            echo "name=$TAG" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: autotag
+    if: needs.autotag.outputs.created == 'true'
+    uses: ./.github/workflows/build-test.yml
+    with:
+      ghc-version: ${{ vars.GHC_VERSION }}
+      cabal-version: ${{ vars.CABAL_VERSION }}
+
+  versioned:
+    name: Publish versioned GitHub release
+    needs: [build, autotag]
+    if: needs.autotag.outputs.created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: artifact-executable
+
+      - name: Assemble the kit
+        run: |
+          chmod +x artifact-executable
+          mkdir -p kit
+          cp artifact-executable kit/site
+          cp -r templates kit/
+          cp -r assets kit/
+          tar -czf site-kit.tar.gz -C kit .
+          sha256sum site-kit.tar.gz > site-kit.tar.gz.sha256
+
+      - name: Publish versioned release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.autotag.outputs.name }}
+          draft: true
+          make_latest: true
+          generate_release_notes: true
+          files: |
+            site-kit.tar.gz
+            site-kit.tar.gz.sha256
+
+  hackage:
+    name: Publish Hackage candidate
+    needs: [build, autotag]
+    if: needs.autotag.outputs.created == 'true' && vars.HACKAGE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: ${{ vars.GHC_VERSION }}
+          cabal-version: ${{ vars.CABAL_VERSION }}
+
+      - name: Build source distribution
+        run: |
+          cabal check
+          cabal sdist
+
+      - name: Publish candidate to Hackage
+        uses: haskell-actions/hackage-publish@v1
+        with:
+          hackageToken: ${{ secrets.HACKAGE_AUTH_TOKEN }}
+          packagesPath: ${{ github.workspace }}/dist-newstyle/sdist
+          publish: false
+
+  deploy-docs:
+    name: Deploy documentation
+    needs: [build, autotag]
+    if: needs.autotag.outputs.created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: artifact-docs
+          path: artifact-docs
+      - run: ls -R .
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: artifact-docs
+      - id: deployment
+        uses: actions/deploy-pages@v5
