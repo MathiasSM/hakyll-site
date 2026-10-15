@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+set -e
+
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.hs')
+[ -z "$files" ] && exit 0
+
+fourmolu --mode inplace $files
+changed=$(git diff --name-only -- $files)
+if [ -n "$changed" ]; then
+  echo "fourmolu reformatted (commit aborted); review and re-commit:" >&2
+  echo "$changed" >&2
+  exit 1
+fi
+
+hlint $files
