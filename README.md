@@ -57,7 +57,8 @@ ASSETS_DIR=assets
 
 1. Install ImageMagick (e.g. via `sudo apt instal imagemagick`).
 2. Install ghcup (e.g. using `mise use -g ghcup`).
-3. Use ghcup to install `ghc`, `cabal` (both required), `hls`, `fourmolu`, `hlint` (optional).
+3. Use ghcup to install `ghc`, `cabal` (both required)
+  - You may install `hls`, `fourmolu`, `hlint`, `apply-refact` with it, or use `cabal install PKG-VERSION` (e.g. `cabal install fourmolu-0.20.1.0`)
   - Remember to `ghcup set <TOOL>` (in particular, you might need to `ghcup set cabal 3.14` because of hlint support)
 4. Enable the git hooks (runs `fourmolu` and `hlint` before each commit):
 

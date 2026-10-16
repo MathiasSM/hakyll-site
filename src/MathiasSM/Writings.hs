@@ -11,11 +11,11 @@ import System.FilePath.Posix (takeBaseName)
 -- | The distinct groups across @writings/@, from `group:` front matter or the folder a post sits in
 discoverGroups :: (MonadMetadata m) => SiteConfig -> m [String]
 discoverGroups cfg = do
-  pages <- getAllMetadata (writingsPattern cfg)
-  pure $ sort $ nub $ mapMaybe (\(ident, metadata) -> groupOf (contentDir cfg) ident metadata) pages
+    pages <- getAllMetadata (writingsPattern cfg)
+    pure $ sort $ nub $ mapMaybe (\(ident, metadata) -> groupOf (contentDir cfg) ident metadata) pages
 
 -- | The standalone pages: flat @writings/@ files that are not group indexes
 discoverStandalonePages :: (MonadMetadata m) => SiteConfig -> m [String]
 discoverStandalonePages cfg = do
-  pages <- getAllMetadata (pagesPattern cfg "*")
-  pure $ sort [takeBaseName (toFilePath ident) | (ident, metadata) <- pages, not (isIndex metadata)]
+    pages <- getAllMetadata (pagesPattern cfg "*")
+    pure $ sort [takeBaseName (toFilePath ident) | (ident, metadata) <- pages, not (isIndex metadata)]
