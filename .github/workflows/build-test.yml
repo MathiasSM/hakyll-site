@@ -52,10 +52,10 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: cache-cabal
         env:
-          key: ${{ runner.os }}-ghc-${{ inputs.ghc-version }}-${{ steps.setup.outputs.cabal-version }}
+          key: ${{ runner.os }}-ghc-${{ inputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}-docs-tests-bench-coverage
         with:
           path: ${{ steps.setup.outputs.cabal-store }}
-          key: ${{ env.key }}-plan-${{ hashFiles('**/plan.json') }}
+          key: ${{ env.key }}-${{ hashFiles('cabal.project', 'cabal.project.freeze', 'mathiassm.cabal') }}
           restore-keys: ${{ env.key }}-
 
       - name: Install dependencies
