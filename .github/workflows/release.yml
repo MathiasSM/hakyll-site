@@ -82,7 +82,7 @@ jobs:
           sha256sum site-kit.tar.gz > site-kit.tar.gz.sha256
 
       - name: Publish versioned release
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        uses: step-security/action-gh-release@44319d37c8b7966bf07f89f0cbf63408141446df # v3.0.3
         with:
           tag_name: ${{ needs.autotag.outputs.name }}
           draft: true
