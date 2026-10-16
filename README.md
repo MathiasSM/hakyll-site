@@ -12,7 +12,7 @@ This is a [hakyll](https://hackage.haskell.org/package/hakyll)-based site genera
 
 ## Usage
 
-You may download the [latest release](https://github.com/MathiasSM/hakyll-site/releases/tag/latest), which should include an executable for ubuntu (I can tweak the release thing to provide statically-linked executables, or builds for other platforms, but I don't know of anyone needing them as of writing). You may run the executable in a directory like:
+You may download the [latest release](https://github.com/MathiasSM/hakyll-site/releases/latest), which should include an executable for ubuntu (I can tweak the release thing to provide statically-linked executables, or builds for other platforms, but I don't know of anyone needing them as of writing). You may run the executable in a directory like:
 
 - `templates/` hakyll templates that define components of each (usually html) pages. There are included files in the release tarball and this repo, but you may change them as you need to.
 - `assets/` holds styles and potentially other files that are logically coupled with templates/ and it didn't make much sense to "extract" into the content repo. Same as with templates, there's a bundle included, which is the one I use for my personal site; feel free to change to your liking.
