@@ -8,20 +8,21 @@ import Hakyll (Compiler, Item, Metadata, Routes, customRoute, replaceAll, toFile
 import MathiasSM.Metadata (Key (Path), lookupKey)
 import System.FilePath.Posix (takeExtension, (</>))
 
--- | The output file for a public path: `/contact` becomes `contact/index.html`,
--- while a path with an extension (like `/404.html`) is kept as is.
+{- | The output file for a public path: `/contact` becomes `contact/index.html`,
+while a path with an extension (like `/404.html`) is kept as is.
+-}
 outputPath :: FilePath -> FilePath
 outputPath path
-  | null (takeExtension path) = withoutSlash </> "index.html"
-  | otherwise = withoutSlash
+    | null (takeExtension path) = withoutSlash </> "index.html"
+    | otherwise = withoutSlash
   where
     withoutSlash = dropWhile (== '/') path
 
 -- | Route from the `path:` front matter, laid out by 'outputPath'
 pathRoute :: Metadata -> Routes
 pathRoute metadata = case lookupKey Path metadata of
-  Nothing -> customRoute $ \ident -> error $ "Missing `path` in " ++ toFilePath ident
-  Just path -> customRoute $ const $ outputPath path
+    Nothing -> customRoute $ \ident -> error $ "Missing `path` in " ++ toFilePath ident
+    Just path -> customRoute $ const $ outputPath path
 
 -- | Cleans all URLs
 cleanIndexUrls :: Item String -> Compiler (Item String)
@@ -37,8 +38,8 @@ cleanIndexHtmls = return . fmap (replaceAll indexPattern replacement)
 -- | Strips a URL of its index.html suffix
 cleanIndex :: String -> String
 cleanIndex url
-  | idx == url = "/"
-  | idx `isSuffixOf` url = take (length url - length idx) url
-  | otherwise = url
+    | idx == url = "/"
+    | idx `isSuffixOf` url = take (length url - length idx) url
+    | otherwise = url
   where
     idx = "/index.html"
