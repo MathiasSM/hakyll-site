@@ -8,7 +8,7 @@ html {
 }
 body {
     margin: 0;
-    font: 100%/1.5 var(--font-sans);
+    font: 100%/1.75 var(--font-sans);
     font-weight: 400;
     font-style: normal;
     text-rendering: optimizeLegibility;
@@ -16,10 +16,11 @@ body {
     background: var(--color-bg);
     color: var(--color-main-black);
 }
-img, iframe {border: none; max-width:100%;}
+img, iframe, figure {border: none; max-width:100%; margin:0;}
+p:first-child {margin-top:0}
 
 /* headers */
-h1,h2,h3,h4,h5,h6 {margin: 1em 0 0.5em; font-weight: normal}
+h1,h2,h3,h4,h5,h6 {margin: 1em 0 0.5em; font-weight: normal; clear: both;}
 h1 {font-size: 1.6em;}
 h2 {font-size: 1.6em;}
 h3 {font-size: 1.3em;}
@@ -48,6 +49,7 @@ pre {padding: 1em; overflow-x: auto}
 blockquote {position:relative; border-left: 5px solid var(--color-accent-light); padding: 1em 1.5em; margin: 0}
 
 /* other elements */
-hr {border:0; border-bottom: 1px solid var(--color-main-dark); width:90%; margin: 1em auto;}
-
+hr {border:0; border-bottom: 1px solid var(--color-main-dark); width:90%; margin: 0 auto; padding: 1em 0;}
 dfn {font-style: normal;}
+ruby {line-height: 2;}
+rt {color: #555555; ruby-align: center; margin-bottom: .2em;}

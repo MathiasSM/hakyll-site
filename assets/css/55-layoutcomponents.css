@@ -47,42 +47,6 @@
 .main-article p:first-child {margin-top:0}
 .main-article > footer {padding:1em 0;margin-top:2em;border-top:1px solid var(--color-main-dark)}
 
-/* table of contents ***********************************************************/
-nav#TOC {
-  background: var(--color-accent-white);
-  border: 1px solid var(--color-accent-light);
-  border-radius: var(--round-corners);
-  padding: 0.5em 1em;
-  margin: 0 0 1.5em;
-}
-nav#TOC ul {
-  list-style: none;
-  padding-left: 1.2em;
-  margin: 0.25em 0;
-}
-nav#TOC > ul {
-  padding-left: 0;
-}
-nav#TOC a {
-  color: inherit;
-}
-nav#TOC a:hover,
-nav#TOC a:active {
-  color: var(--color-accent);
-}
-
-/* Add icon to external links within main content */
-.main-article div a[href^=http]::after {
-  width:1em;
-  display:inline-block;
-  padding-left: .5em;
-  content: url("data:image/svg+xml;charset=UTF-8,%3c?xml version='1.0' encoding='UTF-8'?%3e%3csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z'/%3e%3c/svg%3e");
-  opacity: .2;
-}
-.main-article .social-contact a[href^=http]::after { display:none }
-.main-article div a:hover[href^=http]::after,
-.main-article div a:active[href^=http]::after { opacity: .8; }
-
 /* about *******************************************************************/
 .intro img {
   width: 5rem;
@@ -161,6 +125,7 @@ nav#TOC a:active {
 }
 
 /* social-contact *************************************************************/
+.social-contact a[href^=http]::after { display:none }
 .social-contact {
   list-style-type: none;
   padding:0;
@@ -186,8 +151,3 @@ nav#TOC a:active {
   margin-right:1em;
   display:flex; flex-direction:column; justify-content:center;
 }
-
-/* common *********************************************************************/
-
-.unbreakable {white-space: nowrap;}
-.ipa {font-style: italic;}
