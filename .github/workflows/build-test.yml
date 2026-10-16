@@ -45,7 +45,7 @@ jobs:
         run: |
           cabal configure \
             --enable-tests --enable-coverage \
-            --enable-benchmarks --disable-documentation
+            --enable-benchmarks --enable-documentation
           cabal build all --dry-run
 
       - name: Restore cached dependencies
