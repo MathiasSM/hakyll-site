@@ -69,6 +69,21 @@ ASSETS_DIR=assets
 
 1. `cabal build all`: First time will take a while, but dependencies won't need to recompile often.
 
+#### Dependencies
+
+Dependency versions are pinned in `cabal.project.freeze` so builds stay
+reproducible and the CI cache stays valid. To update them:
+
+```sh
+cabal update                          # refresh the Hackage index
+cabal outdated                        # optional: see what's stale
+rm cabal.project.freeze && cabal freeze --enable-tests --enable-benchmarks
+git add cabal.project.freeze && git commit
+```
+
+`--enable-tests --enable-benchmarks` matches the CI build flags, so test and
+benchmark dependencies are pinned too.
+
 #### Format and lint
 
 Either
