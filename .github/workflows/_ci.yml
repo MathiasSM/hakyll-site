@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  code-quality: write
   pull-requests: read
 
 concurrency:
@@ -37,7 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      code-quality: write
       pull-requests: read
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -48,13 +46,12 @@ jobs:
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifact-coverage
-      - name: Upload coverage report
-        uses: actions/upload-code-coverage@2b21a77928be8d5168c2b9581a67f2adbebacc52 # v1.4.4
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
         with:
-          fail-on-error: false # TODO: Fix failing runs
-          file: cobertura.xml
-          language: Haskell
-          label: code-coverage/cabal
+          files: cobertura.xml
+          disable_search: true
+          fail_ci_if_error: false
 
   changelog-gate:
     name: Verify version in Changelog
