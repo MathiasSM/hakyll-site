@@ -59,16 +59,16 @@ ensureContentExists cfg = do
 loadSiteConfig :: FilePath -> Web.Website -> IO SiteConfig
 loadSiteConfig contentDir website = do
     let site = Web.websiteSite website
-    env                <- siteEnv <$> lookupEnv "SITE_ENV"
-    assetsDirectory    <- fromMaybe "assets" <$> lookupEnv "ASSETS_DIR"
+    env <- siteEnv <$> lookupEnv "SITE_ENV"
+    assetsDirectory <- fromMaybe "assets" <$> lookupEnv "ASSETS_DIR"
     templatesDirectory <- fromMaybe "templates" <$> lookupEnv "TEMPLATES_DIR"
-    name               <- override "SITE_NAME" (Web.siteName site)
-    description        <- override "SITE_DESCRIPTION" (Web.siteDescription site)
-    author             <- override "SITE_AUTHOR" (Web.siteAuthor site)
-    year               <- override "SITE_COPYRIGHT_YEAR" (Web.siteCopyrightYear site)
-    domain             <- override "SITE_DOMAIN" (Web.siteDomain site)
-    twitter            <- override "TWITTER_HANDLE" (Web.siteTwitterHandle site)
-    mathjax            <- override "MATHJAX_VERSION" (Web.mathjaxVersion (Web.websiteMathjax website))
+    name <- override "SITE_NAME" (Web.siteName site)
+    description <- override "SITE_DESCRIPTION" (Web.siteDescription site)
+    author <- override "SITE_AUTHOR" (Web.siteAuthor site)
+    year <- override "SITE_COPYRIGHT_YEAR" (Web.siteCopyrightYear site)
+    domain <- override "SITE_DOMAIN" (Web.siteDomain site)
+    twitter <- override "TWITTER_HANDLE" (Web.siteTwitterHandle site)
+    mathjax <- override "MATHJAX_VERSION" (Web.mathjaxVersion (Web.websiteMathjax website))
     pure
         SiteConfig
             { siteName = name
@@ -84,7 +84,7 @@ loadSiteConfig contentDir website = do
             , siteEnv = env
             }
   where
-    override :: Read a => String -> a -> IO (a)
+    override :: (Read a) => String -> a -> IO a
     override var fallback = fromMaybe fallback . (>>= readMaybe) <$> lookupEnv var
 
     -- Defaults to Prod; unknown values currently also fall through to Prod.

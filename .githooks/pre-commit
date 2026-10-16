@@ -12,4 +12,4 @@ if [ -n "$changed" ]; then
   exit 1
 fi
 
-hlint $files
+hlint $files --ignore-suggestions

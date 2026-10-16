@@ -2,8 +2,8 @@
 module MathiasSM.Rules.Showcase (processShowcaseGroup) where
 
 import Data.List (sortOn)
-import Hakyll
-  ( Compiler,
+import Hakyll (
+    Compiler,
     Context,
     Item (Item, itemBody, itemIdentifier),
     Rules,
@@ -12,7 +12,7 @@ import Hakyll
     listField,
     loadAll,
     match,
-  )
+ )
 import MathiasSM.Config (SiteConfig, projectsGroup, projectsPattern)
 import MathiasSM.Content (requireProject, showcaseKey)
 import MathiasSM.Context (minimalCtx)
@@ -22,29 +22,30 @@ import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 -- | Processes the projects group: its index page and the projects it lists
 processShowcaseGroup :: SiteConfig -> Rules ()
 processShowcaseGroup cfg = do
-  processShowcaseItems cfg
-  processShowcaseIndex cfg
+    processShowcaseItems cfg
+    processShowcaseIndex cfg
 
 -- | Builds the index page, listing all projects
 processShowcaseIndex :: SiteConfig -> Rules ()
 processShowcaseIndex cfg =
-  processPage cfg (page cfg projectsGroup) {pageContext = getProjectsCtx cfg, pageTemplates = ["templates/with-projects.html"]}
+    processPage cfg (page cfg projectsGroup){pageContext = getProjectsCtx cfg, pageTemplates = ["templates/with-projects.html"]}
 
--- | Compiles each project (not routed), so the index can list it
---
--- The raw YAML is kept as the item; parsing here makes an invalid project fail the build.
+{- | Compiles each project (not routed), so the index can list it
+
+The raw YAML is kept as the item; parsing here makes an invalid project fail the build.
+-}
 processShowcaseItems :: SiteConfig -> Rules ()
 processShowcaseItems cfg =
-  match (projectsPattern cfg) $
-    compile $ do
-      item <- getResourceString
-      _ <- requireProject item
-      return item
+    match (projectsPattern cfg) $
+        compile $ do
+            item <- getResourceString
+            _ <- requireProject item
+            return item
 
 -- | Build context for the index page
 getProjectsCtx :: SiteConfig -> Compiler (Context String)
 getProjectsCtx cfg = do
-  items <- loadAll (projectsPattern cfg)
-  projects <- mapM (\item -> Item (itemIdentifier item) <$> requireProject item) items
-  let ordered = sortOn (showcaseKey . itemBody) projects
-  return $ listField "projects" projectContext (return ordered) <> minimalCtx cfg
+    items <- loadAll (projectsPattern cfg)
+    projects <- mapM (\item -> Item (itemIdentifier item) <$> requireProject item) items
+    let ordered = sortOn (showcaseKey . itemBody) projects
+    return $ listField "projects" projectContext (return ordered) <> minimalCtx cfg
