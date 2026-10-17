@@ -7,16 +7,33 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+## [0.4.0.1] - 2026-10-17
+
 ### Added
 
 - This CHANGELOG file. Added to the .cabal file to include in sdist package.
 - A pre-commit git hook, opt-in, that runs hlint and fourmolu before a commit, and fails if it needed changes.
 - A RELEASE-CHECKLIST, listing the steps to "release" a new version of this project.
 - A CONTRIBUTING file, explaining briefly the expected workflow, the use of githooks and referencing RELEASE-CHECKLIST
+- An OpenSSF Best Practices badge.
+- A GitHub release workflow that tags the version and publishes GitHub and Hackage drafts.
+- Basic styles for figures and images within posts.
 
 ### Changed
 
 - README: Mentioning new githooks, referencing new CONTRIBUTING, RELEASE-CHECKLIST.
+- Pinned dependencies via `cabal.project.freeze` and keyed the CI cache on it.
+- CI: upload coverage to Codecov instead of GitHub Code Quality.
+- Bumped GitHub Actions dependencies (scorecard-action, actions/cache, hlint-scan, download-artifact).
+
+### Fixed
+
+- Removed the broken `CONTENT_DIR`, `TEMPLATES_DIR`, and `ASSETS_DIR` environment-variable overrides.
+
+### Security
+
+- Hardened GitHub Actions (StepSecurity recommendations and `contents: read` permissions).
+- Run OpenSSF Scorecard on pull requests.
 
 ## [0.4.0.0] - 2026-10-15
 
@@ -82,7 +99,8 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 
 
-[Unreleased]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.0...master
+[Unreleased]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.1...master
+[0.4.0.1]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.0...v0.4.0.1
 [0.4.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.3.0.0...v0.4.0.0
 [0.3.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.2.0.0...v0.3.0.0
 [0.2.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.1.0.0...v0.2.0.0
