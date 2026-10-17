@@ -47,7 +47,7 @@ jobs:
         with:
           name: artifact-coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        uses: step-security/codecov-action@367bf7e789f1b8e452a759be81c791de8d69b2f6 # v7.1.1
         with:
           files: cobertura.xml
           disable_search: true
