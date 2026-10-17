@@ -9,7 +9,7 @@ import MathiasSM.Content (isDraft, parseNavEntry)
 import MathiasSM.Metadata (Key (Path), lookupKey)
 import MathiasSM.Tsv (Row, parseTsv)
 
-{- | Fails the build, once, if any hobby (shown or not) lacks a published blog post with `path: <href>`
+{- | Fails the build, once, if any hobby (shown or not) lacks a published post with `path: <href>`
 
 Runs when the rules are set up, not for every page that lists the hobbies.
 -}
@@ -25,7 +25,7 @@ validateHobbyPages cfg = do
         $ userError
         $ "hobbies.tsv: no post in "
             ++ contentDir cfg
-            ++ "/blog with a matching `path:` for: "
+            ++ " with a matching `path:` for: "
             ++ intercalate ", " missing
 
 {- | Fails the build, once, listing every page whose menu entry (`nav:`) is invalid

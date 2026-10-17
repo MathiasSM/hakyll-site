@@ -27,15 +27,15 @@ Note: build commands check for required content before running.
 -}
 cli :: IO ()
 cli = do
+    let contentDir = "content"
     -- 1. Parse args
     args <- getArgs
-    dir <- fromMaybe "content" <$> lookupEnv "CONTENT_DIR"
     -- 2. Get and validate website files/config
     -- (`website.yaml` is always required, even for `clean`)
-    website <- Web.loadWebsite dir
+    website <- Web.loadWebsite contentDir
     unless ("clean" `elem` args) (Web.validateSecurityExpiration website)
     -- 3. Check content exists
-    cfg <- loadSiteConfig dir website
+    cfg <- loadSiteConfig contentDir website
     unless ("clean" `elem` args) (ensureContentExists cfg)
     -- 4. Run command
     hakyllWith siteConfiguration (rules cfg website)
@@ -60,8 +60,6 @@ loadSiteConfig :: FilePath -> Web.Website -> IO SiteConfig
 loadSiteConfig contentDir website = do
     let site = Web.websiteSite website
     env <- siteEnv <$> lookupEnv "SITE_ENV"
-    assetsDirectory <- fromMaybe "assets" <$> lookupEnv "ASSETS_DIR"
-    templatesDirectory <- fromMaybe "templates" <$> lookupEnv "TEMPLATES_DIR"
     name <- override "SITE_NAME" (Web.siteName site)
     description <- override "SITE_DESCRIPTION" (Web.siteDescription site)
     author <- override "SITE_AUTHOR" (Web.siteAuthor site)
@@ -79,8 +77,8 @@ loadSiteConfig contentDir website = do
             , twitterHandle = twitter
             , mathjaxVersion = mathjax
             , contentDir = contentDir
-            , assetsDir = assetsDirectory
-            , templatesDir = templatesDirectory
+            , assetsDir = "assets" -- TODO
+            , templatesDir = "templates" -- TODO
             , siteEnv = env
             }
   where
