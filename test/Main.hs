@@ -9,8 +9,8 @@ import MathiasSM.ContentSpec qualified as Content
 import MathiasSM.FeedsSpec qualified as Feeds
 import MathiasSM.MetadataSpec qualified as Metadata
 import MathiasSM.RedirectsSpec qualified as Redirects
-import MathiasSM.TsvSpec qualified as Tsv
 import MathiasSM.ValidateSpec qualified as Validate
+import MathiasSM.YamlSpec qualified as Yaml
 import System.Directory (getCurrentDirectory, removePathForcibly)
 import Test.Tasty (TestTree, defaultMain, testGroup)
 
@@ -38,8 +38,8 @@ tests root snapshotDir files =
             , Feeds.tests
             , Metadata.tests
             , Redirects.tests
-            , Tsv.tests
             , Validate.tests
+            , Yaml.tests
             ]
         , goldenTests root snapshotDir files
         ]

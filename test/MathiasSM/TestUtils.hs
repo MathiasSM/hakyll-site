@@ -2,6 +2,7 @@
 module MathiasSM.TestUtils (
     Fields,
     render,
+    one,
     set,
     without,
     day,
@@ -19,6 +20,12 @@ type Fields = [(String, String)]
 -- | The fields as YAML text, one @key: value@ per line
 render :: Fields -> String
 render fields = unlines [key ++ ": " ++ value | (key, value) <- fields]
+
+-- | The fields as a single-element YAML list (for the list parsers)
+one :: Fields -> String
+one [] = "- {}"
+one ((key, value) : rest) =
+    "- " ++ key ++ ": " ++ value ++ concat ["\n  " ++ k ++ ": " ++ v | (k, v) <- rest]
 
 -- | Replaces a field's value, or adds the field
 set :: String -> String -> Fields -> Fields

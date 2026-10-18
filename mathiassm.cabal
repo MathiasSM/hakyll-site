@@ -53,7 +53,7 @@ library
                   , MathiasSM.Context.Nav
                   , MathiasSM.Context.Project
                   , MathiasSM.Context.Site
-                  , MathiasSM.Context.Tables
+                  , MathiasSM.Context.Lists
                   , MathiasSM.Metadata
                   , MathiasSM.Rules.Assets
                   , MathiasSM.Rules.Favicon
@@ -65,10 +65,14 @@ library
                   , MathiasSM.Rules.Sitemap
                   , MathiasSM.Rules.Static
                   , MathiasSM.Rules
-                  , MathiasSM.Tsv
                   , MathiasSM.Validate
-                  , MathiasSM.Website
                   , MathiasSM.Writings
+                  , MathiasSM.Yaml
+                  , MathiasSM.Yaml.Experience
+                  , MathiasSM.Yaml.Hobby
+                  , MathiasSM.Yaml.Project
+                  , MathiasSM.Yaml.Social
+                  , MathiasSM.Yaml.Website
   other-modules: Paths_mathiassm
   autogen-modules: Paths_mathiassm
   build-depends:    base         >= 4 && < 5
@@ -106,7 +110,7 @@ test-suite test
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
                   , MathiasSM.ValidateSpec
-                  , MathiasSM.TsvSpec
+                  , MathiasSM.YamlSpec
                   , Golden
   build-depends:    base
                   , hakyll

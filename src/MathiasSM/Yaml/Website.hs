@@ -1,5 +1,5 @@
 -- | The site configuration read from @website.yaml@ in the content repo
-module MathiasSM.Website (
+module MathiasSM.Yaml.Website (
     -- * Main logic
     loadWebsite,
     validateSecurityExpiration,
@@ -39,8 +39,7 @@ module MathiasSM.Website (
     FundingProject (..),
     FundingChannel (..),
     FundingPlan (..),
-)
-where
+) where
 
 import Control.Monad (unless, when)
 import Data.Aeson (FromJSON (parseJSON), withObject, (.:))

@@ -14,8 +14,8 @@ import MathiasSM.Rules.SinglePages (page, pageCompiler, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
 import MathiasSM.Rules.Static (processStaticFiles)
 import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
-import MathiasSM.Website (Website)
 import MathiasSM.Writings (discoverGroups, discoverStandalonePages)
+import MathiasSM.Yaml.Website (Website)
 
 -- | Assembles the whole site from the content and configuration
 rules :: SiteConfig -> Website -> Rules ()

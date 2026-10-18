@@ -5,8 +5,9 @@ import Control.Monad (unless)
 import Data.List (intercalate)
 import Hakyll (Rules, getAllMetadata, preprocess, toFilePath)
 import MathiasSM.Config (SiteConfig, contentDir, hobbiesFile, pagesPattern, postsPattern)
-import MathiasSM.Content (Hobby (..), isDraft, parseHobbiesYaml, parseNavEntry)
+import MathiasSM.Content (isDraft, parseNavEntry)
 import MathiasSM.Metadata (Key (Path), lookupKey)
+import MathiasSM.Yaml.Hobby (Hobby (..), parseHobbiesYaml)
 
 {- | Fails the build, once, if any hobby (shown or not) lacks a published post with `path: <href>`
 
