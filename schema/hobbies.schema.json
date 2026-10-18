@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/hobbies.schema.json",
   "title": "Hobbies",
-  "description": "All hobbies in a single list. Mirrors what MathiasSM.Content.parseHobby reads.",
+  "description": "All hobbies, as a single list.",
   "type": "array",
   "items": {
     "type": "object",
