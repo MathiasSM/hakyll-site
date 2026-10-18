@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/experience.schema.json",
+  "title": "Experience",
+  "description": "All experience items, as a single list.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["icon", "name"],
+    "properties": {
+      "icon": {
+        "type": "string",
+        "description": "Icon under content/media/icons/, without the .svg extension."
+      },
+      "name": {
+        "type": "string",
+        "description": "Label shown (may contain HTML)."
+      }
+    }
+  }
+}
