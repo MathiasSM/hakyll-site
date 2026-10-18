@@ -29,7 +29,7 @@ import Hakyll (
     version,
     (.||.),
  )
-import MathiasSM.Config (SiteConfig, assetsDir, mediaDir, tablesPattern)
+import MathiasSM.Config (SiteConfig, assetsDir, hobbiesPattern, mediaDir, tablesPattern)
 import MathiasSM.Rules.Favicon (faviconRules)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 
@@ -42,10 +42,15 @@ processAssets cfg = do
     processFavicon cfg
     justCopy (mediaPattern cfg "photos" ["jpg", "png", "gif"]) (mediaRoute (mediaDir cfg))
     processTables cfg
+    processHobbies cfg
 
 -- | Makes tables (TSV) loadable by contexts and rules; they are not routed
 processTables :: SiteConfig -> Rules ()
 processTables cfg = match (tablesPattern cfg) $ compile getResourceString
+
+-- | Makes the hobbies file (YAML) loadable by contexts and rules; it is not routed
+processHobbies :: SiteConfig -> Rules ()
+processHobbies cfg = match (hobbiesPattern cfg) $ compile getResourceString
 
 -- | Compress all CSS as one file
 processCss :: SiteConfig -> Rules ()

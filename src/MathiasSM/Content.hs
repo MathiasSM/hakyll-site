@@ -6,6 +6,7 @@ module MathiasSM.Content (
     statusName,
     Post (..),
     Project (..),
+    Hobby (..),
     NavEntry (..),
     isDraft,
     isIndex,
@@ -17,6 +18,8 @@ module MathiasSM.Content (
     parsePostYaml,
     parseProject,
     parseProjectYaml,
+    parseHobby,
+    parseHobbiesYaml,
     parseNavEntry,
     parseNavYaml,
     showcaseKey,
@@ -25,6 +28,7 @@ module MathiasSM.Content (
     requireLanguage,
     requireNav,
     requireProject,
+    requireHobbies,
 )
 where
 
@@ -111,6 +115,15 @@ data Project = Project
     , projectLongDescription :: String
     , projectTeam :: [String]
     , projectPriority :: Maybe Int
+    }
+    deriving (Eq, Show)
+
+-- | What a hobby entry needs (all hobbies live in one YAML list)
+data Hobby = Hobby
+    { hobbyName :: String
+    , hobbyHref :: String
+    , hobbyIcon :: String
+    , hobbyShow :: Bool
     }
     deriving (Eq, Show)
 
@@ -201,6 +214,17 @@ parseProject o =
         Just end | end < projectStart project -> Left ["endDate: " ++ show end ++ " is before startDate " ++ show (projectStart project)]
         _ -> Right project
 
+-- | Parses a hobby, reporting every problem (not just the first)
+parseHobby :: Object -> Either [String] Hobby
+parseHobby o =
+    runCheck
+        ( Hobby
+            <$> required o K.Name
+            <*> required o K.Href
+            <*> required o K.Icon
+            <*> (fromMaybe True <$> optional o K.Show)
+        )
+
 -- | A page that appears in the site menu (`nav: <label>`, `navOrder: <n>` in its front matter)
 data NavEntry = NavEntry
     { navLabel :: String
@@ -245,8 +269,23 @@ parsePostYaml = decodeYaml >=> parsePost
 parseProjectYaml :: String -> Either [String] Project
 parseProjectYaml = decodeYaml >=> parseProject
 
+-- | 'parseHobby' on the contents of the hobbies file (a list of hobbies)
+parseHobbiesYaml :: String -> Either [String] [Hobby]
+parseHobbiesYaml text = do
+    objects <- decodeYamlList text
+    let numbered = zip [0 :: Int ..] (map parseHobby objects)
+        problems = concat [map (prefix index) ps | (index, Left ps) <- numbered]
+        parsed = [hobby | (_, Right hobby) <- numbered]
+    if null problems then Right parsed else Left problems
+  where
+    prefix index problem = "hobby #" ++ show index ++ ": " ++ problem
+
 decodeYaml :: String -> Either [String] Object
 decodeYaml = first (\e -> [prettyPrintParseException e]) . decodeEither' . T.encodeUtf8 . T.pack
+
+-- | Like 'decodeYaml', but for a top-level list of objects
+decodeYamlList :: String -> Either [String] [Object]
+decodeYamlList = first (\e -> [prettyPrintParseException e]) . decodeEither' . T.encodeUtf8 . T.pack
 
 -- | Parses the current item's front matter, failing the build with the problems found
 requirePost :: Compiler Post
@@ -275,6 +314,10 @@ requireNav ident = do
 -- | Parses a project item (its body is the YAML), failing the build with the problems found
 requireProject :: Item String -> Compiler Project
 requireProject = either (failWith "invalid project") pure . parseProjectYaml . itemBody
+
+-- | Parses the hobbies item (its body is the YAML list), failing the build with the problems found
+requireHobbies :: Item String -> Compiler [Hobby]
+requireHobbies = either (failWith "invalid hobbies") pure . parseHobbiesYaml . itemBody
 
 {- | Fails the build listing the problems.
 
