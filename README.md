@@ -3,6 +3,7 @@
 [![Top language](https://img.shields.io/github/languages/top/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
 
 [![CI](https://github.com/MathiasSM/hakyll-site/actions/workflows/_ci.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/_ci.yml)
+[![codecov](https://codecov.io/github/MathiasSM/hakyll-site/graph/badge.svg)](https://app.codecov.io/github/MathiasSM/hakyll-site)
 [![CodeQL](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml)
 [![Dependabot](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15535/badge)](https://www.bestpractices.dev/projects/15535)
