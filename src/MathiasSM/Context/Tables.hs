@@ -14,7 +14,8 @@ import Hakyll (
     load,
     toFilePath,
  )
-import MathiasSM.Config (SiteConfig, experienceTable, hobbiesTable, mediaDir, socialsTable)
+import MathiasSM.Config (SiteConfig, experienceTable, hobbiesFile, mediaDir, socialsTable)
+import MathiasSM.Content (Hobby (..), requireHobbies)
 import MathiasSM.Tsv (Row, isYes, parseTsv, rowContext)
 import System.FilePath.Posix ((</>))
 
@@ -31,11 +32,31 @@ socialMediaContext cfg =
         listField name rowCtx $ tableItems (socialsTable cfg) (filter keep)
     rowCtx = iconContext (mediaDir cfg) "images/icons/social/" "site"
 
--- | Table of hobbies
+-- | The hobbies, read from a single YAML list
 hobbiesContext :: SiteConfig -> Context a
-hobbiesContext cfg = listField "hobbies" rowCtx $ tableItems (hobbiesTable cfg) (filter $ isYes "show")
+hobbiesContext cfg = listField "hobbies" (hobbyContext $ mediaDir cfg) $ hobbiesItems cfg
+
+-- | The hobbies file's shown hobbies as items, in file order
+hobbiesItems :: SiteConfig -> Compiler [Item Hobby]
+hobbiesItems cfg = do
+    file <- load (hobbiesFile cfg)
+    hobbies <- requireHobbies file
+    let shown = filter hobbyShow hobbies
+    return [Item (fromFilePath $ toFilePath (hobbiesFile cfg) ++ "#" ++ show n) hobby | (n, hobby) <- zip [0 :: Int ..] shown]
+
+-- | A hobby's fields as read by the hobbies template
+hobbyContext :: FilePath -> Context Hobby
+hobbyContext mediaDir' =
+    mconcat
+        [ hobbyField "name" hobbyName
+        , hobbyField "href" hobbyHref
+        , field "iconPath" (return . iconOf . itemBody)
+        , field "iconSource" (return . sourceOf . itemBody)
+        ]
   where
-    rowCtx = iconContext (mediaDir cfg) "images/icons/" "icon"
+    hobbyField name get = field name (return . get . itemBody)
+    iconOf hobby = "images/icons/" ++ hobbyIcon hobby ++ ".svg"
+    sourceOf hobby = mediaDir' </> fromMaybe (iconOf hobby) (stripPrefix "images/" (iconOf hobby))
 
 -- | Table of experience items
 experienceContext :: SiteConfig -> Context a

@@ -26,10 +26,12 @@ data Key
     | HideDescription
     | Home
     | Href
+    | Icon
     | Index
     | Language
     | LastModifiedAt
     | LongDescription
+    | Name
     | Nav
     | NavOrder
     | Path
@@ -38,6 +40,7 @@ data Key
     | ShareDescription
     | ShareTitle
     | ShortDescription
+    | Show
     | Sitemap
     | StartDate
     | Status
@@ -61,10 +64,12 @@ keyName key = case key of
     HideDescription -> "hideDescription"
     Home -> "home"
     Href -> "href"
+    Icon -> "icon"
     Index -> "index"
     Language -> "language"
     LastModifiedAt -> "lastModifiedAt"
     LongDescription -> "longDescription"
+    Name -> "name"
     Nav -> "nav"
     NavOrder -> "navOrder"
     Path -> "path"
@@ -73,6 +78,7 @@ keyName key = case key of
     ShareDescription -> "shareDescription"
     ShareTitle -> "shareTitle"
     ShortDescription -> "shortDescription"
+    Show -> "show"
     Sitemap -> "sitemap"
     StartDate -> "startDate"
     Status -> "status"

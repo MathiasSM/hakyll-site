@@ -19,6 +19,7 @@ module MathiasSM.Config (
     pagesPattern,
     postsPattern,
     projectsPattern,
+    hobbiesPattern,
     tablesPattern,
 
     -- * Identifiers
@@ -29,8 +30,8 @@ module MathiasSM.Config (
     pageTemplate,
     postTemplate,
 
-    -- ** Tables
-    hobbiesTable,
+    -- ** Data files
+    hobbiesFile,
     socialsTable,
     experienceTable,
 )
@@ -95,7 +96,8 @@ mediaDir cfg = contentDir cfg </> "media"
 -- | Currently hardcoded files the site cannot build without, relative to the repo root
 requiredContent :: SiteConfig -> [FilePath]
 requiredContent cfg =
-    [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
+    (contentDir cfg </> "hobbies.yaml")
+        : [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["socials", "experience"]]
 
 -- | The group whose items are the projects (its index page lists `projects/`)
 projectsGroup :: String
@@ -117,6 +119,10 @@ postsPattern cfg group = fromString $ contentDir cfg </> "writings" </> group </
 projectsPattern :: SiteConfig -> Pattern
 projectsPattern cfg = fromString $ contentDir cfg </> "projects" </> "*.yaml"
 
+-- | The single hobbies file (a list of hobbies)
+hobbiesPattern :: SiteConfig -> Pattern
+hobbiesPattern cfg = fromString $ contentDir cfg </> "hobbies.yaml"
+
 -- | All tables (TSV)
 tablesPattern :: SiteConfig -> Pattern
 tablesPattern cfg = fromString $ contentDir cfg </> "tables" </> "*.tsv"
@@ -125,9 +131,9 @@ tablesPattern cfg = fromString $ contentDir cfg </> "tables" </> "*.tsv"
 postSnapshot :: String -> Snapshot
 postSnapshot group = "published-" ++ group
 
--- | Tables (TSV) read by contexts
-hobbiesTable, socialsTable, experienceTable :: SiteConfig -> Identifier
-hobbiesTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "hobbies.tsv"
+-- | Tables (TSV) and the hobbies file (YAML) read by contexts
+hobbiesFile, socialsTable, experienceTable :: SiteConfig -> Identifier
+hobbiesFile cfg = fromFilePath $ contentDir cfg </> "hobbies.yaml"
 socialsTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "socials.tsv"
 experienceTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "experience.tsv"
 
