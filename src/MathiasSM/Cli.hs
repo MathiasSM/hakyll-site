@@ -8,7 +8,7 @@ import Data.Maybe (fromMaybe)
 import Hakyll (hakyllWith)
 import MathiasSM.Config (Env (..), SiteConfig (..), requiredContent, siteConfiguration)
 import MathiasSM.Rules (rules)
-import MathiasSM.Website qualified as Web
+import MathiasSM.Yaml.Website qualified as Web
 import System.Directory (doesDirectoryExist, doesFileExist)
 import System.Environment (getArgs, lookupEnv)
 import System.Exit (die)

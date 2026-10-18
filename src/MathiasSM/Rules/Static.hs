@@ -4,7 +4,6 @@ module MathiasSM.Rules.Static (processStaticFiles) where
 import Data.List (intercalate)
 import Hakyll (
     Compiler,
-    Item (itemBody),
     Rules,
     compile,
     create,
@@ -14,9 +13,10 @@ import Hakyll (
     makeItem,
     route,
  )
-import MathiasSM.Config (SiteConfig, baseUrl, siteAuthor, siteName, socialsTable)
-import MathiasSM.Tsv (parseTsv)
-import MathiasSM.Website (
+import MathiasSM.Config (SiteConfig, baseUrl, siteAuthor, siteName, socialsFile)
+import MathiasSM.Content (requireSocials)
+import MathiasSM.Yaml.Social (Social (..))
+import MathiasSM.Yaml.Website (
     Contact (..),
     Funding (..),
     FundingChannel (..),
@@ -56,11 +56,12 @@ createFileCompiler path build = create [fromFilePath path] $ do
     route idRoute
     compile (build >>= makeItem)
 
--- | The @href@ of every social account, in table order
+-- | The @href@ of every social account, in file order
 socialHrefs :: SiteConfig -> Compiler [String]
 socialHrefs cfg = do
-    table <- load (socialsTable cfg)
-    pure [href | row <- parseTsv (itemBody table), Just href <- [lookup "href" row]]
+    file <- load (socialsFile cfg)
+    socials <- requireSocials file
+    pure (map socialHref socials)
 
 -- Text files ----------------------------------------------------------------
 

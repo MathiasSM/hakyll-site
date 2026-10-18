@@ -1,12 +1,8 @@
--- | Typed views of the content files: posts (front matter) and projects (YAML)
+-- | Typed views of the content files: posts and pages (front matter)
 module MathiasSM.Content (
     Language (..),
     languageCode,
-    Status (..),
-    statusName,
     Post (..),
-    Project (..),
-    Hobby (..),
     NavEntry (..),
     isDraft,
     isIndex,
@@ -16,10 +12,6 @@ module MathiasSM.Content (
     parseAliasesYaml,
     parsePost,
     parsePostYaml,
-    parseProject,
-    parseProjectYaml,
-    parseHobby,
-    parseHobbiesYaml,
     parseNavEntry,
     parseNavYaml,
     showcaseKey,
@@ -29,27 +21,24 @@ module MathiasSM.Content (
     requireNav,
     requireProject,
     requireHobbies,
-)
-where
+    requireSocials,
+    requireExperiences,
+) where
 
 import Control.Monad ((>=>))
-import Data.Aeson (FromJSON (parseJSON), Object, Value (Null, String), withText)
-import Data.Aeson.Key (fromString)
-import Data.Aeson.KeyMap (lookup)
-import Data.Aeson.Types (Parser, parseEither)
-import Data.Bifunctor (first)
+import Data.Aeson (FromJSON (parseJSON), Value (String))
 import Data.List (intercalate, stripPrefix)
 import Data.Maybe (fromMaybe)
 import Data.Ord (Down (Down))
-import Data.Text qualified as T
-import Data.Text.Encoding qualified as T
 import Data.Time (Day)
-import Data.Yaml (decodeEither', prettyPrintParseException)
 import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, getUnderlying, toFilePath)
-import MathiasSM.Metadata (Key, keyName)
 import MathiasSM.Metadata qualified as K
+import MathiasSM.Yaml (Check (runCheck), decodeYaml, enumFromJSON, optional, required)
+import MathiasSM.Yaml.Experience (Experience (..), parseExperiencesYaml)
+import MathiasSM.Yaml.Hobby (Hobby (..), parseHobbiesYaml)
+import MathiasSM.Yaml.Project (Project (..), parseProjectYaml)
+import MathiasSM.Yaml.Social (Social (..), parseSocialsYaml)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
-import Prelude hiding (lookup)
 
 -- | Language a page is written in
 data Language = En | Es | Jp
@@ -64,35 +53,6 @@ languageCode Jp = "jp"
 instance FromJSON Language where
     parseJSON = enumFromJSON "language" languageCode
 
--- | How far along a project is
-data Status = Alpha | Finished | Ongoing | Unmaintained
-    deriving (Eq, Show, Enum, Bounded)
-
--- | How a project status is spelled
-statusName :: Status -> String
-statusName Alpha = "alpha"
-statusName Finished = "finished"
-statusName Ongoing = "ongoing"
-statusName Unmaintained = "unmaintained"
-
-instance FromJSON Status where
-    parseJSON = enumFromJSON "status" statusName
-
--- | Accepts exactly the spellings @render@ produces
-enumFromJSON :: (Enum a, Bounded a) => String -> (a -> String) -> Value -> Parser a
-enumFromJSON what render = withText what $ \t ->
-    case [x | x <- [minBound .. maxBound], render x == T.unpack t] of
-        x : _ -> pure x
-        [] ->
-            fail $
-                "unknown "
-                    ++ what
-                    ++ " \""
-                    ++ T.unpack t
-                    ++ "\" (expected "
-                    ++ intercalate ", " (map render [minBound .. maxBound])
-                    ++ ")"
-
 -- | What a post (blog, creative-writing) needs to be published
 data Post = Post
     { postTitle :: String
@@ -101,29 +61,6 @@ data Post = Post
     , postLanguage :: Language
     , postLastModified :: Maybe Day
     , postDraft :: Bool
-    }
-    deriving (Eq, Show)
-
--- | What a showcase project needs to be listed
-data Project = Project
-    { projectTitle :: String
-    , projectHref :: String
-    , projectStatus :: Status
-    , projectStart :: Day
-    , projectEnd :: Maybe Day
-    , projectShortDescription :: String
-    , projectLongDescription :: String
-    , projectTeam :: [String]
-    , projectPriority :: Maybe Int
-    }
-    deriving (Eq, Show)
-
--- | What a hobby entry needs (all hobbies live in one YAML list)
-data Hobby = Hobby
-    { hobbyName :: String
-    , hobbyHref :: String
-    , hobbyIcon :: String
-    , hobbyShow :: Bool
     }
     deriving (Eq, Show)
 
@@ -193,38 +130,6 @@ instance FromJSON AliasList where
 parseAliasesYaml :: String -> Either [String] [FilePath]
 parseAliasesYaml = decodeYaml >=> aliasesOf
 
--- | Parses a project, reporting every problem (not just the first)
-parseProject :: Object -> Either [String] Project
-parseProject o =
-    runCheck
-        ( Project
-            <$> required o K.Title
-            <*> required o K.Href
-            <*> required o K.Status
-            <*> required o K.StartDate
-            <*> optional o K.EndDate
-            <*> required o K.ShortDescription
-            <*> required o K.LongDescription
-            <*> (fromMaybe [] <$> optional o K.Team)
-            <*> optional o K.Priority
-        )
-        >>= endsAfterStart
-  where
-    endsAfterStart project = case projectEnd project of
-        Just end | end < projectStart project -> Left ["endDate: " ++ show end ++ " is before startDate " ++ show (projectStart project)]
-        _ -> Right project
-
--- | Parses a hobby, reporting every problem (not just the first)
-parseHobby :: Object -> Either [String] Hobby
-parseHobby o =
-    runCheck
-        ( Hobby
-            <$> required o K.Name
-            <*> required o K.Href
-            <*> required o K.Icon
-            <*> (fromMaybe True <$> optional o K.Show)
-        )
-
 -- | A page that appears in the site menu (`nav: <label>`, `navOrder: <n>` in its front matter)
 data NavEntry = NavEntry
     { navLabel :: String
@@ -265,28 +170,6 @@ parseNavYaml = decodeYaml >=> parseNavEntry
 parsePostYaml :: String -> Either [String] Post
 parsePostYaml = decodeYaml >=> parsePost
 
--- | 'parseProject' on the contents of a project file
-parseProjectYaml :: String -> Either [String] Project
-parseProjectYaml = decodeYaml >=> parseProject
-
--- | 'parseHobby' on the contents of the hobbies file (a list of hobbies)
-parseHobbiesYaml :: String -> Either [String] [Hobby]
-parseHobbiesYaml text = do
-    objects <- decodeYamlList text
-    let numbered = zip [0 :: Int ..] (map parseHobby objects)
-        problems = concat [map (prefix index) ps | (index, Left ps) <- numbered]
-        parsed = [hobby | (_, Right hobby) <- numbered]
-    if null problems then Right parsed else Left problems
-  where
-    prefix index problem = "hobby #" ++ show index ++ ": " ++ problem
-
-decodeYaml :: String -> Either [String] Object
-decodeYaml = first (\e -> [prettyPrintParseException e]) . decodeEither' . T.encodeUtf8 . T.pack
-
--- | Like 'decodeYaml', but for a top-level list of objects
-decodeYamlList :: String -> Either [String] [Object]
-decodeYamlList = first (\e -> [prettyPrintParseException e]) . decodeEither' . T.encodeUtf8 . T.pack
-
 -- | Parses the current item's front matter, failing the build with the problems found
 requirePost :: Compiler Post
 requirePost = do
@@ -319,6 +202,14 @@ requireProject = either (failWith "invalid project") pure . parseProjectYaml . i
 requireHobbies :: Item String -> Compiler [Hobby]
 requireHobbies = either (failWith "invalid hobbies") pure . parseHobbiesYaml . itemBody
 
+-- | Parses the socials item (its body is the YAML list), failing the build with the problems found
+requireSocials :: Item String -> Compiler [Social]
+requireSocials = either (failWith "invalid socials") pure . parseSocialsYaml . itemBody
+
+-- | Parses the experience item (its body is the YAML list), failing the build with the problems found
+requireExperiences :: Item String -> Compiler [Experience]
+requireExperiences = either (failWith "invalid experience") pure . parseExperiencesYaml . itemBody
+
 {- | Fails the build listing the problems.
 
 Hakyll already prefixes the error with the item being compiled, so the message
@@ -326,34 +217,3 @@ only says what is wrong (and names the other item when it isn't the one compilin
 -}
 failWith :: String -> [String] -> Compiler a
 failWith what problems = fail $ what ++ ":\n" ++ intercalate "\n" (map ("  " ++) problems)
-
--- Accumulating validation ----------------------------------------------------
-
--- | Like 'Either', but combining failures instead of stopping at the first
-newtype Check a = Check {runCheck :: Either [String] a}
-
-instance Functor Check where
-    fmap f (Check r) = Check (fmap f r)
-
-instance Applicative Check where
-    pure = Check . Right
-    Check (Left a) <*> Check (Left b) = Check (Left (a ++ b))
-    Check (Left a) <*> Check _ = Check (Left a)
-    Check (Right f) <*> Check r = Check (fmap f r)
-
-required :: (FromJSON a) => Object -> Key -> Check a
-required o key = case lookup (fromString $ keyName key) o of
-    Nothing -> Check $ Left [keyName key ++ ": missing"]
-    Just Null -> Check $ Left [keyName key ++ ": missing"]
-    Just v -> Check $ decodeField key v
-
-optional :: (FromJSON a) => Object -> Key -> Check (Maybe a)
-optional o key = case lookup (fromString $ keyName key) o of
-    Nothing -> pure Nothing
-    Just Null -> pure Nothing
-    Just v -> Check $ Just <$> decodeField key v
-
-decodeField :: (FromJSON a) => Key -> Value -> Either [String] a
-decodeField key = first (\e -> [keyName key ++ ": " ++ clean e]) . parseEither parseJSON
-  where
-    clean e = fromMaybe e (stripPrefix "Error in $: " e)

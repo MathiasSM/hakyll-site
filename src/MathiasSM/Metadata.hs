@@ -41,6 +41,8 @@ data Key
     | ShareTitle
     | ShortDescription
     | Show
+    | ShowAbout
+    | ShowContact
     | Sitemap
     | StartDate
     | Status
@@ -48,6 +50,7 @@ data Key
     | Templated
     | TOC
     | Type
+    | Username
     deriving (Eq, Show, Enum, Bounded)
 
 -- | The key as spelled in front matter
@@ -79,6 +82,8 @@ keyName key = case key of
     ShareTitle -> "shareTitle"
     ShortDescription -> "shortDescription"
     Show -> "show"
+    ShowAbout -> "showAbout"
+    ShowContact -> "showContact"
     Sitemap -> "sitemap"
     StartDate -> "startDate"
     Status -> "status"
@@ -86,6 +91,7 @@ keyName key = case key of
     Templated -> "templated"
     TOC -> "TOC"
     Type -> "type"
+    Username -> "username"
 
 -- | Looks up a key's value as a string
 lookupKey :: Key -> Metadata -> Maybe String

@@ -15,8 +15,8 @@ import Hakyll (
 import MathiasSM.Config (SiteConfig, twitterHandle)
 import MathiasSM.Context.Feeds (feedsContext)
 import MathiasSM.Context.Language (languageContext)
+import MathiasSM.Context.Lists (experienceContext, hobbiesContext, socialMediaContext)
 import MathiasSM.Context.Site (siteContext)
-import MathiasSM.Context.Tables (experienceContext, hobbiesContext, socialMediaContext)
 
 -- | "Minimal" context all pages should know about
 minimalCtx :: SiteConfig -> Context String

@@ -21,8 +21,8 @@ import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
 import MathiasSM.Config (Env (Dev), SiteConfig (..), siteConfiguration)
 import MathiasSM.Rules (rules)
-import MathiasSM.Website (loadWebsite)
-import MathiasSM.Website qualified as Web
+import MathiasSM.Yaml.Website (loadWebsite)
+import MathiasSM.Yaml.Website qualified as Web
 import System.Directory (
     copyFile,
     createDirectoryIfMissing,

@@ -29,7 +29,7 @@ import MathiasSM.CleanURL (cleanIndex)
 import MathiasSM.Config (SiteConfig, baseUrl, postSnapshot, postsPattern, siteAuthor)
 import MathiasSM.Content (Post (..), requirePostOf)
 import MathiasSM.Feeds (Feed (..), absoluteUrl, feeds)
-import MathiasSM.Website (Website (websiteFeed), feedSize)
+import MathiasSM.Yaml.Website (Website (websiteFeed), feedSize)
 
 -- | Builds the Atom feed of every post group: its newest posts, in full
 processFeeds :: SiteConfig -> Website -> Rules ()
