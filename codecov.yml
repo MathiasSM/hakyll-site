@@ -1,0 +1,9 @@
+codecov:
+  # Don't wait for status checks to pass to see report
+  require_ci_to_pass: false
+
+comment:
+  # Trying out everything first
+  layout: "header, files, condensed_header, condensed_files, tree, diff, footer, condensed_footer"
+  behavior: default
+  require_changes: false
