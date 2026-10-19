@@ -1,12 +1,10 @@
--- | Tests for the YAML file parsers (projects, hobbies, socials, experience)
+-- | Tests for the YAML file parsers (projects, socials)
 module MathiasSM.YamlSpec (tests) where
 
 import Data.Either (fromRight, isLeft)
-import Data.List (nub, sortOn)
+import Data.List (sortOn)
 import MathiasSM.Content (showcaseKey)
 import MathiasSM.TestUtils
-import MathiasSM.Yaml.Experience (Experience (..), parseExperiencesYaml)
-import MathiasSM.Yaml.Hobby (Hobby (..), parseHobbiesYaml)
 import MathiasSM.Yaml.Project (Project (..), Status (..), parseProjectYaml, statusName)
 import MathiasSM.Yaml.Social (Social (..), parseSocialsYaml)
 import Test.Tasty (TestTree, testGroup)
@@ -19,9 +17,7 @@ tests =
         "Yaml"
         [ statusTests
         , projectTests
-        , hobbyTests
         , socialTests
-        , experienceTests
         , showcaseTests
         ]
 
@@ -93,57 +89,6 @@ projectTests =
   where
     parse = parseProjectYaml . render
 
--- Hobbies --------------------------------------------------------------------
-
--- | A hobby with every field except the optional @show@
-validHobby :: Fields
-validHobby = [("name", "Drawing"), ("href", "/hobbies/drawing"), ("icon", "sketching")]
-
-hobbyTests :: TestTree
-hobbyTests =
-    testGroup
-        "parseHobbiesYaml"
-        [ testCase "reads a hobby, showing it by default" $
-            parse validHobby
-                @?= Right [Hobby "Drawing" "/hobbies/drawing" "sketching" True]
-        , testCase "reads a list of hobbies in order" $
-            parseHobbiesYaml
-                ( unlines
-                    [ "- name: Drawing"
-                    , "  href: /hobbies/drawing"
-                    , "  icon: sketching"
-                    , "- name: Writing"
-                    , "  href: /hobbies/writing"
-                    , "  icon: feather"
-                    ]
-                )
-                @?= Right
-                    [ Hobby "Drawing" "/hobbies/drawing" "sketching" True
-                    , Hobby "Writing" "/hobbies/writing" "feather" True
-                    ]
-        , testCase "reads show: false as a hidden hobby" $
-            parse (set "show" "false" validHobby)
-                @?= Right [Hobby "Drawing" "/hobbies/drawing" "sketching" False]
-        , testCase "ignores fields it doesn't model" $
-            parse (set "extra" "x" validHobby) @?= parse validHobby
-        , testGroup "requires" $
-            [ testCase key $ parse (without [key] validHobby) @?= Left ["hobby #0: " ++ key ++ ": missing"]
-            | key <- ["name", "href", "icon"]
-            ]
-        , testCase "reports every hobby's problems, prefixed by index" $
-            parseHobbiesYaml (unlines ["- href: /a", "- name: B"])
-                @?= Left
-                    [ "hobby #0: name: missing"
-                    , "hobby #0: icon: missing"
-                    , "hobby #1: href: missing"
-                    , "hobby #1: icon: missing"
-                    ]
-        , testCase "rejects text that isn't a YAML list of objects" $
-            assertBool "expected parsing to fail" (isLeft (parseHobbiesYaml "name: ["))
-        ]
-  where
-    parse = parseHobbiesYaml . one
-
 -- Socials --------------------------------------------------------------------
 
 -- | A social account with every field except the optional show flags
@@ -194,43 +139,6 @@ socialTests =
         ]
   where
     parse = parseSocialsYaml . one
-
--- Experience -----------------------------------------------------------------
-
--- | An experience item
-validExperience :: Fields
-validExperience = [("icon", "work"), ("name", "Engineer")]
-
-experienceTests :: TestTree
-experienceTests =
-    testGroup
-        "parseExperiencesYaml"
-        [ testCase "reads an item" $
-            parse validExperience @?= Right [Experience "work" "Engineer"]
-        , testCase "reads a list of items in order" $
-            parseExperiencesYaml
-                ( unlines
-                    [ "- icon: work"
-                    , "  name: Engineer"
-                    , "- icon: school"
-                    , "  name: Student"
-                    ]
-                )
-                @?= Right [Experience "work" "Engineer", Experience "school" "Student"]
-        , testCase "ignores fields it doesn't model" $
-            parse (set "type" "work" validExperience) @?= parse validExperience
-        , testGroup "requires" $
-            [ testCase key $ parse (without [key] validExperience) @?= Left ["experience #0: " ++ key ++ ": missing"]
-            | key <- ["icon", "name"]
-            ]
-        , testCase "reports every item's problems, prefixed by index" $
-            parseExperiencesYaml (unlines ["- icon: a", "- name: b"])
-                @?= Left ["experience #0: name: missing", "experience #1: icon: missing"]
-        , testCase "rejects text that isn't a YAML list of objects" $
-            assertBool "expected parsing to fail" (isLeft (parseExperiencesYaml "icon: ["))
-        ]
-  where
-    parse = parseExperiencesYaml . one
 
 -- Showcase order -------------------------------------------------------------
 

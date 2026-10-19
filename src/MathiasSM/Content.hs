@@ -20,9 +20,7 @@ module MathiasSM.Content (
     requireLanguage,
     requireNav,
     requireProject,
-    requireHobbies,
     requireSocials,
-    requireExperiences,
 ) where
 
 import Control.Monad ((>=>))
@@ -34,8 +32,6 @@ import Data.Time (Day)
 import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, getUnderlying, toFilePath)
 import MathiasSM.Metadata qualified as K
 import MathiasSM.Yaml (Check (runCheck), decodeYaml, enumFromJSON, optional, required)
-import MathiasSM.Yaml.Experience (Experience (..), parseExperiencesYaml)
-import MathiasSM.Yaml.Hobby (Hobby (..), parseHobbiesYaml)
 import MathiasSM.Yaml.Project (Project (..), parseProjectYaml)
 import MathiasSM.Yaml.Social (Social (..), parseSocialsYaml)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
@@ -198,17 +194,9 @@ requireNav ident = do
 requireProject :: Item String -> Compiler Project
 requireProject = either (failWith "invalid project") pure . parseProjectYaml . itemBody
 
--- | Parses the hobbies item (its body is the YAML list), failing the build with the problems found
-requireHobbies :: Item String -> Compiler [Hobby]
-requireHobbies = either (failWith "invalid hobbies") pure . parseHobbiesYaml . itemBody
-
 -- | Parses the socials item (its body is the YAML list), failing the build with the problems found
 requireSocials :: Item String -> Compiler [Social]
 requireSocials = either (failWith "invalid socials") pure . parseSocialsYaml . itemBody
-
--- | Parses the experience item (its body is the YAML list), failing the build with the problems found
-requireExperiences :: Item String -> Compiler [Experience]
-requireExperiences = either (failWith "invalid experience") pure . parseExperiencesYaml . itemBody
 
 {- | Fails the build listing the problems.
 

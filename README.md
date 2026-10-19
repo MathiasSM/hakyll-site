@@ -18,8 +18,8 @@ You may download the [latest release](https://github.com/MathiasSM/hakyll-site/r
 - `templates/` hakyll templates that define components of each (usually html) pages. There are included files in the release tarball and this repo, but you may change them as you need to.
 - `assets/` holds styles and potentially other files that are logically coupled with templates/ and it didn't make much sense to "extract" into the content repo. Same as with templates, there's a bundle included, which is the one I use for my personal site; feel free to change to your liking.
 - `content/` where all writing, images and other stuff lives. To build my personal site, I use a separate repo that holds these files.
-  - While I try to keep this generator as content-agnostic as possible, right now there are some required files, given my personal site needs. These are "documented" in `src/MathiasSM/Config.hs` (`requiredContent :: SiteConfig -> [FilePath]`), but the build will fail and indicate if any is missing.
-  - Besides actual content, the directory is expected to hold a `website.yaml` file with metadata about the site, used to build the different parts of it. See `example.website.yaml`.
+  - The directory must hold a `website.yaml` file with metadata about the site (see `example.website.yaml`) and a `socials.yaml` file with the list of accounts; the build fails if either is missing.
+  - Any other YAML data lives under `content/data/` and is exposed to templates automatically (see [Data files](#data-files)).
 
 The way to execute this is same as any hakyll site: `executable <CMD>`; if you build it from source, you can use `cabal exec site <CMD>` instead.
 
@@ -128,6 +128,18 @@ This project "deploys" as a release, via the CI workflow. Content repos can pull
 
 ## Content-agnostic repo
 
-The idea is for this repo to be content-agnostic, but the current customizations _require_ some minimum structure documented in `src/MathiasSM/Config.hs`'s `requiredContent`. Missing files will fail the site build.
+The idea is for this repo to be content-agnostic. It only _requires_ `content/website.yaml` (site identity) and `content/socials.yaml` (the accounts); every other piece of YAML is optional and read from `content/data/`. See [Data files](#data-files).
 
 Any release includes `templates/` and `assets/` alongside the executable; take them as the default structure and style of the built site. You may edit/bring your own templates/assets to build a site to your liking.
+
+## Data files
+
+Any YAML under `content/data/**/*.yaml` becomes a template context named after its path: directories are joined with `-` and the `.yaml` extension is dropped. So `content/data/team/members.yaml` is available as `team-members`. Avoid `-` inside file and directory names themselves, since it doubles as the directory separator.
+
+- A file holding a top-level **list** is looped with `$for(name)$`; each item's keys are exposed as fields (`$name$`, `$href$`, …).
+- A file holding a top-level **map** is read with dotted keys (`$name.key$`); nested maps flatten the same way (`$name.address.city$`).
+- Scalars render as strings (booleans as `true`/`false`, numbers without scientific notation).
+
+Any scalar field whose name contains `icon` also gets two derived fields: `<field>Href` (the icon URL, a bare name resolved to `images/icons/<name>.svg`) and `<field>Raw` (the SVG markup, inlined). For example, `icon: book` provides `$icon$`, `$iconHref$` and `$iconRaw$`.
+
+A data file may ship a JSON Schema, co-located as `content/data/name.schema.json` next to `content/data/name.yaml`; it is validated at build time (and the YAML's `$schema` points at the local file for editor hints).
