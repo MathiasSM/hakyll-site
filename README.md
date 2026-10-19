@@ -32,7 +32,7 @@ The way to execute this is same as any hakyll site: `executable <CMD>`; if you b
   - `check` (check the built html for broken links)
     - Note: By default hakyll checks external links as well, but due to some broken external sites, I decided to disable it via compilation flags.
 
-You may need to setup some required env variables; you may export them manually, use a .env file or whatever your preferred method is. See 
+You may set environment variables to override `website.yaml` fields; export them manually, use a `.env` file, or your preferred method. See `.env.example`.
 
 ```sh
 # Environment.
@@ -40,11 +40,6 @@ You may need to setup some required env variables; you may export them manually,
 SITE_ENV=dev
 # prod: building will run all optimizations and validations
 # SITE_ENV=prod
-
-# Wherever you're placing the templates (you may use the included ones)
-TEMPLATES_DIR=templates
-# Wherever you're placing the assets (you may use the included ones)
-ASSETS_DIR=assets
 
 ```
 
@@ -54,7 +49,7 @@ ASSETS_DIR=assets
 
 #### Setup
 
-1. Install ImageMagick (e.g. via `sudo apt instal imagemagick`).
+1. Install ImageMagick (e.g. via `sudo apt install imagemagick`).
 2. Install ghcup (e.g. using `mise use -g ghcup`).
 3. Install the repo's `mise.toml` tools (`pre-commit`, `actionlint`):
 
