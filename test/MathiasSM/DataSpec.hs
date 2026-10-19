@@ -1,11 +1,21 @@
 -- | Tests for the generic data-file helpers
 module MathiasSM.DataSpec (tests) where
 
-import Data.Either (fromRight)
-import MathiasSM.Context.Data (IconVariant (..), breakOnDot, iconVariant, lookupLeaf, nameToRelPath, renderScalar)
+import Data.Either (fromRight, isLeft)
+import MathiasSM.Context.Data (
+    IconVariant (..),
+    breakOnDot,
+    checkAgainstSchema,
+    iconName,
+    iconVariant,
+    lookupLeaf,
+    nameToRelPath,
+    renderScalar,
+    scalarString,
+ )
 import MathiasSM.Yaml (decodeYaml)
 import Test.Tasty (TestTree, testGroup)
-import Test.Tasty.HUnit (testCase, (@?=))
+import Test.Tasty.HUnit (assertBool, testCase, (@?=))
 
 -- | The data helpers tests
 tests :: TestTree
@@ -35,6 +45,27 @@ tests =
             , testCase "renders integers without a decimal" $ leaf "n: 3" "n" @?= Just "3"
             , testCase "renders booleans as true/false" $ leaf "b: true" "b" @?= Just "true"
             , testCase "renders null as empty" $ leaf "x: null" "x" @?= Just ""
+            , testCase "renders true" $ renderScalar (doc "true") @?= "true"
+            , testCase "renders false" $ renderScalar (doc "false") @?= "false"
+            , testCase "renders a map as empty" $ renderScalar (doc "{a: 1}") @?= ""
+            , testCase "renders a list as empty" $ renderScalar (doc "[1]") @?= ""
+            ]
+        , testGroup
+            "scalarString"
+            [ testCase "reads a string" $ scalarString (doc "hello") @?= Just "hello"
+            , testCase "reads a number" $ scalarString (doc "3") @?= Just "3"
+            , testCase "reads true" $ scalarString (doc "true") @?= Just "true"
+            , testCase "reads false" $ scalarString (doc "false") @?= Just "false"
+            , testCase "reads null as empty" $ scalarString (doc "null") @?= Just ""
+            , testCase "rejects a map" $ scalarString (doc "{a: 1}") @?= Nothing
+            , testCase "rejects a list" $ scalarString (doc "[1]") @?= Nothing
+            ]
+        , testGroup
+            "iconName"
+            [ testCase "reads a string" $ iconName (doc "book") @?= Just "book"
+            , testCase "rejects a number" $ iconName (doc "3") @?= Nothing
+            , testCase "rejects a boolean" $ iconName (doc "true") @?= Nothing
+            , testCase "rejects null" $ iconName (doc "null") @?= Nothing
             ]
         , testGroup
             "breakOnDot"
@@ -53,9 +84,21 @@ tests =
             , testCase "ignores an icon field without a suffix" $ iconVariant "icon" @?= Nothing
             , testCase "is case-sensitive" $ iconVariant "IconHref" @?= Nothing
             ]
+        , testGroup
+            "checkAgainstSchema"
+            [ testCase "accepts valid data" $ checkAgainstSchema schema valid @?= Right ()
+            , testCase "rejects data missing a required field" $
+                assertBool "expected validation to fail" (isLeft (checkAgainstSchema schema invalid))
+            ]
         ]
   where
-    example = fromRight (error "invalid fixture") (decodeYaml "name: Drawing\nnested:\n  city: Lima")
+    example = doc "name: Drawing\nnested:\n  city: Lima"
+    schema = doc "type: object\nrequired: [name]\nproperties:\n  name:\n    type: string"
+    valid = doc "name: Drawing"
+    invalid = doc "{}"
+
+    -- Decodes a YAML document to a JSON value
+    doc = fromRight (error "invalid fixture") . decodeYaml
 
     -- Parses a one-field map and renders that field
-    leaf yaml key = renderScalar <$> lookupLeaf key (fromRight (error "invalid fixture") (decodeYaml yaml))
+    leaf yaml key = renderScalar <$> lookupLeaf key (doc yaml)
