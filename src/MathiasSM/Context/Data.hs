@@ -13,11 +13,14 @@ module MathiasSM.Context.Data (
 
     -- * Pure helpers (also used by the tests)
     renderScalar,
+    scalarString,
+    iconName,
     lookupLeaf,
     nameToRelPath,
     breakOnDot,
     iconVariant,
     IconVariant (..),
+    checkAgainstSchema,
 ) where
 
 import Control.Monad (when)
@@ -27,6 +30,7 @@ import Data.Aeson.KeyMap qualified as KM
 import Data.Foldable (toList)
 import Data.JSON.JSONSchema (ValidationError (..), validate)
 import Data.List (intercalate, isInfixOf, stripPrefix)
+import Data.Maybe (fromMaybe)
 import Data.Scientific (Scientific, floatingOrInteger)
 import Data.String (fromString)
 import Data.Text qualified as T
@@ -75,14 +79,21 @@ validateDataFile cfg name value = do
             Left problems ->
                 fail $ "Invalid schema for data file '" ++ name ++ "':\n" ++ intercalate "\n" problems
             Right schema ->
-                case validate schema value of
+                case checkAgainstSchema schema value of
                     Right () -> pure ()
                     Left errs ->
                         fail $
                             "Data file '"
                                 ++ name
                                 ++ "' failed schema validation:\n"
-                                ++ intercalate "\n" (map renderValidationError errs)
+                                ++ intercalate "\n" errs
+
+-- | Validates @value@ against @schema@, returning the rendered violations
+checkAgainstSchema :: Value -> Value -> Either [String] ()
+checkAgainstSchema schema value =
+    case validate schema value of
+        Right () -> Right ()
+        Left errs -> Left (map renderValidationError errs)
 
 -- | A schema validation error with its instance path
 renderValidationError :: ValidationError -> String
@@ -114,24 +125,36 @@ valueField cfg value key =
 
 -- | A scalar leaf as a string field (maps and lists cannot be rendered as a scalar)
 scalarField :: Value -> Compiler ContextField
-scalarField = \case
-    String text -> return $ StringField $ T.unpack text
-    Number n -> return $ StringField $ renderNumber n
-    Bool b -> return $ StringField $ if b then "true" else "false"
-    Null -> return $ StringField ""
-    _ -> noResult "not a scalar value"
+scalarField = maybe (noResult "not a scalar value") (return . StringField) . scalarString
+
+-- | The text of a scalar value, if it is one
+scalarString :: Value -> Maybe String
+scalarString = \case
+    String text -> Just $ T.unpack text
+    Number n -> Just $ renderNumber n
+    Bool b -> Just $ if b then "true" else "false"
+    Null -> Just ""
+    _ -> Nothing
 
 -- | The URL of an icon (a bare name under @images/icons/@, @.svg@ appended)
 iconHref :: Maybe Value -> Compiler ContextField
-iconHref (Just (String name)) = return $ StringField $ "images/icons/" ++ T.unpack name ++ ".svg"
-iconHref _ = noResult "icon href"
+iconHref = maybe (noResult "icon href") (return . StringField . iconPath) . (>>= iconName)
+  where
+    iconPath name = "images/icons/" ++ name ++ ".svg"
 
 -- | The SVG markup of an icon, inlined
 iconRaw :: SiteConfig -> Maybe Value -> Compiler ContextField
-iconRaw cfg (Just (String name)) = do
-    body <- itemBody <$> load (fromFilePath $ mediaDir cfg </> "icons" </> T.unpack name <.> "svg")
-    return $ StringField body
-iconRaw _ _ = noResult "icon raw"
+iconRaw cfg = maybe (noResult "icon raw") loadSvg . (>>= iconName)
+  where
+    loadSvg name = do
+        body <- itemBody <$> load (fromFilePath $ mediaDir cfg </> "icons" </> name <.> "svg")
+        return $ StringField body
+
+-- | The bare name of an icon value, if it is a string
+iconName :: Value -> Maybe String
+iconName = \case
+    String name -> Just $ T.unpack name
+    _ -> Nothing
 
 -- | Whether a key names a derived icon field (@<base>Href@ / @<base>Raw@)
 data IconVariant = Href | Raw
@@ -182,9 +205,4 @@ renderNumber n = case floatingOrInteger n of
 
 -- | A scalar as the string templates should see
 renderScalar :: Value -> String
-renderScalar = \case
-    String text -> T.unpack text
-    Number n -> renderNumber n
-    Bool b -> if b then "true" else "false"
-    Null -> ""
-    _ -> ""
+renderScalar = fromMaybe "" . scalarString
