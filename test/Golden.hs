@@ -1,6 +1,6 @@
 {- | Builds the fixture site in-process and compares its output, file by file,
-with the baseline under @test\/golden@. Run with @cabal test test@; regenerate
-the baseline with @cabal test test --test-options=--accept@.
+with the baseline under @test\/golden@. Run with @cabal test golden@; regenerate
+the baseline with @cabal test golden --test-options=--accept@.
 
 Images are compared by format and dimensions (their bytes embed timestamps and
 vary with the ImageMagick version); everything else byte for byte.
