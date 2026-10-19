@@ -58,7 +58,7 @@ jobs:
           name: artifact-test-results
       - name: Upload unit coverage to Codecov
         if: ${{ needs.build.result == 'success' }}
-        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: cobertura.xml
           flags: unit
@@ -67,7 +67,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload golden coverage to Codecov
         if: ${{ needs.build.result == 'success' }}
-        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: cobertura-golden.xml
           flags: golden
@@ -76,7 +76,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload unit test results to Codecov
         if: ${{ hashFiles('junit.xml') != '' }}
-        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           report_type: test_results
           files: junit.xml
@@ -86,7 +86,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload golden test results to Codecov
         if: ${{ hashFiles('junit-golden.xml') != '' }}
-        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           report_type: test_results
           files: junit-golden.xml
