@@ -38,6 +38,8 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 - Removed a duplicated `pull_request` key in the OpenSSF Scorecard workflow,
   restoring the `branches: [master]` filter.
+- Corrected the environment-variable documentation: removed the stale
+  `TEMPLATES_DIR`/`ASSETS_DIR` references and clarified the variables are optional.
 
 ## [0.4.0.2] - 2026-10-17
 
