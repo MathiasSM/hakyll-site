@@ -100,19 +100,31 @@
 }
 
 /* postlist *******************************************************************/
-.main-list {list-style-type: none;margin: 3em 0 0;padding:0}
+.main-list {
+  list-style-type: none;
+  margin: 3em 0 0;
+  padding:0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 .main-list a {color:currentcolor}
-.main-list a:hover {color:var(--color-accent)}
-.main-list h2 {font-weight: bold; margin-bottom:0}
 .main-list header > div {font-style: italic}
 
+.main-list li {padding: .5rem 1rem; margin: 0 -1rem;}
+.main-list li:hover {background-color:var(--color-accent-white)}
+.main-list li:hover .status {color:var(--color-accent)}
+
+.main-list h2 {clear: none;}
+.main-list h2 {margin:0;}
+
+a.project::after { content: none;}
 .project .status {
   float:right;
   font-style:normal;font-weight:bold;
   color:var(--color-main);
   margin:.3em 0
 }
-.project:hover .status {color:currentcolor}
 .project .status::before {content:'['}
 .project .status::after {content:']'}
 
