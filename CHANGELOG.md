@@ -7,11 +7,14 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+## [0.5.0.0] - 2026-10-19
+
 ### Added
 
 - Generic data files: any YAML under `content/data/**/*.yaml` is exposed to templates by name, with no fixed schema (lists via `$for(name)$`, maps via `$name.key$`).
 - An icon auto-transform: any field whose name contains `icon` also exposes `<field>Href` (its URL) and `<field>Raw` (the inlined SVG).
 - Optional build-time JSON Schema validation for data files via a co-located `<name>.schema.json`.
+- A Code of Conduct.
 
 ### Changed
 
@@ -23,6 +26,8 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
   `pre-commit` and `actionlint`), replacing the parent `~/Desktop` config.
 - `socials` icon fields renamed `iconPath`/`iconSource` to `iconHref`/`iconRaw`.
 - Renamed `minimalCtx` to `globalContext`.
+- Data files (`hobbies`, `experience`, `socials`) moved from TSV tables to YAML files.
+- Split the test suite into `spec` (unit) and `golden` (snapshot) suites; CI publishes JUnit XML results to Codecov test analytics.
 
 ### Removed
 
@@ -126,8 +131,9 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 
 
-[Unreleased]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.1...master
-[0.4.0.1]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.0...v0.4.0.1
+[Unreleased]: https://github.com/MathiasSM/hakyll-site/compare/v0.5.0.0...master
+[0.5.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.2...v0.5.0.0
+[0.4.0.2]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.0...v0.4.0.2
 [0.4.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.3.0.0...v0.4.0.0
 [0.3.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.2.0.0...v0.3.0.0
 [0.2.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.1.0.0...v0.2.0.0
