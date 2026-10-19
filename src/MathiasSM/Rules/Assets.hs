@@ -29,7 +29,7 @@ import Hakyll (
     version,
     (.||.),
  )
-import MathiasSM.Config (SiteConfig, assetsDir, experiencePattern, hobbiesPattern, mediaDir, socialsPattern)
+import MathiasSM.Config (SiteConfig, assetsDir, dataPattern, dataSchemaPattern, mediaDir, socialsPattern)
 import MathiasSM.Rules.Favicon (faviconRules)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 
@@ -43,10 +43,11 @@ processAssets cfg = do
     justCopy (mediaPattern cfg "photos" ["jpg", "png", "gif"]) (mediaRoute (mediaDir cfg))
     processDataFiles cfg
 
--- | Makes the data files (YAML) loadable by contexts and rules; they are not routed
+-- | Makes the data files (YAML) and their schemas loadable; they are not routed
 processDataFiles :: SiteConfig -> Rules ()
-processDataFiles cfg =
-    match (hobbiesPattern cfg .||. socialsPattern cfg .||. experiencePattern cfg) $ compile getResourceString
+processDataFiles cfg = do
+    match (socialsPattern cfg .||. dataPattern cfg) $ compile getResourceString
+    match (dataSchemaPattern cfg) $ compile getResourceString
 
 -- | Compress all CSS as one file
 processCss :: SiteConfig -> Rules ()
@@ -67,8 +68,10 @@ processDotImages cfg = match (mediaPattern cfg "photos" ["dot"]) $ do
 -- | Compiles branding and icons into context (for inlining), and copies them as images
 processSvgImages :: SiteConfig -> Rules ()
 processSvgImages cfg = do
-    -- Allows including directly in html
-    match svgFiles $ compile templateBodyCompiler
+    -- Branding SVGs (e.g. the logo) are inlined via $partial$, so compile them as templates
+    match (mediaPattern cfg "branding" ["svg"]) $ compile templateBodyCompiler
+    -- Icon SVGs are inlined via the data files' $iconRaw$, so load them as raw strings
+    match (mediaPattern cfg "icons" ["svg"]) $ compile getResourceString
     -- Allows importing as img with src="<...>.svg"
     match svgFiles $
         version "svg" $ do

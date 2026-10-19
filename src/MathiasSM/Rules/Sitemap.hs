@@ -21,7 +21,7 @@ import Hakyll (
 import MathiasSM.CleanURL (cleanIndexHtmls)
 import MathiasSM.Config (SiteConfig, pagesPattern, postsPattern)
 import MathiasSM.Content (isSitemapExcluded)
-import MathiasSM.Context (minimalCtx)
+import MathiasSM.Context (globalContext)
 import MathiasSM.Writings (discoverGroups)
 
 -- | Builds sitemap.xml from the standalone pages and every post group
@@ -33,7 +33,7 @@ processSitemap cfg = create ["sitemap.xml"] $ do
         posts <- mapM (\group -> recentFirst =<< loadAll (postsPattern cfg group)) groups
         pages <- loadAll $ pagesPattern cfg "*"
         let allItems = filterM isIndexable (pages <> concat posts)
-            sitemapCtx = listField "entries" (minimalCtx cfg) allItems <> minimalCtx cfg
+            sitemapCtx = listField "entries" (globalContext cfg) allItems <> globalContext cfg
         makeItem ""
             >>= loadAndApplyTemplate "templates/sitemap.xml" sitemapCtx
             >>= cleanIndexHtmls

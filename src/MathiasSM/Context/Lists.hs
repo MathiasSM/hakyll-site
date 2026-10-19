@@ -1,5 +1,5 @@
--- | The data files (socials, hobbies, experience), as lists usable in templates
-module MathiasSM.Context.Lists (socialMediaContext, hobbiesContext, experienceContext) where
+-- | The socials data file, as the lists read by the social templates
+module MathiasSM.Context.Lists (socialMediaContext) where
 
 import Data.List (stripPrefix)
 import Data.Maybe (fromMaybe)
@@ -14,10 +14,8 @@ import Hakyll (
     load,
     toFilePath,
  )
-import MathiasSM.Config (SiteConfig, experienceFile, hobbiesFile, mediaDir, socialsFile)
-import MathiasSM.Content (requireExperiences, requireHobbies, requireSocials)
-import MathiasSM.Yaml.Experience (Experience (..))
-import MathiasSM.Yaml.Hobby (Hobby (..))
+import MathiasSM.Config (SiteConfig, mediaDir, socialsFile)
+import MathiasSM.Content (requireSocials)
 import MathiasSM.Yaml.Social (Social (..))
 import System.FilePath.Posix ((</>))
 
@@ -33,14 +31,6 @@ socialMediaContext cfg =
     socialsField name keep =
         listField name (socialContext $ mediaDir cfg) $ listItems (socialsFile cfg) requireSocials keep
 
--- | The hobbies, read from a single YAML list
-hobbiesContext :: SiteConfig -> Context a
-hobbiesContext cfg = listField "hobbies" (hobbyContext $ mediaDir cfg) $ listItems (hobbiesFile cfg) requireHobbies hobbyShow
-
--- | The experience items, read from a single YAML list
-experienceContext :: SiteConfig -> Context a
-experienceContext cfg = listField "experience" (experienceItemContext $ mediaDir cfg) $ listItems (experienceFile cfg) requireExperiences (const True)
-
 -- | A social account's fields, as read by the social templates
 socialContext :: FilePath -> Context Social
 socialContext mediaDir' =
@@ -48,29 +38,15 @@ socialContext mediaDir' =
         <> field "href" (return . socialHref . itemBody)
         <> field "username" (return . socialUsername . itemBody)
 
--- | A hobby's fields, as read by the hobbies template
-hobbyContext :: FilePath -> Context Hobby
-hobbyContext mediaDir' =
-    iconContext mediaDir' "images/icons/" hobbyIcon
-        <> field "name" (return . hobbyName . itemBody)
-        <> field "href" (return . hobbyHref . itemBody)
-
--- | An experience item's fields, as read by the experience template
-experienceItemContext :: FilePath -> Context Experience
-experienceItemContext mediaDir' =
-    iconContext mediaDir' "images/icons/" experienceIcon
-        <> field "name" (return . experienceName . itemBody)
-
-{- | The SVG named by each item's icon under @prefix@ (a path inside `images/`):
-@iconPath@ is its URL path, @iconSource@ the identifier to `$partial(...)$` it inline
--}
+-- | The SVG named by each item's icon: @iconHref@ is its URL, @iconRaw@ its markup
 iconContext :: FilePath -> String -> (a -> String) -> Context a
 iconContext mediaDir' prefix getIcon =
-    field "iconPath" (return . pathOf . itemBody)
-        <> field "iconSource" (return . sourceOf . itemBody)
+    field "iconHref" (return . hrefOf . itemBody)
+        <> field "iconRaw" (rawOf . itemBody)
   where
-    pathOf item = prefix ++ getIcon item ++ ".svg"
-    sourceOf item = mediaDir' </> fromMaybe (pathOf item) (stripPrefix "images/" (pathOf item))
+    hrefOf item = prefix ++ getIcon item ++ ".svg"
+    sourceOf item = mediaDir' </> fromMaybe (hrefOf item) (stripPrefix "images/" (hrefOf item))
+    rawOf item = itemBody <$> load (fromFilePath $ sourceOf item)
 
 -- | Loads a YAML list file as one item per kept element
 listItems :: Identifier -> (Item String -> Compiler [a]) -> (a -> Bool) -> Compiler [Item a]

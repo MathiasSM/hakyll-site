@@ -19,7 +19,7 @@ import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (SiteConfig, minimalTemplate, postSnapshot, postTemplate, postsPattern)
 import MathiasSM.Content (isDraft, requirePost)
-import MathiasSM.Context (minimalCtx, postSocialTagsContext)
+import MathiasSM.Context (globalContext, postSocialTagsContext)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
@@ -47,11 +47,11 @@ processPostGroupItems cfg groupName =
                 >> getResourceString
                 >>= runPandoc
                 >>= saveSnapshot (postSnapshot groupName)
-                >>= applyTemplates (minimalCtx cfg) [minimalTemplate, postTemplate]
-                >>= finish (postSocialTagsContext cfg <> navContext cfg groupName <> minimalCtx cfg)
+                >>= applyTemplates (globalContext cfg) [minimalTemplate, postTemplate]
+                >>= finish (postSocialTagsContext cfg <> navContext cfg groupName <> globalContext cfg)
 
 -- | Build context for archive page
 getCtx :: SiteConfig -> String -> Compiler (Context String)
 getCtx cfg groupName = do
     posts <- recentFirst =<< loadAllSnapshots (postsPattern cfg groupName) (postSnapshot groupName)
-    return $ listField "posts" (minimalCtx cfg) (return posts) <> minimalCtx cfg
+    return $ listField "posts" (globalContext cfg) (return posts) <> globalContext cfg

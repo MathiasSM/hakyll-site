@@ -7,6 +7,12 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+### Added
+
+- Generic data files: any YAML under `content/data/**/*.yaml` is exposed to templates by name, with no fixed schema (lists via `$for(name)$`, maps via `$name.key$`).
+- An icon auto-transform: any field whose name contains `icon` also exposes `<field>Href` (its URL) and `<field>Raw` (the inlined SVG).
+- Optional build-time JSON Schema validation for data files via a co-located `<name>.schema.json`.
+
 ### Changed
 
 - Replaced the hand-rolled `.githooks/pre-commit` hook with
@@ -15,6 +21,13 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
   files in place.
 - Moved the mise configuration into a project-level `mise.toml` (declaring
   `pre-commit` and `actionlint`), replacing the parent `~/Desktop` config.
+- `socials` icon fields renamed `iconPath`/`iconSource` to `iconHref`/`iconRaw`.
+- Renamed `minimalCtx` to `globalContext`.
+
+### Removed
+
+- The strict `hobbies` and `experience` parsers and their schemas; these are now generic data files.
+- The `validateHobbyPages` cross-check between hobbies and their posts.
 
 ### Fixed
 

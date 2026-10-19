@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["name", "icon"],
+    "properties": {
+      "name": { "type": "string" },
+      "href": { "type": "string" },
+      "icon": { "type": "string" }
+    }
+  }
+}

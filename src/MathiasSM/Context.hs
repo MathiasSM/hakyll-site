@@ -1,5 +1,5 @@
 -- | The context every page is rendered with, and the contexts that depend on it
-module MathiasSM.Context (minimalCtx, postSocialTagsContext) where
+module MathiasSM.Context (globalContext, postSocialTagsContext) where
 
 import Data.List (isInfixOf)
 import Hakyll (
@@ -13,18 +13,18 @@ import Hakyll (
     twitterCardField,
  )
 import MathiasSM.Config (SiteConfig, twitterHandle)
+import MathiasSM.Context.Data (dataContext)
 import MathiasSM.Context.Feeds (feedsContext)
 import MathiasSM.Context.Language (languageContext)
-import MathiasSM.Context.Lists (experienceContext, hobbiesContext, socialMediaContext)
+import MathiasSM.Context.Lists (socialMediaContext)
 import MathiasSM.Context.Site (siteContext)
 
--- | "Minimal" context all pages should know about
-minimalCtx :: SiteConfig -> Context String
-minimalCtx cfg =
+-- | Every field available to all pages and list items
+globalContext :: SiteConfig -> Context String
+globalContext cfg =
     siteContext cfg
         <> socialMediaContext cfg
-        <> hobbiesContext cfg
-        <> experienceContext cfg
+        <> dataContext cfg
         <> languageContext
         <> feedsContext cfg
         <> mathContext
@@ -49,5 +49,5 @@ postSocialTagsContext cfg =
         mconcat
             [ constField "twitter-creator" (twitterHandle cfg)
             , constField "twitter-site" (twitterHandle cfg)
-            , minimalCtx cfg
+            , globalContext cfg
             ]

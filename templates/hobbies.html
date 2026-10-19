@@ -2,10 +2,10 @@
     <ul>
     $for(hobbies)$
         <li>
-            <a href="$href$" class="item">
-                $partial(iconSource)$
+            $if(href)$<a href="$href$" class="item">$else$<span class="item">$endif$
+                $iconRaw$
                 <span>$name$</span>
-            </a>
+            $if(href)$</a>$else$</span>$endif$
         </li>
     $endfor$
     </ul>
