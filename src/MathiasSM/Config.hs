@@ -19,9 +19,12 @@ module MathiasSM.Config (
     pagesPattern,
     postsPattern,
     projectsPattern,
-    hobbiesPattern,
     socialsPattern,
-    experiencePattern,
+    dataPattern,
+    dataSchemaPattern,
+
+    -- * Directories
+    dataDir,
 
     -- * Identifiers
 
@@ -32,9 +35,7 @@ module MathiasSM.Config (
     postTemplate,
 
     -- ** Data files
-    hobbiesFile,
     socialsFile,
-    experienceFile,
 )
 where
 
@@ -94,10 +95,11 @@ baseUrl cfg = "https://" ++ siteDomain cfg
 mediaDir :: SiteConfig -> FilePath
 mediaDir cfg = contentDir cfg </> "media"
 
--- | Currently hardcoded files the site cannot build without, relative to the repo root
+{- | Files the site cannot build without, relative to the repo root
+(@website.yaml@ is loaded separately by "MathiasSM.Yaml.Website")
+-}
 requiredContent :: SiteConfig -> [FilePath]
-requiredContent cfg =
-    map (contentDir cfg </>) ["hobbies.yaml", "socials.yaml", "experience.yaml"]
+requiredContent cfg = [contentDir cfg </> "socials.yaml"]
 
 -- | The group whose items are the projects (its index page lists `projects/`)
 projectsGroup :: String
@@ -119,27 +121,29 @@ postsPattern cfg group = fromString $ contentDir cfg </> "writings" </> group </
 projectsPattern :: SiteConfig -> Pattern
 projectsPattern cfg = fromString $ contentDir cfg </> "projects" </> "*.yaml"
 
--- | The single hobbies file (a list of hobbies)
-hobbiesPattern :: SiteConfig -> Pattern
-hobbiesPattern cfg = fromString $ contentDir cfg </> "hobbies.yaml"
-
 -- | The single socials file (a list of accounts)
 socialsPattern :: SiteConfig -> Pattern
 socialsPattern cfg = fromString $ contentDir cfg </> "socials.yaml"
 
--- | The single experience file (a list of items)
-experiencePattern :: SiteConfig -> Pattern
-experiencePattern cfg = fromString $ contentDir cfg </> "experience.yaml"
+-- | Where generic data files (any YAML) live
+dataDir :: SiteConfig -> FilePath
+dataDir cfg = contentDir cfg </> "data"
+
+-- | Every generic data file, at any depth under 'dataDir'
+dataPattern :: SiteConfig -> Pattern
+dataPattern cfg = fromString $ dataDir cfg </> "**.yaml"
+
+-- | The optional JSON Schema for each data file, co-located as @<name>.schema.json@
+dataSchemaPattern :: SiteConfig -> Pattern
+dataSchemaPattern cfg = fromString $ dataDir cfg </> "**.schema.json"
 
 -- | The snapshot holding each published post of a single group, as rendered HTML (before templates)
 postSnapshot :: String -> Snapshot
 postSnapshot group = "published-" ++ group
 
 -- | The data files (YAML) read by contexts
-hobbiesFile, socialsFile, experienceFile :: SiteConfig -> Identifier
-hobbiesFile cfg = fromFilePath $ contentDir cfg </> "hobbies.yaml"
+socialsFile :: SiteConfig -> Identifier
 socialsFile cfg = fromFilePath $ contentDir cfg </> "socials.yaml"
-experienceFile cfg = fromFilePath $ contentDir cfg </> "experience.yaml"
 
 -- | Templates every kind of page goes through
 siteTemplate, minimalTemplate, pageTemplate, postTemplate :: Identifier

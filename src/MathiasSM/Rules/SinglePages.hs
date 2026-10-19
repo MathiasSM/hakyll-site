@@ -19,7 +19,7 @@ import Hakyll (
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (SiteConfig, minimalTemplate, pageTemplate, pagesPattern)
-import MathiasSM.Context (minimalCtx)
+import MathiasSM.Context (globalContext)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
 
@@ -34,7 +34,7 @@ data Page = Page
 
 -- | A page with the minimal context and no extra templates
 page :: SiteConfig -> String -> Page
-page cfg name = Page{pageName = name, pageContext = return (minimalCtx cfg), pageTemplates = []}
+page cfg name = Page{pageName = name, pageContext = return (globalContext cfg), pageTemplates = []}
 
 -- | Compiles a standalone page's body (shared by 'processPage' and the dev example pages)
 pageCompiler :: SiteConfig -> Page -> Compiler (Item String)

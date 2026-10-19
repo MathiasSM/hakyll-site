@@ -13,7 +13,7 @@ import MathiasSM.Rules.Showcase (processShowcaseGroup)
 import MathiasSM.Rules.SinglePages (page, pageCompiler, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
 import MathiasSM.Rules.Static (processStaticFiles)
-import MathiasSM.Validate (validateHobbyPages, validateNavEntries)
+import MathiasSM.Validate (validateNavEntries)
 import MathiasSM.Writings (discoverGroups, discoverStandalonePages)
 import MathiasSM.Yaml.Website (Website)
 
@@ -21,7 +21,6 @@ import MathiasSM.Yaml.Website (Website)
 rules :: SiteConfig -> Website -> Rules ()
 rules cfg website = do
     match "templates/*" $ compile templateBodyCompiler
-    validateHobbyPages cfg
     validateNavEntries cfg
     processAssets cfg
     processStaticFiles cfg website

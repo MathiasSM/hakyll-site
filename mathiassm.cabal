@@ -54,6 +54,7 @@ library
                   , MathiasSM.Context.Project
                   , MathiasSM.Context.Site
                   , MathiasSM.Context.Lists
+                  , MathiasSM.Context.Data
                   , MathiasSM.Metadata
                   , MathiasSM.Rules.Assets
                   , MathiasSM.Rules.Favicon
@@ -68,8 +69,6 @@ library
                   , MathiasSM.Validate
                   , MathiasSM.Writings
                   , MathiasSM.Yaml
-                  , MathiasSM.Yaml.Experience
-                  , MathiasSM.Yaml.Hobby
                   , MathiasSM.Yaml.Project
                   , MathiasSM.Yaml.Social
                   , MathiasSM.Yaml.Website
@@ -79,7 +78,9 @@ library
                   , aeson        >= 2.2 && < 3
                   , directory    >= 1.3 && < 2
                   , filepath     >= 1.5 && < 2
+                  , jsonschema   >= 0.3 && < 0.4
                   , mtl          >= 2.3 && < 3
+                  , scientific   >= 0.3 && < 0.4
                   , text         >= 2.1 && < 3
                   , time         >= 1.12 && < 2
                   , pandoc       >= 3.12 && < 4
@@ -106,10 +107,10 @@ test-suite spec
                   , MathiasSM.AccessibilitySpec
                   , MathiasSM.CleanURLSpec
                   , MathiasSM.ContentSpec
+                  , MathiasSM.DataSpec
                   , MathiasSM.FeedsSpec
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
-                  , MathiasSM.ValidateSpec
                   , MathiasSM.YamlSpec
   build-depends:    base
                   , hakyll

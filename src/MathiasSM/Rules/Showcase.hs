@@ -15,7 +15,7 @@ import Hakyll (
  )
 import MathiasSM.Config (SiteConfig, projectsGroup, projectsPattern)
 import MathiasSM.Content (requireProject, showcaseKey)
-import MathiasSM.Context (minimalCtx)
+import MathiasSM.Context (globalContext)
 import MathiasSM.Context.Project (projectContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
 
@@ -48,4 +48,4 @@ getProjectsCtx cfg = do
     items <- loadAll (projectsPattern cfg)
     projects <- mapM (\item -> Item (itemIdentifier item) <$> requireProject item) items
     let ordered = sortOn (showcaseKey . itemBody) projects
-    return $ listField "projects" projectContext (return ordered) <> minimalCtx cfg
+    return $ listField "projects" projectContext (return ordered) <> globalContext cfg
