@@ -11,11 +11,13 @@ import MathiasSM.MetadataSpec qualified as Metadata
 import MathiasSM.RedirectsSpec qualified as Redirects
 import MathiasSM.ValidateSpec qualified as Validate
 import MathiasSM.YamlSpec qualified as Yaml
-import Test.Tasty (defaultMain, testGroup)
+import Test.Tasty (defaultIngredients, defaultMainWithIngredients, testGroup)
+import Test.Tasty.Runners.AntXML (antXMLRunner)
 
 main :: IO ()
 main =
-    defaultMain
+    defaultMainWithIngredients
+        (antXMLRunner : defaultIngredients)
         ( testGroup
             "unit"
             [ Accessibility.tests

@@ -33,8 +33,9 @@ jobs:
       ghc-version: ${{ vars.GHC_VERSION }}
       cabal-version: ${{ vars.CABAL_VERSION }}
 
-  upload-coverage:
+  upload-codecov:
     needs: build
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,10 +47,17 @@ jobs:
           egress-policy: audit
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Download coverage artifact
+        if: ${{ needs.build.result == 'success' }}
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: artifact-coverage
+      - name: Download test results artifact
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: artifact-test-results
       - name: Upload unit coverage to Codecov
+        if: ${{ needs.build.result == 'success' }}
         uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
         with:
           files: cobertura.xml
@@ -58,9 +66,30 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload golden coverage to Codecov
+        if: ${{ needs.build.result == 'success' }}
         uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
         with:
           files: cobertura-golden.xml
+          flags: golden
+          disable_search: true
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload unit test results to Codecov
+        if: ${{ hashFiles('junit.xml') != '' }}
+        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        with:
+          report_type: test_results
+          files: junit.xml
+          flags: unit
+          disable_search: true
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload golden test results to Codecov
+        if: ${{ hashFiles('junit-golden.xml') != '' }}
+        uses: codecov/codecov-action@2320916714171c258d01dbd81040d64d798c6f8e # v7.1.1
+        with:
+          report_type: test_results
+          files: junit-golden.xml
           flags: golden
           disable_search: true
           fail_ci_if_error: false

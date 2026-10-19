@@ -76,10 +76,18 @@ jobs:
 
       # ======================================================== Tests
       - name: Run unit tests
-        run: cabal test spec
+        run: cabal test spec --test-options="--xml=junit.xml"
 
       - name: Run golden tests
-        run: cabal test golden
+        run: cabal test golden --test-options="--xml=junit-golden.xml"
+
+      - name: Upload test results as artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          path: junit*.xml
+          name: artifact-test-results
+          if-no-files-found: warn
 
       - name: Transform unit coverage file
         run: hpc-codecov cabal:spec -x Paths_mathiassm -f cobertura -o cobertura.xml

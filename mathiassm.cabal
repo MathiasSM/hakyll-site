@@ -115,6 +115,7 @@ test-suite spec
                   , hakyll
                   , mathiassm
                   , tasty
+                  , tasty-ant-xml
                   , tasty-hunit
                   , tasty-quickcheck
                   , time
@@ -130,6 +131,7 @@ test-suite golden
                   , hakyll
                   , mathiassm
                   , tasty
+                  , tasty-ant-xml
                   , tasty-golden
                   , bytestring
                   , directory

@@ -6,7 +6,8 @@ module Main (main) where
 import Control.Exception (bracket)
 import Golden (buildSiteSnapshot, goldenTests, relativeFiles)
 import System.Directory (getCurrentDirectory, removePathForcibly)
-import Test.Tasty (defaultMain)
+import Test.Tasty (defaultIngredients, defaultMainWithIngredients)
+import Test.Tasty.Runners.AntXML (antXMLRunner)
 
 -- | Builds the fixture site snapshot, then runs the golden tests
 main :: IO ()
@@ -14,4 +15,4 @@ main = do
     root <- getCurrentDirectory
     bracket (buildSiteSnapshot root) (removePathForcibly . fst) $ \(_, snapshotDir) -> do
         files <- relativeFiles snapshotDir
-        defaultMain (goldenTests root snapshotDir files)
+        defaultMainWithIngredients (antXMLRunner : defaultIngredients) (goldenTests root snapshotDir files)
