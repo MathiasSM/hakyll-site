@@ -7,6 +7,20 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced the hand-rolled `.githooks/pre-commit` hook with
+  [pre-commit.com](https://pre-commit.com/), running `fourmolu`, `hlint`, and
+  `actionlint`. The fourmolu hook now runs in check mode rather than rewriting
+  files in place.
+- Moved the mise configuration into a project-level `mise.toml` (declaring
+  `pre-commit` and `actionlint`), replacing the parent `~/Desktop` config.
+
+### Fixed
+
+- Removed a duplicated `pull_request` key in the OpenSSF Scorecard workflow,
+  restoring the `branches: [master]` filter.
+
 ## [0.4.0.2] - 2026-10-17
 
 ### Added

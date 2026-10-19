@@ -1,0 +1,19 @@
+repos:
+  - repo: local
+    hooks:
+      - id: fourmolu
+        name: fourmolu
+        entry: fourmolu --mode check
+        language: system
+        types: [haskell]
+      - id: hlint
+        name: hlint
+        entry: hlint --ignore-suggestions
+        language: system
+        types: [haskell]
+      - id: actionlint
+        name: actionlint
+        entry: actionlint
+        language: system
+        types: [yaml]
+        files: ^\.github/workflows/
