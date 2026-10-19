@@ -5,9 +5,10 @@ on:
   branch_protection_rule:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
   schedule:
     - cron: "0 2 * * 0" # weekly
-  pull_request:
 
 permissions:
   contents: read

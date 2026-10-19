@@ -1,7 +1,7 @@
 cabal-version:      3.14
 
 name:               mathiassm
-version:            0.4.0.1
+version:            0.4.0.2
 synopsis:           Custom site generator engine using Hakyll
 description:
     Custom static site generator built with Hakyll.
@@ -53,7 +53,7 @@ library
                   , MathiasSM.Context.Nav
                   , MathiasSM.Context.Project
                   , MathiasSM.Context.Site
-                  , MathiasSM.Context.Tables
+                  , MathiasSM.Context.Lists
                   , MathiasSM.Metadata
                   , MathiasSM.Rules.Assets
                   , MathiasSM.Rules.Favicon
@@ -65,10 +65,14 @@ library
                   , MathiasSM.Rules.Sitemap
                   , MathiasSM.Rules.Static
                   , MathiasSM.Rules
-                  , MathiasSM.Tsv
                   , MathiasSM.Validate
-                  , MathiasSM.Website
                   , MathiasSM.Writings
+                  , MathiasSM.Yaml
+                  , MathiasSM.Yaml.Experience
+                  , MathiasSM.Yaml.Hobby
+                  , MathiasSM.Yaml.Project
+                  , MathiasSM.Yaml.Social
+                  , MathiasSM.Yaml.Website
   other-modules: Paths_mathiassm
   autogen-modules: Paths_mathiassm
   build-depends:    base         >= 4 && < 5
@@ -93,10 +97,10 @@ executable site
                   , mathiassm
   ghc-options:      -threaded -rtsopts -with-rtsopts=-N
 
-test-suite test
+test-suite spec
   import:           shared
   type:             exitcode-stdio-1.0
-  main-is:          Main.hs
+  main-is:          SpecMain.hs
   hs-source-dirs:   test
   other-modules:    MathiasSM.TestUtils
                   , MathiasSM.AccessibilitySpec
@@ -106,18 +110,31 @@ test-suite test
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
                   , MathiasSM.ValidateSpec
-                  , MathiasSM.TsvSpec
-                  , Golden
+                  , MathiasSM.YamlSpec
   build-depends:    base
                   , hakyll
                   , mathiassm
                   , tasty
+                  , tasty-ant-xml
                   , tasty-hunit
-                  , tasty-golden
                   , tasty-quickcheck
+                  , time
+  ghc-options:      -threaded
+
+test-suite golden
+  import:           shared
+  type:             exitcode-stdio-1.0
+  main-is:          GoldenMain.hs
+  hs-source-dirs:   test
+  other-modules:    Golden
+  build-depends:    base
+                  , hakyll
+                  , mathiassm
+                  , tasty
+                  , tasty-ant-xml
+                  , tasty-golden
                   , bytestring
                   , directory
                   , filepath
                   , temporary
-                  , time
   ghc-options:      -threaded

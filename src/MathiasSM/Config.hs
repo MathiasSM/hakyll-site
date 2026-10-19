@@ -19,7 +19,9 @@ module MathiasSM.Config (
     pagesPattern,
     postsPattern,
     projectsPattern,
-    tablesPattern,
+    hobbiesPattern,
+    socialsPattern,
+    experiencePattern,
 
     -- * Identifiers
 
@@ -29,10 +31,10 @@ module MathiasSM.Config (
     pageTemplate,
     postTemplate,
 
-    -- ** Tables
-    hobbiesTable,
-    socialsTable,
-    experienceTable,
+    -- ** Data files
+    hobbiesFile,
+    socialsFile,
+    experienceFile,
 )
 where
 
@@ -95,7 +97,7 @@ mediaDir cfg = contentDir cfg </> "media"
 -- | Currently hardcoded files the site cannot build without, relative to the repo root
 requiredContent :: SiteConfig -> [FilePath]
 requiredContent cfg =
-    [contentDir cfg </> "tables" </> name <.> "tsv" | name <- ["hobbies", "socials", "experience"]]
+    map (contentDir cfg </>) ["hobbies.yaml", "socials.yaml", "experience.yaml"]
 
 -- | The group whose items are the projects (its index page lists `projects/`)
 projectsGroup :: String
@@ -117,19 +119,27 @@ postsPattern cfg group = fromString $ contentDir cfg </> "writings" </> group </
 projectsPattern :: SiteConfig -> Pattern
 projectsPattern cfg = fromString $ contentDir cfg </> "projects" </> "*.yaml"
 
--- | All tables (TSV)
-tablesPattern :: SiteConfig -> Pattern
-tablesPattern cfg = fromString $ contentDir cfg </> "tables" </> "*.tsv"
+-- | The single hobbies file (a list of hobbies)
+hobbiesPattern :: SiteConfig -> Pattern
+hobbiesPattern cfg = fromString $ contentDir cfg </> "hobbies.yaml"
+
+-- | The single socials file (a list of accounts)
+socialsPattern :: SiteConfig -> Pattern
+socialsPattern cfg = fromString $ contentDir cfg </> "socials.yaml"
+
+-- | The single experience file (a list of items)
+experiencePattern :: SiteConfig -> Pattern
+experiencePattern cfg = fromString $ contentDir cfg </> "experience.yaml"
 
 -- | The snapshot holding each published post of a single group, as rendered HTML (before templates)
 postSnapshot :: String -> Snapshot
 postSnapshot group = "published-" ++ group
 
--- | Tables (TSV) read by contexts
-hobbiesTable, socialsTable, experienceTable :: SiteConfig -> Identifier
-hobbiesTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "hobbies.tsv"
-socialsTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "socials.tsv"
-experienceTable cfg = fromFilePath $ contentDir cfg </> "tables" </> "experience.tsv"
+-- | The data files (YAML) read by contexts
+hobbiesFile, socialsFile, experienceFile :: SiteConfig -> Identifier
+hobbiesFile cfg = fromFilePath $ contentDir cfg </> "hobbies.yaml"
+socialsFile cfg = fromFilePath $ contentDir cfg </> "socials.yaml"
+experienceFile cfg = fromFilePath $ contentDir cfg </> "experience.yaml"
 
 -- | Templates every kind of page goes through
 siteTemplate, minimalTemplate, pageTemplate, postTemplate :: Identifier

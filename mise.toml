@@ -1,0 +1,3 @@
+[tools]
+actionlint = "latest"
+pre-commit = "latest"

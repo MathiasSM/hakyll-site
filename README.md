@@ -3,6 +3,7 @@
 [![Top language](https://img.shields.io/github/languages/top/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
 
 [![CI](https://github.com/MathiasSM/hakyll-site/actions/workflows/_ci.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/_ci.yml)
+[![codecov](https://codecov.io/github/MathiasSM/hakyll-site/graph/badge.svg)](https://app.codecov.io/github/MathiasSM/hakyll-site)
 [![CodeQL](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml)
 [![Dependabot](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15535/badge)](https://www.bestpractices.dev/projects/15535)
@@ -55,14 +56,17 @@ ASSETS_DIR=assets
 
 1. Install ImageMagick (e.g. via `sudo apt instal imagemagick`).
 2. Install ghcup (e.g. using `mise use -g ghcup`).
-3. Use ghcup to install `ghc`, `cabal` (both required)
-  - You may install `hls`, `fourmolu`, `hlint`, `apply-refact` with it, or use `cabal install PKG-VERSION` (e.g. `cabal install fourmolu-0.20.1.0`)
-  - Remember to `ghcup set <TOOL>` (in particular, you might need to `ghcup set cabal 3.14` because of hlint support)
-4. Enable the git hooks (runs `fourmolu` and `hlint` before each commit):
+3. Install the repo's `mise.toml` tools (`pre-commit`, `actionlint`):
 
    ```sh
-   git config core.hooksPath .githooks
+   mise install
    ```
+
+4. Use ghcup to install `ghc`, `cabal` (both required)
+  - You may install `hls`, `fourmolu`, `hlint`, `apply-refact` with it, or use `cabal install PKG-VERSION` (see [CONTRIBUTING.md](CONTRIBUTING.md) for the expected `fourmolu`/`hlint` versions)
+  - Remember to `ghcup set <TOOL>` (in particular, you might need to `ghcup set cabal 3.14` because of hlint support)
+5. Enable the git hooks (runs `fourmolu` and `hlint` before each commit) via
+   [pre-commit](https://pre-commit.com/); see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 #### Build
 
@@ -95,10 +99,10 @@ Either
 Using [Tasty](https://hackage.haskell.org/package/tasty) to organize/run tests.
 
 - Run all tests: `cabal test`.
-- Only Unit tests: `cabal test --test-options='-p unit'`
-- Only Golden tests: `cabal test --test-options='-p golden'`
+- Only Unit tests: `cabal test spec`
+- Only Golden tests: `cabal test golden`
   - Golden files are stored in `test/golden`
-  - Updating golden files: `cabal test --test-options='-p golden --accept'`
+  - Updating golden files: `cabal test golden --test-options='--accept'`
 
 ### Workflow
 
@@ -127,4 +131,3 @@ This project "deploys" as a release, via the CI workflow. Content repos can pull
 The idea is for this repo to be content-agnostic, but the current customizations _require_ some minimum structure documented in `src/MathiasSM/Config.hs`'s `requiredContent`. Missing files will fail the site build.
 
 Any release includes `templates/` and `assets/` alongside the executable; take them as the default structure and style of the built site. You may edit/bring your own templates/assets to build a site to your liking.
-
