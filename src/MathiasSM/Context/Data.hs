@@ -15,6 +15,9 @@ module MathiasSM.Context.Data (
     renderScalar,
     lookupLeaf,
     nameToRelPath,
+    breakOnDot,
+    iconVariant,
+    IconVariant (..),
 ) where
 
 import Control.Monad (when)
@@ -132,6 +135,7 @@ iconRaw _ _ = noResult "icon raw"
 
 -- | Whether a key names a derived icon field (@<base>Href@ / @<base>Raw@)
 data IconVariant = Href | Raw
+    deriving (Eq, Show)
 
 iconVariant :: String -> Maybe (String, IconVariant)
 iconVariant key =
