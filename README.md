@@ -99,10 +99,10 @@ Either
 Using [Tasty](https://hackage.haskell.org/package/tasty) to organize/run tests.
 
 - Run all tests: `cabal test`.
-- Only Unit tests: `cabal test --test-options='-p unit'`
-- Only Golden tests: `cabal test --test-options='-p golden'`
+- Only Unit tests: `cabal test spec`
+- Only Golden tests: `cabal test golden`
   - Golden files are stored in `test/golden`
-  - Updating golden files: `cabal test --test-options='-p golden --accept'`
+  - Updating golden files: `cabal test golden --test-options='--accept'`
 
 ### Workflow
 

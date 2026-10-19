@@ -2,6 +2,19 @@ codecov:
   # Don't wait for status checks to pass to see report
   require_ci_to_pass: false
 
+ignore:
+  # Test modules are exercised, not the code under test; keep them out of the report
+  - "test/**/*"
+
+coverage:
+  status:
+    project:
+      default:
+        # The default coverage is unit (spec) tests only; golden tests are
+        # uploaded separately under the "golden" flag.
+        flags:
+          - unit
+
 comment:
   # Trying out everything first
   layout: "header, files, condensed_header, condensed_files, tree, diff, footer, condensed_footer"

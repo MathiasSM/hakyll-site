@@ -97,10 +97,10 @@ executable site
                   , mathiassm
   ghc-options:      -threaded -rtsopts -with-rtsopts=-N
 
-test-suite test
+test-suite spec
   import:           shared
   type:             exitcode-stdio-1.0
-  main-is:          Main.hs
+  main-is:          SpecMain.hs
   hs-source-dirs:   test
   other-modules:    MathiasSM.TestUtils
                   , MathiasSM.AccessibilitySpec
@@ -111,17 +111,28 @@ test-suite test
                   , MathiasSM.RedirectsSpec
                   , MathiasSM.ValidateSpec
                   , MathiasSM.YamlSpec
-                  , Golden
   build-depends:    base
                   , hakyll
                   , mathiassm
                   , tasty
                   , tasty-hunit
-                  , tasty-golden
                   , tasty-quickcheck
+                  , time
+  ghc-options:      -threaded
+
+test-suite golden
+  import:           shared
+  type:             exitcode-stdio-1.0
+  main-is:          GoldenMain.hs
+  hs-source-dirs:   test
+  other-modules:    Golden
+  build-depends:    base
+                  , hakyll
+                  , mathiassm
+                  , tasty
+                  , tasty-golden
                   , bytestring
                   , directory
                   , filepath
                   , temporary
-                  , time
   ghc-options:      -threaded
