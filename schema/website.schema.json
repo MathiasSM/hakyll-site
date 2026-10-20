@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/website.schema.json",
+  "title": "Website",
+  "description": "Site configuration, as read from website.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["site", "contact", "manifest", "mathjax", "feed", "robots", "security", "trust", "funding"],
+  "properties": {
+    "site": {
+      "type": "object",
+      "description": "The site's identity.",
+      "additionalProperties": false,
+      "required": ["name", "description", "author", "copyrightYear", "domain", "twitterHandle"],
+      "properties": {
+        "name": { "type": "string", "description": "Site name, used in titles and the footer." },
+        "description": { "type": "string", "description": "Short site description." },
+        "author": { "type": "string", "description": "Site author, used in metadata." },
+        "copyrightYear": { "type": "integer", "description": "The copyright year shown in the footer." },
+        "domain": { "type": "string", "description": "The site's domain, without scheme." },
+        "twitterHandle": { "type": "string", "description": "The site's Twitter/X handle, without @." }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "description": "How to reach the site owner.",
+      "additionalProperties": false,
+      "required": ["email", "page"],
+      "properties": {
+        "email": { "type": "string", "description": "The site owner's email address." },
+        "page": { "type": "string", "description": "Path of the contact page." }
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "description": "Web app manifest colours.",
+      "additionalProperties": false,
+      "required": ["backgroundColor", "themeColor"],
+      "properties": {
+        "backgroundColor": { "type": "string", "description": "Manifest background colour." },
+        "themeColor": { "type": "string", "description": "Manifest theme colour." }
+      }
+    },
+    "mathjax": {
+      "type": "object",
+      "description": "Which MathJax CDN version renders the site's math.",
+      "additionalProperties": false,
+      "required": ["version"],
+      "properties": {
+        "version": { "type": "string", "description": "MathJax version, e.g. 4.1.3." }
+      }
+    },
+    "feed": {
+      "type": "object",
+      "description": "Atom feed size.",
+      "additionalProperties": false,
+      "required": ["size"],
+      "properties": {
+        "size": { "type": "integer", "description": "Number of most recent posts per feed." }
+      }
+    },
+    "robots": {
+      "type": "object",
+      "description": "robots.txt disallow rules.",
+      "additionalProperties": false,
+      "required": ["disallow"],
+      "properties": {
+        "disallow": {
+          "type": "array",
+          "description": "Paths to disallow in robots.txt.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "description": "Data behind .well-known/security.txt.",
+      "additionalProperties": false,
+      "required": ["preferredLanguages", "expires", "expirationMarginDays"],
+      "properties": {
+        "preferredLanguages": { "type": "string", "description": "Preferred languages, comma-separated." },
+        "expires": { "type": "string", "description": "security.txt expiration, as an ISO timestamp." },
+        "expirationMarginDays": { "type": "integer", "description": "How far in advance the expiration must be renewed." }
+      }
+    },
+    "trust": {
+      "type": "object",
+      "description": "Data behind .well-known/trust.txt.",
+      "additionalProperties": false,
+      "required": ["trainingAllowed"],
+      "properties": {
+        "trainingAllowed": { "type": "string", "description": "Whether the site content may be used for AI training." }
+      }
+    },
+    "funding": {
+      "type": "object",
+      "description": "Data behind funding.json.",
+      "additionalProperties": false,
+      "required": ["entity", "projects", "channels", "plans"],
+      "properties": {
+        "entity": {
+          "type": "object",
+          "description": "The entity being funded.",
+          "additionalProperties": false,
+          "required": ["email", "description"],
+          "properties": {
+            "email": { "type": "string", "description": "Funding entity email." },
+            "description": { "type": "string", "description": "Who is being funded." }
+          }
+        },
+        "projects": {
+          "type": "array",
+          "description": "Projects listed in funding.json.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["guid", "name", "description", "repositoryUrl", "repositoryWellKnown", "licenses", "tags"],
+            "properties": {
+              "guid": { "type": "string", "description": "Stable project identifier." },
+              "name": { "type": "string", "description": "Project name." },
+              "description": { "type": "string", "description": "What the project is." },
+              "repositoryUrl": { "type": "string", "description": "URL of the project repository." },
+              "repositoryWellKnown": { "type": "string", "description": "URL of the repository's funding-manifest-urls file." },
+              "licenses": { "type": "array", "items": { "type": "string" }, "description": "SPDX license identifiers." },
+              "tags": { "type": "array", "items": { "type": "string" }, "description": "Free-form tags." }
+            }
+          }
+        },
+        "channels": {
+          "type": "array",
+          "description": "Funding channels.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["guid", "type", "address", "description"],
+            "properties": {
+              "guid": { "type": "string", "description": "Stable channel identifier." },
+              "type": { "type": "string", "description": "Channel type, e.g. bank." },
+              "address": { "type": "string", "description": "Channel address." },
+              "description": { "type": "string", "description": "What the channel is." }
+            }
+          }
+        },
+        "plans": {
+          "type": "array",
+          "description": "Funding plans.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["guid", "status", "name", "description", "amount", "currency", "frequency", "channels"],
+            "properties": {
+              "guid": { "type": "string", "description": "Stable plan identifier." },
+              "status": { "type": "string", "description": "Plan status." },
+              "name": { "type": "string", "description": "Plan name." },
+              "description": { "type": "string", "description": "What the plan is." },
+              "amount": { "type": "integer", "description": "Plan amount." },
+              "currency": { "type": "string", "description": "Currency code, e.g. EUR." },
+              "frequency": { "type": "string", "description": "Payment frequency." },
+              "channels": { "type": "array", "items": { "type": "string" }, "description": "Channel guids the plan uses." }
+            }
+          }
+        }
+      }
+    }
+  }
+}

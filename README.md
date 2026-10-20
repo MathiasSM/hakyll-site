@@ -18,7 +18,7 @@ You may download the [latest release](https://github.com/MathiasSM/hakyll-site/r
 - `templates/` hakyll templates that define components of each (usually html) pages. There are included files in the release tarball and this repo, but you may change them as you need to.
 - `assets/` holds styles and potentially other files that are logically coupled with templates/ and it didn't make much sense to "extract" into the content repo. Same as with templates, there's a bundle included, which is the one I use for my personal site; feel free to change to your liking.
 - `content/` where all writing, images and other stuff lives. To build my personal site, I use a separate repo that holds these files.
-  - The directory must hold a `website.yaml` file with metadata about the site (see `example.website.yaml`) and a `socials.yaml` file with the list of accounts; the build fails if either is missing.
+  - The directory must hold a `website.yaml` file with metadata about the site (see `schema/example.website.yaml`) and a `socials.yaml` file with the list of accounts (see `schema/example.socials.yaml`); the build fails if either is missing.
   - Any other YAML data lives under `content/data/` and is exposed to templates automatically (see [Data files](#data-files)).
 
 The way to execute this is same as any hakyll site: `executable <CMD>`; if you build it from source, you can use `cabal exec site <CMD>` instead.

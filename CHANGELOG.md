@@ -7,6 +7,17 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+### Added
+
+- Data list items can be hidden with `_show: false`, which omits them from the `$for(name)$` loop.
+- A JSON Schema for the site configuration (`schema/website.schema.json`).
+- Example configuration files (`schema/example.website.yaml` and `schema/example.socials.yaml`).
+
+### Changed
+
+- Moved `example.website.yaml` into `schema/`.
+- Moved `socials.schema.json` into `schema/` from the content repository; the `website` and `socials` schemas are now closed (they reject unknown fields).
+
 ## [0.5.0.0] - 2026-10-19
 
 ### Added
