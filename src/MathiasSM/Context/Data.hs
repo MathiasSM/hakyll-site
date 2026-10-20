@@ -114,8 +114,8 @@ buildTopLevel cfg ident fieldPath value = case value of
         | null fieldPath ->
             return . ListField (itemContext cfg) $
                 [Item (fromFilePath $ toFilePath ident ++ "#" ++ show n) item | (n, item) <- zip [0 :: Int ..] shown]
-          where
-            shown = filter isShown (toList items)
+      where
+        shown = filter isShown (toList items)
     _ -> valueField cfg value fieldPath
 
 -- | Whether a list item should appear: only an explicit @_show: false@ hides it
