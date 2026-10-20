@@ -19,6 +19,7 @@ extra-source-files:
     templates/*.html
     templates/*.xml
     assets/css/*.css
+    schema/*
 
 license:            BSD-3-Clause
 license-file:       LICENSE.txt

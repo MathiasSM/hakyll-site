@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/socials.schema.json",
+  "title": "Socials",
+  "description": "All social accounts, as a single list.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["icon", "href", "username"],
+    "properties": {
+      "icon": {
+        "type": "string",
+        "description": "Icon under content/media/icons/social/, without the .svg extension."
+      },
+      "href": {
+        "type": "string",
+        "description": "URL the account links to."
+      },
+      "username": {
+        "type": "string",
+        "description": "Handle shown on the link."
+      },
+      "showContact": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether to show the account in the contact section."
+      },
+      "showAbout": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether to show the account on the home page."
+      }
+    }
+  }
+}

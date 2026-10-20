@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/website.schema.json
 # Example site configuration. A content repo needs a proper website.yaml
 #
 # This is the source of truth for the site's identity and the data behind the
