@@ -7,6 +7,9 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+
+## [1.0.0.0] - 2026-10-20
+
 ### Added
 
 - Data list items can be hidden with `_show: false`, which omits them from the `$for(name)$` loop.
