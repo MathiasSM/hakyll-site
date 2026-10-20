@@ -5,6 +5,8 @@ with @-@, extension dropped). A file holding a top-level list is looped with
 @$for(name)$@; a top-level map is read with @$name.key$@ (nested maps flatten
 to dotted keys). Scalars render as strings.
 
+A list item with @_show: false@ is left out of the loop entirely.
+
 Any scalar field whose name contains @icon@ also gets two derived fields:
 @<field>Href@ (the icon URL) and @<field>Raw@ (the SVG markup, inlined).
 -}
@@ -16,6 +18,7 @@ module MathiasSM.Context.Data (
     scalarString,
     iconName,
     lookupLeaf,
+    isShown,
     nameToRelPath,
     breakOnDot,
     iconVariant,
@@ -110,8 +113,15 @@ buildTopLevel cfg ident fieldPath value = case value of
     Array items
         | null fieldPath ->
             return . ListField (itemContext cfg) $
-                [Item (fromFilePath $ toFilePath ident ++ "#" ++ show n) item | (n, item) <- zip [0 :: Int ..] (toList items)]
+                [Item (fromFilePath $ toFilePath ident ++ "#" ++ show n) item | (n, item) <- zip [0 :: Int ..] shown]
+          where
+            shown = filter isShown (toList items)
     _ -> valueField cfg value fieldPath
+
+-- | Whether a list item should appear: only an explicit @_show: false@ hides it
+isShown :: Value -> Bool
+isShown (Object object) = KM.lookup (Key.fromString "_show") object /= Just (Bool False)
+isShown _ = True
 
 -- | Resolves one template key against a value: a scalar leaf, or a derived icon field
 valueField :: SiteConfig -> Value -> String -> Compiler ContextField
