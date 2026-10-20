@@ -112,8 +112,9 @@
 .main-list a {color:currentcolor}
 .main-list header > div {font-style: italic}
 
-.main-list li {padding: .5rem 1rem; margin: 0 -1rem;}
-.main-list li:hover {background-color:var(--color-accent-white)}
+.main-list li {margin: 0 -1rem; border-left: .5rem solid var(--color-main);}
+.main-list li a {padding: .5rem 1rem; display:block;}
+.main-list li:hover {background-color:var(--color-accent-white); border-color: var(--color-accent);}
 .main-list li:hover .status {color:var(--color-accent)}
 
 .main-list h2 {clear: none;}
