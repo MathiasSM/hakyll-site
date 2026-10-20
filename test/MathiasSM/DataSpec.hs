@@ -8,6 +8,7 @@ import MathiasSM.Context.Data (
     checkAgainstSchema,
     iconName,
     iconVariant,
+    isShown,
     lookupLeaf,
     nameToRelPath,
     renderScalar,
@@ -38,6 +39,17 @@ tests =
                 lookupLeaf "missing" example @?= Nothing
             , testCase "returns nothing when a path crosses a scalar" $
                 lookupLeaf "name.extra" example @?= Nothing
+            ]
+        , testGroup
+            "isShown"
+            [ testCase "keeps an item without a _show field" $
+                isShown (doc "name: Drawing") @?= True
+            , testCase "keeps an item with _show: true" $
+                isShown (doc "name: Drawing\n_show: true") @?= True
+            , testCase "hides an item with _show: false" $
+                isShown (doc "name: Collecting\n_show: false") @?= False
+            , testCase "keeps a non-object item" $
+                isShown (doc "Drawing") @?= True
             ]
         , testGroup
             "renderScalar"
