@@ -89,9 +89,10 @@
   grid-template-columns: 2rem 1fr;
   align-items: center;
   padding: .5rem 1rem;
-  box-shadow: 5px 5px 0 var(--color-main);
+  box-shadow: 5px 5px 0 var(--color-main-light);
 }
-.hobbies ul .item:hover { box-shadow: 5px 5px 0 var(--color-accent);}
+.hobbies ul a.item { box-shadow: 5px 5px 0 var(--color-main); }
+.hobbies ul a.item:hover { box-shadow: 5px 5px 0 var(--color-accent);}
 .hobbies ul .item > * + * { padding-left: 1rem;}
 .hobbies ul .item > .icon {
   width: 100%;
