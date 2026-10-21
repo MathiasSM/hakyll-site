@@ -7,6 +7,10 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 ## [Unreleased]
 
+### Added
+
+- Posts now fail the build when `lastModifiedAt` is before `date`.
+
 
 ## [1.0.0.0] - 2026-10-20
 
