@@ -5,6 +5,7 @@ module MathiasSM.Content (
     Post (..),
     NavEntry (..),
     isDraft,
+    isHidden,
     isIndex,
     isSitemapExcluded,
     groupOf,
@@ -30,6 +31,7 @@ import Data.Maybe (fromMaybe)
 import Data.Ord (Down (Down))
 import Data.Time (Day)
 import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, getUnderlying, toFilePath)
+import MathiasSM.Config (Env (..))
 import MathiasSM.Metadata qualified as K
 import MathiasSM.Yaml (Check (runCheck), decodeYaml, enumFromJSON, optional, required)
 import MathiasSM.Yaml.Project (Project (..), parseProjectYaml)
@@ -84,6 +86,11 @@ languageOf o = fromMaybe En <$> optional o K.Language
 -- | Whether an item is marked `draft: true`, and so left out of the site
 isDraft :: Metadata -> Bool
 isDraft o = runCheck (optional o K.Draft) == Right (Just True)
+
+-- | Whether a draft item is hidden from this build (dev shows drafts, prod hides them)
+isHidden :: Env -> Metadata -> Bool
+isHidden Prod = isDraft
+isHidden Dev = const False
 
 -- | Whether an item is a group index page (`index: true` in its front matter)
 isIndex :: Metadata -> Bool

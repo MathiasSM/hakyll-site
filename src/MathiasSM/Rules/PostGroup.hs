@@ -17,8 +17,8 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
-import MathiasSM.Config (SiteConfig, minimalTemplate, postSnapshot, postTemplate, postsPattern)
-import MathiasSM.Content (isDraft, requirePost)
+import MathiasSM.Config (SiteConfig, minimalTemplate, postSnapshot, postTemplate, postsPattern, siteEnv)
+import MathiasSM.Content (isHidden, requirePost)
 import MathiasSM.Context (globalContext, postSocialTagsContext)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
@@ -40,7 +40,7 @@ Anything but a draft must have valid front matter, or the build fails.
 -}
 processPostGroupItems :: SiteConfig -> String -> Rules ()
 processPostGroupItems cfg groupName =
-    matchMetadata (postsPattern cfg groupName) (not . isDraft) $ do
+    matchMetadata (postsPattern cfg groupName) (not . isHidden (siteEnv cfg)) $ do
         route $ metadataRoute pathRoute
         compile $
             requirePost

@@ -116,6 +116,7 @@ test-suite spec
   build-depends:    base
                   , hakyll
                   , mathiassm
+                  , aeson
                   , tasty
                   , tasty-ant-xml
                   , tasty-hunit
