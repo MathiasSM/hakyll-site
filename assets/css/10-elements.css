@@ -23,7 +23,7 @@ menu { list-style: none; padding-inline:0; }
 /* headers */
 h1,h2,h3,h4,h5,h6 {margin: 1em 0 0.5em; clear: both;}
 h1 {font-size: 1.6em; font-weight: bold;}
-h2 {font-size: 1.6em;}
+h2 {font-size: 1.4em;}
 h3 {font-size: 1.3em;}
 h4 {font-size: 1.2em;}
 h5,h6 {font-size: 1em; font-weight:bold}
@@ -40,12 +40,35 @@ caption { font-size: .9em; font-style: italic; }
 pre,code,input,select,textarea,button,img {border-radius: var(--round-corners)}
 p > img {border-radius:0;}
 
+/* forms */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+    background: var(--color-bg);
+    border: 1px solid var(--color-main-light);
+    padding: .4em .6em;
+}
+textarea {width: 100%; resize: vertical;}
+button {
+    font: inherit;
+    color: var(--color-bg);
+    background: var(--color-main);
+    border: 1px solid var(--color-main);
+    padding: .4em .8em;
+    cursor: pointer;
+}
+button:hover {background: var(--color-accent); border-color: var(--color-accent);}
+fieldset {border: 1px solid var(--color-main-light); border-radius: var(--round-corners); padding: 1em 1.5em 1.5em;}
+legend {padding: 0 .5em; font-weight: bold;}
+
 /* links */
 a {color: var(--color-main); text-decoration:none}
 a:hover,a:active {color: var(--color-accent);}
 
 /* code */
-pre, code, kbd, var, .sourceCode {
+pre, code, kbd, samp, var, .sourceCode {
     font: .9em/1.6 var(--font-mono);
     padding: .2em .4em;
     background: var(--color-accent-white);
@@ -77,6 +100,7 @@ blockquote {
 
 /* Definition lists */
 dt { font-weight: bold; color: var(--color-main-dark); }
+dd { margin: 0 0 .5em 1em; }
 
 /* Details */
 details {
@@ -114,6 +138,17 @@ hr {
     margin: 1rem auto;
 }
 dfn {font-style: normal;}
+
+sup, sub {font-size: 75%; line-height: 0; position: relative; vertical-align: baseline;}
+sup {top: -0.5em;}
+sub {bottom: -0.25em;}
+
+small {font-size: .8em;}
+time {font-variant-numeric: tabular-nums;}
+del {text-decoration: line-through;}
+ins {text-decoration: underline;}
+em {font-style: italic;}
+strong {font-weight: bold;}
 
 mark {
     background: linear-gradient(120deg, var(--color-accent-light) 0%, var(--color-accent-light) 100%) no-repeat;

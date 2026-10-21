@@ -10,7 +10,7 @@ Ex. @[飯](-はん)@ into @<ruby>飯<rt>はん</rt></ruby>@
 
 NOTE: Uses "RawInline" since there's no native AST representation
 
-NOTE: Author should manually add @{lang=jp/ko/cn/...}@ for accesibility and using correct CJK font
+NOTE: Author should manually add @{lang=ja/ko/zh/...}@ for accesibility and using correct CJK font
 -}
 processRubyText :: Inline -> Inline
 processRubyText x@(Link _ [Str kanji] (src, _)) =

@@ -31,7 +31,7 @@ languageTests =
     testGroup
         "Language"
         [ testCase "has a code for each language" $
-            map languageCode [En, Es, Jp] @?= ["en", "es", "jp"]
+            map languageCode [En, Es, Ja] @?= ["en", "es", "ja"]
         , testCase "has distinct codes" $
             let codes = map languageCode [minBound .. maxBound]
              in length (nub codes) @?= length codes
@@ -71,14 +71,14 @@ postTests =
                 @?= Left ["date: could not parse date: invalid day:(2026,13,45)"]
         , testCase "rejects an unknown language" $
             parse (set "language" "fr" validPost)
-                @?= Left ["language: unknown language \"fr\" (expected en, es, jp)"]
+                @?= Left ["language: unknown language \"fr\" (expected en, es, ja)"]
         , testCase "reports every problem at once, in field order" $
             parse (set "language" "fr" $ set "date" "2026-13-45" $ without ["title", "path"] validPost)
                 @?= Left
                     [ "title: missing"
                     , "date: could not parse date: invalid day:(2026,13,45)"
                     , "path: missing"
-                    , "language: unknown language \"fr\" (expected en, es, jp)"
+                    , "language: unknown language \"fr\" (expected en, es, ja)"
                     ]
         ]
   where

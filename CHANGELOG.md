@@ -18,7 +18,7 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 - Draft items (`draft: true`) now build only in dev (`SITE_ENV=dev`) and are excluded from prod builds; standalone pages now respect `draft:` too.
 - Posts now honor `templated: true` (template syntax in their body), matching standalone pages.
-- Ruby annotations render as `<ruby>` without a hardcoded `lang="jp"`; the transform now lives in `MathiasSM.Filters`.
+- Ruby annotations render as `<ruby>` without a hardcoded `lang="ja"`; the transform now lives in `MathiasSM.Filters`.
 
 ### Fixed
 

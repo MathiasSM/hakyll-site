@@ -15,6 +15,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 - [Advanced tables](/example/tables-advanced/) — grid, simple, and multiline tables.
 - [Images](/example/images/) — inline images, figures, and captions.
 - [HTML](/example/html/) — definition lists, fenced divs, and raw HTML.
+- [Forms](/example/forms/) — inputs, selects, textareas, and buttons.
 - [Ruby](/example/ruby/) — ruby annotations over kanji.
 - [Math](/example/math/) — MathJax inline and display math.
 - [Table of contents](/example/toc/) — a generated table of contents.
