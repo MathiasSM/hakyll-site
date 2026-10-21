@@ -11,10 +11,13 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 - Posts now fail the build when `lastModifiedAt` is before `date`.
 - Task-list checkboxes (from pandoc) are read-only by default; wrapping them in an `interactive` div keeps them editable.
+- A ruby-text toggle: `showRubyToggle: true` front matter renders `templates/ruby-toggle.html` (a checkbox + inline script) above a post or page body, to hide/show reading annotations.
 
 ### Changed
 
 - Draft items (`draft: true`) now build only in dev (`SITE_ENV=dev`) and are excluded from prod builds; standalone pages now respect `draft:` too.
+- Posts now honor `templated: true` (template syntax in their body), matching standalone pages.
+- Ruby annotations render as `<ruby>` without a hardcoded `lang="jp"`; the transform now lives in `MathiasSM.Filters`.
 
 ### Fixed
 

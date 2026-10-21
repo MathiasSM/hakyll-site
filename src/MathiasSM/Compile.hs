@@ -2,7 +2,6 @@
 module MathiasSM.Compile (runPandoc, applyTemplates, finish) where
 
 import Control.Monad (foldM)
-import Data.Text qualified as T
 import Hakyll (
     Compiler,
     Context,
@@ -20,9 +19,10 @@ import Hakyll (
 import MathiasSM.Accessibility (checkAccessibility)
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
+import MathiasSM.Filters (processRubyText)
 import MathiasSM.Html (readonlyCheckboxes)
 import MathiasSM.Metadata (Key (TOC), lookupKey)
-import Text.Pandoc (Inline (Link, RawInline, Str), Pandoc (Pandoc), nullMeta)
+import Text.Pandoc (Pandoc (Pandoc), nullMeta)
 import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
 import Text.Pandoc.Walk (walk)
 import Text.Pandoc.Writers.Shared (toTableOfContents)
@@ -68,20 +68,3 @@ finish context item =
         >>= cleanIndexHtmls
         >>= return . fmap readonlyCheckboxes
         >>= checkAccessibility
-
-{- | Change special syntax (overloading Links) into ruby-annotated text
-
-Ex. `[飯](-はん)` into `<ruby lang=jp>飯<rt>はん</rt></ruby>`
-
-NOTE: @jp@ is hardcoded into the ruby tag "just in case"
-
-NOTE: Uses RawInline since there's no native AST representation
--}
-processRubyText :: Inline -> Inline
-processRubyText x@(Link _ [Str kanji] (src, _)) =
-    case T.uncons src of
-        Just ('-', ruby) ->
-            RawInline "html" $
-                "<ruby lang=jp>" <> kanji <> "<rp>(</rp><rt>" <> ruby <> "</rt><rp>)</rp></ruby>"
-        _ -> x
-processRubyText x = x

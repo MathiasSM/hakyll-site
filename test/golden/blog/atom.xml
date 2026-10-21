@@ -8,7 +8,23 @@
     <author>
         <name><![CDATA[Example Author]]></name>
     </author>
-    <updated>2026-02-01T00:00:00Z</updated>
+    <updated>2026-03-02T00:00:00Z</updated>
+<entry>
+    <title><![CDATA[Ruby toggle]]></title>
+    <link href="https://example.com/blog/ruby-toggle" />
+    <id>https://example.com/blog/ruby-toggle</id>
+    <published>2026-03-02T00:00:00Z</published>
+    <updated>2026-03-02T00:00:00Z</updated>
+    <content type="html"><![CDATA[<p>This post turns on the ruby toggle with <code>showRubyToggle: true</code>, then annotates some ruby: <ruby>日本語<rp>(</rp><rt>にほんご</rt><rp>)</rp></ruby>.</p>]]></content>
+</entry>
+<entry>
+    <title><![CDATA[Templated post]]></title>
+    <link href="https://example.com/blog/templated" />
+    <id>https://example.com/blog/templated</id>
+    <published>2026-03-01T00:00:00Z</published>
+    <updated>2026-03-01T00:00:00Z</updated>
+    <content type="html"><![CDATA[<p>This post opts into <code>templated: true</code>, so its body is processed as a template: the title is Templated post.</p>]]></content>
+</entry>
 <entry>
     <title><![CDATA[Work in progress]]></title>
     <link href="https://example.com/blog/wip" />
