@@ -11,6 +11,10 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 - Posts now fail the build when `lastModifiedAt` is before `date`.
 
+### Changed
+
+- Draft items (`draft: true`) now build only in dev (`SITE_ENV=dev`) and are excluded from prod builds; standalone pages now respect `draft:` too.
+
 
 ## [1.0.0.0] - 2026-10-20
 

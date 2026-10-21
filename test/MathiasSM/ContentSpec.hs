@@ -1,8 +1,12 @@
 -- | Tests for the front-matter parsers (posts, aliases, menus)
 module MathiasSM.ContentSpec (tests) where
 
+import Data.Aeson (Value (Bool))
+import Data.Aeson.Key (fromString)
+import Data.Aeson.KeyMap qualified as KM
 import Data.Either (isLeft)
 import Data.List (nub)
+import MathiasSM.Config (Env (..))
 import MathiasSM.Content
 import MathiasSM.TestUtils
 import Test.Tasty (TestTree, testGroup)
@@ -15,6 +19,7 @@ tests =
         "Content"
         [ languageTests
         , postTests
+        , isHiddenTests
         , aliasTests
         , navTests
         ]
@@ -78,6 +83,23 @@ postTests =
         ]
   where
     parse = parsePostYaml . render
+
+-- Draft visibility -----------------------------------------------------------
+
+isHiddenTests :: TestTree
+isHiddenTests =
+    testGroup
+        "isHidden"
+        [ testCase "hides a draft in prod" $
+            isHidden Prod draftMetadata @?= True
+        , testCase "shows a draft in dev" $
+            isHidden Dev draftMetadata @?= False
+        , testCase "shows a non-draft in prod" $
+            isHidden Prod nonDraftMetadata @?= False
+        ]
+  where
+    draftMetadata = KM.singleton (fromString "draft") (Bool True)
+    nonDraftMetadata = KM.singleton (fromString "title") (Bool False)
 
 -- Aliases --------------------------------------------------------------------
 

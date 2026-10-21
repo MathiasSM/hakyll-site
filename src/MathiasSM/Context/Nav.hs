@@ -1,6 +1,7 @@
 -- | The site menu, built from the pages that declare a nav entry
 module MathiasSM.Context.Nav (navContext) where
 
+import Control.Monad (filterM)
 import Data.List (sortOn)
 import Data.Maybe (catMaybes)
 import Hakyll (
@@ -10,12 +11,13 @@ import Hakyll (
     boolField,
     field,
     getMatches,
+    getMetadata,
     listField,
     noResult,
     toFilePath,
  )
-import MathiasSM.Config (SiteConfig, pagesPattern)
-import MathiasSM.Content (Language (En), NavEntry (..), languageCode, requireNav)
+import MathiasSM.Config (SiteConfig, pagesPattern, siteEnv)
+import MathiasSM.Content (Language (En), NavEntry (..), isHidden, languageCode, requireNav)
 import System.FilePath.Posix (takeBaseName)
 
 {- | The site menu as a @nav@ list (@label@, @href@, @active@, @lang@), built from the
@@ -41,5 +43,6 @@ navContext cfg current = listField "nav" entryContext (navItems cfg)
 navItems :: SiteConfig -> Compiler [Item NavEntry]
 navItems cfg = do
     pages <- getMatches $ pagesPattern cfg "*"
-    entries <- mapM (\page -> fmap (Item page) <$> requireNav page) pages
+    visible <- filterM (fmap (not . isHidden (siteEnv cfg)) . getMetadata) pages
+    entries <- mapM (\page -> fmap (Item page) <$> requireNav page) visible
     return $ sortOn (navOrder . itemBody) $ catMaybes entries

@@ -8,7 +8,15 @@
     <author>
         <name><![CDATA[Example Author]]></name>
     </author>
-    <updated>2026-01-05T00:00:00Z</updated>
+    <updated>2026-02-01T00:00:00Z</updated>
+<entry>
+    <title><![CDATA[Work in progress]]></title>
+    <link href="https://example.com/blog/wip" />
+    <id>https://example.com/blog/wip</id>
+    <published>2026-02-01T00:00:00Z</published>
+    <updated>2026-02-01T00:00:00Z</updated>
+    <content type="html"><![CDATA[<p>Not ready yet; built in dev only.</p>]]></content>
+</entry>
 <entry>
     <title><![CDATA[Drawing]]></title>
     <link href="https://example.com/hobbies/drawing" />

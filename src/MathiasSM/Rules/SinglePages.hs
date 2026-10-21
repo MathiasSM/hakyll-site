@@ -12,13 +12,14 @@ import Hakyll (
     getMetadata,
     getResourceString,
     getUnderlying,
-    match,
+    matchMetadata,
     metadataRoute,
     route,
  )
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
-import MathiasSM.Config (SiteConfig, minimalTemplate, pageTemplate, pagesPattern)
+import MathiasSM.Config (SiteConfig, minimalTemplate, pageTemplate, pagesPattern, siteEnv)
+import MathiasSM.Content (isHidden)
 import MathiasSM.Context (globalContext)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Metadata (Key (Templated), lookupKey)
@@ -54,6 +55,6 @@ pageCompiler cfg Page{pageName, pageContext, pageTemplates} = do
 
 -- | Processes a standalone page, routed by its `path:` front matter
 processPage :: SiteConfig -> Page -> Rules ()
-processPage cfg page'@Page{pageName} = match (pagesPattern cfg pageName) $ do
+processPage cfg page'@Page{pageName} = matchMetadata (pagesPattern cfg pageName) (not . isHidden (siteEnv cfg)) $ do
     route $ metadataRoute pathRoute
     compile $ pageCompiler cfg page'
