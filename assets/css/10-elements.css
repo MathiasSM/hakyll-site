@@ -15,7 +15,7 @@ body {
     color: var(--color-main-black);
 }
 
-img, iframe, figure {border: none; max-width:100%; margin:0;}
+img, figure {border: none; max-width:100%; margin:0;}
 p:first-child {margin-top:0}
 
 menu { list-style: none; padding-inline:0; }
