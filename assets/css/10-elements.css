@@ -99,6 +99,12 @@ details[open] summary {background: var(--color-main-light);}
 ruby {line-height: 2;}
 rt {opacity: .8; ruby-align: center; margin-bottom: .2em;}
 
+/* Task lists: pandoc checkboxes are read-only unless opted in via `.interactive` */
+input[type="checkbox"][aria-readonly="true"],
+label:has(> input[type="checkbox"][aria-readonly="true"]) {
+    pointer-events: none;
+}
+
 /* other elements */
 hr {
     color: var(--color-main);

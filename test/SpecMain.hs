@@ -8,6 +8,7 @@ import MathiasSM.CleanURLSpec qualified as CleanURL
 import MathiasSM.ContentSpec qualified as Content
 import MathiasSM.DataSpec qualified as Data
 import MathiasSM.FeedsSpec qualified as Feeds
+import MathiasSM.HtmlSpec qualified as Html
 import MathiasSM.MetadataSpec qualified as Metadata
 import MathiasSM.RedirectsSpec qualified as Redirects
 import MathiasSM.YamlSpec qualified as Yaml
@@ -25,6 +26,7 @@ main =
             , Content.tests
             , Data.tests
             , Feeds.tests
+            , Html.tests
             , Metadata.tests
             , Redirects.tests
             , Yaml.tests

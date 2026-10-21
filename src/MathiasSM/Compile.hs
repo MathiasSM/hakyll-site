@@ -19,6 +19,7 @@ import Hakyll (
 import MathiasSM.Accessibility (checkAccessibility)
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
+import MathiasSM.Html (readonlyCheckboxes)
 import MathiasSM.Metadata (Key (TOC), lookupKey)
 import Text.Pandoc (Inline (Link, RawInline, Str))
 import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod, writerTableOfContents)
@@ -58,6 +59,7 @@ finish context item =
         >>= relativizeUrls
         >>= cleanIndexUrls
         >>= cleanIndexHtmls
+        >>= return . fmap readonlyCheckboxes
         >>= checkAccessibility
 
 {- | Change special syntax (overloading Links) into ruby-annotated text

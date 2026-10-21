@@ -10,6 +10,7 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 ### Added
 
 - Posts now fail the build when `lastModifiedAt` is before `date`.
+- Task-list checkboxes (from pandoc) are read-only by default; wrapping them in an `interactive` div keeps them editable.
 
 ### Changed
 
