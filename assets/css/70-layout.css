@@ -30,7 +30,7 @@ main { flex:1; }
   }
   figure {
       width: 30%;
-      margin: 0 0 0 1em;
+      margin: 0 0 1rem 1em;
       padding: 1rem;
   }
   .site-header {grid-area: header; min-width:10em; padding:0 1em;}

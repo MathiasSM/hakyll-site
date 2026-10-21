@@ -8,19 +8,18 @@ html {
 }
 body {
     margin: 0;
-    font: 100%/1.75 var(--font-sans);
     font-weight: 400;
     font-style: normal;
     text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
     background: var(--color-bg);
     color: var(--color-main-black);
 }
+
 img, iframe, figure {border: none; max-width:100%; margin:0;}
 p:first-child {margin-top:0}
 
 /* headers */
-h1,h2,h3,h4,h5,h6 {margin: 1em 0 0.5em; font-weight: normal; clear: both;}
+h1,h2,h3,h4,h5,h6 {margin: 1em 0 0.5em; clear: both;}
 h1 {font-size: 1.6em; font-weight: bold;}
 h2 {font-size: 1.6em;}
 h3 {font-size: 1.3em;}
@@ -28,28 +27,96 @@ h4 {font-size: 1.2em;}
 h5,h6 {font-size: 1em; font-weight:bold}
 
 /* tables */
-table {border-collapse: collapse;border-spacing: 0; margin: 1em 0}
+table {border-collapse: collapse;border-spacing: 0; margin: 1em auto;font-size:.9em;}
 th, td {text-align: left;vertical-align: top; border: none; padding:0.4em}
 thead,tfoot {background: var(--color-accent-light)}
 tbody tr:nth-child(odd) {background:var(--color-accent-white);}
+tbody tr:last-child{border-bottom: .25rem solid var(--color-accent-light);}
+caption { font-size: .9em; font-style: italic; }
 
 /* corners */
 pre,code,input,select,textarea,button,img {border-radius: var(--round-corners)}
+p > img {border-radius:0;}
 
 /* links */
 a {color: var(--color-main); text-decoration:none}
 a:hover,a:active {color: var(--color-accent);}
 
 /* code */
-pre, code, kbd, var {font: 1em/1.6 var(--font-mono);background: var(--color-accent-white); padding: .2em .4em;}
-pre code {padding: 0}
-pre {padding: 1em; overflow-x: auto}
+pre, code, kbd, var, .sourceCode {
+    font: .9em/1.6 var(--font-mono);
+    padding: .2em .4em;
+    background: var(--color-accent-white);
+}
+pre {
+    padding: 1em;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    tab-size: 2;
+}
+pre code {
+    display:inline-block;
+    min-width: 100%;
+    padding: 0;
+}
+kbd {
+    font-weight: bold;
+    border-radius: var(--round-corners);
+    box-shadow: 0 1px 1px rgb(0 0 0 / 0.2), 0 2px 0 0 rgb(255 255 255 / 0.7) inset;
+}
+@media (prefers-color-scheme: dark) {
+    kbd {
+        box-shadow: 0 1px 1px rgb(0 0 0 / 0.2) inset, 0 2px 0 0 rgb(255 255 255 / 0.7);
+    }
+}
 
 /* quotes */
-blockquote {position:relative; border-left: 5px solid var(--color-accent-light); padding: 1em 1.5em; margin: 0}
+blockquote {
+    position:relative;
+    border-left: 1rem solid var(--color-accent-light);
+    padding: 1em 1.5em;
+    margin: 0
+}
+
+/* Definition lists */
+dt { font-weight: bold; color: var(--color-main-dark); }
+
+/* Details */
+details {
+    margin: 1rem 0;
+    border-left: .5rem solid var(--color-main-light);
+    padding: 0 1rem;
+}
+summary {
+    margin: 0 -1rem;
+    padding: 0 1em;
+    cursor: pointer;
+    user-select: none;
+}
+details[open] summary {background: var(--color-main-light);}
+
+/* Ruby text */
+ruby {line-height: 2;}
+rt {opacity: .8; ruby-align: center; margin-bottom: .2em;}
 
 /* other elements */
-hr {border:0; border-bottom: 1px solid var(--color-main-dark); width:90%; margin: 0 auto; padding: 1em 0;}
+hr {
+    color: var(--color-main);
+    width:90%;
+    margin: 1rem auto;
+}
 dfn {font-style: normal;}
-ruby {line-height: 2;}
-rt {color: #555555; ruby-align: center; margin-bottom: .2em;}
+
+mark {
+    background: linear-gradient(120deg, var(--color-accent-light) 0%, var(--color-accent-light) 100%) no-repeat;
+    background-size: 100% 40%;
+    background-position: 0 88%;
+}
+@media (prefers-color-scheme: dark) {
+  mark {
+    background: linear-gradient(120deg, var(--color-accent) 0%, var(--color-accent) 100%) no-repeat;
+    background-size: 100% 40%;
+    background-position: 0 88%;
+    color: white;
+  }
+}
