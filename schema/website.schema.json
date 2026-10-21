@@ -5,7 +5,7 @@
   "description": "Site configuration, as read from website.yaml.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["site", "contact", "manifest", "mathjax", "feed", "robots", "security", "trust", "funding"],
+  "required": ["site", "contact", "manifest", "mathjax", "highlight", "feed", "robots", "security", "trust", "funding"],
   "properties": {
     "site": {
       "type": "object",
@@ -48,6 +48,19 @@
       "required": ["version"],
       "properties": {
         "version": { "type": "string", "description": "MathJax version, e.g. 4.1.3." }
+      }
+    },
+    "highlight": {
+      "type": "object",
+      "description": "Which pandoc syntax-highlighting style renders code blocks.",
+      "additionalProperties": false,
+      "required": ["style"],
+      "properties": {
+        "style": {
+          "type": "string",
+          "description": "Pandoc highlight style.",
+          "enum": ["pygments", "espresso", "zenburn", "tango", "kate", "monochrome", "breezeDark", "haddock"]
+        }
       }
     },
     "feed": {

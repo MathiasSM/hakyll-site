@@ -19,6 +19,9 @@ manifest:
 mathjax:
   version: "4.1.3"
 
+highlight:
+  style: pygments
+
 security:
   preferredLanguages: en, es
   expires: "2027-12-31T22:59:00.000Z"

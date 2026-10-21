@@ -48,6 +48,7 @@ mkSiteConfig website =
             , siteDomain = Web.siteDomain site
             , twitterHandle = Web.siteTwitterHandle site
             , mathjaxVersion = Web.mathjaxVersion (Web.websiteMathjax website)
+            , highlightStyle = Web.highlightStyle (Web.websiteHighlight website)
             , contentDir = "content"
             , assetsDir = "assets"
             , templatesDir = "templates"
