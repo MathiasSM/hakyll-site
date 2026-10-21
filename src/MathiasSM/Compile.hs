@@ -7,23 +7,25 @@ import Hakyll (
     Compiler,
     Context,
     Identifier,
-    Item,
+    Item (itemBody),
     defaultHakyllReaderOptions,
     defaultHakyllWriterOptions,
     getMetadata,
     getUnderlying,
     loadAndApplyTemplate,
+    readPandocWith,
     relativizeUrls,
-    renderPandocWithTransform,
+    writePandocWith,
  )
 import MathiasSM.Accessibility (checkAccessibility)
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
 import MathiasSM.Config (siteTemplate)
 import MathiasSM.Html (readonlyCheckboxes)
 import MathiasSM.Metadata (Key (TOC), lookupKey)
-import Text.Pandoc (Inline (Link, RawInline, Str))
-import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod, writerTableOfContents)
+import Text.Pandoc (Inline (Link, RawInline, Str), Pandoc (Pandoc), nullMeta)
+import Text.Pandoc.Options (MathMethod (MathJax), writerMathMethod)
 import Text.Pandoc.Walk (walk)
+import Text.Pandoc.Writers.Shared (toTableOfContents)
 
 -- TODO(citeproc): Citations are left unprocessed today -- `Ext_citations` is on
 -- via `pandocExtensions`, but no citeproc/bibliography is configured, so `@key`
@@ -36,13 +38,18 @@ runPandoc :: Item String -> Compiler (Item String)
 runPandoc item = do
     metadata <- getUnderlying >>= getMetadata
     let toc = lookupKey TOC metadata == Just "true"
-        opts =
-            writerOptions
-                { writerTableOfContents = toc
-                }
-    renderPandocWithTransform defaultHakyllReaderOptions opts transforms item
+    pandocItem <- readPandocWith defaultHakyllReaderOptions item
+    let pandoc' = walk processRubyText (itemBody pandocItem)
+        body = renderPandoc pandocItem pandoc'
+        tocHtml = if toc then "<nav id=\"TOC\">" ++ renderPandoc pandocItem (tocPandoc pandoc') ++ "</nav>" else ""
+    pure (item{itemBody = tocHtml ++ body})
   where
-    transforms = walk processRubyText
+    renderPandoc ident pandoc = itemBody (writePandocWith writerOptions (ident{itemBody = pandoc}))
+
+    tocPandoc pandoc = Pandoc nullMeta [toTableOfContents writerOptions (blocksOf pandoc)]
+
+    blocksOf (Pandoc _ blocks) = blocks
+
     writerOptions =
         defaultHakyllWriterOptions
             { writerMathMethod = MathJax ""
