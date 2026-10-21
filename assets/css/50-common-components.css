@@ -20,9 +20,7 @@ figure {
     background-color: var(--color-main-white);
     border-radius: var(--round-corners);
 }
-figure:has(> .left) { float: left; margin: 0 1em 0 0; }
 figure:has(> .full) { width: 100%; height: auto; float: none; margin: 0}
-figure:has(> .wide) { width: 80%; height: auto; float: none; margin: 0; }
 figure > * { width: auto; height: auto; max-height: 80ex; max-width: 100%; margin: 0 auto; }
 figure > img { object-fit: contain; display: block; }
 .figures { display: flex; justify-content: space-around; gap: .5rem; flex-wrap: wrap; margin: 1rem 0;}
@@ -71,3 +69,10 @@ nav#TOC a:active {
 
 /* Other pandoc/markdown generated stuff */
 div.line-block { margin: 1rem 0;}
+.task-list { list-style: none; padding-left: 0; }
+
+/* Footnotes */
+.footnotes { margin-top: 2em; font-size: .9em; }
+.footnotes hr { width: 30%; margin-left: 0; }
+.footnote-ref { white-space: nowrap; }
+.footnote-back { opacity: .6; }
