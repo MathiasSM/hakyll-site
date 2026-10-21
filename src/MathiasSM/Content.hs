@@ -62,15 +62,20 @@ data Post = Post
 
 -- | Parses front matter, reporting every problem (not just the first)
 parsePost :: Metadata -> Either [String] Post
-parsePost o =
-    runCheck $
-        Post
-            <$> required o K.Title
-            <*> required o K.Date
-            <*> required o K.Path
-            <*> languageOf o
-            <*> optional o K.LastModifiedAt
-            <*> (fromMaybe False <$> optional o K.Draft)
+parsePost o = do
+    post <-
+        runCheck $
+            Post
+                <$> required o K.Title
+                <*> required o K.Date
+                <*> required o K.Path
+                <*> languageOf o
+                <*> optional o K.LastModifiedAt
+                <*> (fromMaybe False <$> optional o K.Draft)
+    case postLastModified post of
+        Just modified
+            | modified < postDate post -> Left ["lastModifiedAt: is before date"]
+        _ -> Right post
 
 -- | The language of an item (English unless stated)
 languageOf :: Metadata -> Check Language
