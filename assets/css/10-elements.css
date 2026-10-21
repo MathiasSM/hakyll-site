@@ -12,8 +12,21 @@ body {
     font-style: normal;
     text-rendering: optimizeLegibility;
     background: var(--color-bg);
-    color: var(--color-main-black);
+    color: var(--color-text);
 }
+
+small {font-size: .8em;}
+time {font-variant-numeric: tabular-nums;}
+del {text-decoration: line-through;}
+ins {text-decoration: underline;}
+em {font-style: italic;}
+strong {font-weight: bold;}
+
+dfn {font-style: normal;}
+
+sup, sub {font-size: 75%; line-height: 0; position: relative; vertical-align: baseline;}
+sup {top: -0.5em;}
+sub {bottom: -0.25em;}
 
 img, figure {border: none; max-width:100%; margin:0;}
 p:first-child {margin-top:0}
@@ -29,12 +42,33 @@ h4 {font-size: 1.2em;}
 h5,h6 {font-size: 1em; font-weight:bold}
 
 /* tables */
-table {border-collapse: collapse;border-spacing: 0; margin: 1em auto;font-size:.9em;}
-th, td {text-align: left;vertical-align: top; border: none; padding:0.4em}
-thead,tfoot {background: var(--color-accent-light)}
-tbody tr:nth-child(odd) {background:var(--color-accent-white);}
-tbody tr:last-child{border-bottom: .25rem solid var(--color-accent-light);}
-caption { font-size: .9em; font-style: italic; }
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 1rem auto;
+    font-size:.9em;
+}
+th, td {
+    text-align: left;
+    vertical-align: top;
+    border: none;
+    padding-inline:1rem
+}
+thead,tfoot {
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+}
+tfoot { font-style: italic; }
+tbody tr:nth-child(odd) {
+    background:var(--color-surface);
+}
+table:not(:has(tfoot)) tbody tr:last-child{
+    border-bottom: .25rem solid var(--color-brand);
+}
+caption {
+    font-size: .9em;
+    font-style: italic;
+}
 
 /* corners */
 pre,code,input,select,textarea,button,img {border-radius: var(--round-corners)}
@@ -47,31 +81,31 @@ textarea {
     font: inherit;
     color: inherit;
     background: var(--color-bg);
-    border: 1px solid var(--color-main-light);
-    padding: .4em .6em;
+    border: 1px solid var(--color-border);
+    padding: .5em 1em;
 }
 textarea {width: 100%; resize: vertical;}
 button {
     font: inherit;
-    color: var(--color-bg);
-    background: var(--color-main);
-    border: 1px solid var(--color-main);
-    padding: .4em .8em;
+    color: var(--color-on-brand);
+    background: var(--color-brand);
+    border: 1px solid var(--color-brand);
+    padding: .5em 1em;
     cursor: pointer;
 }
 button:hover {background: var(--color-accent); border-color: var(--color-accent);}
-fieldset {border: 1px solid var(--color-main-light); border-radius: var(--round-corners); padding: 1em 1.5em 1.5em;}
+fieldset {border: 1px solid var(--color-border); border-radius: var(--round-corners); padding: 1em 1.5em 1.5em;}
 legend {padding: 0 .5em; font-weight: bold;}
 
 /* links */
-a {color: var(--color-main); text-decoration:none}
+a {color: var(--color-link); text-decoration:none}
 a:hover,a:active {color: var(--color-accent);}
 
 /* code */
 pre, code, kbd, samp, var, .sourceCode {
     font: .9em/1.6 var(--font-mono);
     padding: .2em .4em;
-    background: var(--color-accent-white);
+    background: var(--color-surface);
 }
 pre {
     padding: 1em;
@@ -93,19 +127,19 @@ kbd {
 /* quotes */
 blockquote {
     position:relative;
-    border-left: 1rem solid var(--color-accent-light);
+    border-left: 1rem solid var(--color-highlight);
     padding: 1em 1.5em;
     margin: 0
 }
 
 /* Definition lists */
-dt { font-weight: bold; color: var(--color-main-dark); }
+dt { font-weight: bold; color: var(--color-accent); }
 dd { margin: 0 0 .5em 1em; }
 
 /* Details */
 details {
     margin: 1rem 0;
-    border-left: .5rem solid var(--color-main-light);
+    border-left: .5rem solid var(--color-border);
     padding: 0 1rem;
 }
 summary {
@@ -114,14 +148,13 @@ summary {
     cursor: pointer;
     user-select: none;
 }
-details[open] summary {background: var(--color-main-light);}
 
 /* Ruby text */
 ruby {line-height: 2;}
-rt {opacity: .8; ruby-align: center; margin-bottom: .2em;}
+rt {ruby-align: center; margin-bottom: .2em;}
 
 /* Ruby toggle: see ruby-toggle.html template */
-.ruby-toggle {padding:.5rem; background: var(--color-accent-white);}
+.ruby-toggle {padding:.5rem; background: var(--color-surface);}
 .no-ruby rt {visibility: hidden;}
 
 /* Have pandoc checkboxes readonly by default */
@@ -133,25 +166,9 @@ label:has(> input[type="checkbox"][aria-readonly="true"]) {
 /* other elements */
 hr {
     border: none;
-    border-top: 1px solid var(--color-main);
+    border-top: 1px solid var(--color-brand);
     width:90%;
     margin: 1rem auto;
 }
-dfn {font-style: normal;}
 
-sup, sub {font-size: 75%; line-height: 0; position: relative; vertical-align: baseline;}
-sup {top: -0.5em;}
-sub {bottom: -0.25em;}
-
-small {font-size: .8em;}
-time {font-variant-numeric: tabular-nums;}
-del {text-decoration: line-through;}
-ins {text-decoration: underline;}
-em {font-style: italic;}
-strong {font-weight: bold;}
-
-mark {
-    background: linear-gradient(120deg, var(--color-accent-light) 0%, var(--color-accent-light) 100%) no-repeat;
-    background-size: 100% 40%;
-    background-position: 0 88%;
-}
+mark { background: var(--color-highlight); }
