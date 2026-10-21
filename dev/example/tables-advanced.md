@@ -17,6 +17,18 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 |             | drawn with + |
 +-------------+--------------+
 
+A grid table can also carry a footer, marked by an extra `=` separator:
+
++---------+-------+
+| Item    | Price |
++=========+=======+
+| Eggs    | 5     |
++---------+-------+
+| Milk    | 3     |
++=========+=======+
+| Total   | 8     |
++=========+=======+
+
 ## Simple tables
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A simple table uses a single `-` row under the header:

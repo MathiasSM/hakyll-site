@@ -40,14 +40,14 @@ import MathiasSM.Yaml.Social (Social (..), parseSocialsYaml)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 
 -- | Language a page is written in
-data Language = En | Es | Jp
+data Language = En | Es | Ja
     deriving (Eq, Show, Enum, Bounded)
 
 -- | The code used in front matter and in @lang@ attributes
 languageCode :: Language -> String
 languageCode En = "en"
 languageCode Es = "es"
-languageCode Jp = "jp"
+languageCode Ja = "ja"
 
 instance FromJSON Language where
     parseJSON = enumFromJSON "language" languageCode

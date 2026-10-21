@@ -8,7 +8,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
 }
 
-
 /* Japanese */
 :lang(ja), [lang="ja"] {
   font-family: var(--font-latin-sans), var(--font-cjk-ja-sans);
@@ -66,3 +65,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-latin-serif), var(--font-cjk-zh-hans-serif);
 }
 
+
+/* CJK scripts have no true italics; use traditional emphasis marks instead */
+em :lang(ja), em :lang(ko), em :lang(zh),
+:lang(ja) em, :lang(ko) em, :lang(zh) em {
+  font-style: normal;
+  text-emphasis: filled dot;
+  text-emphasis-position: over right;
+}

@@ -44,4 +44,4 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
 
 ## Inline HTML
 
-Like keyboard keys: <kbd>Ctrl</kbd>. Marked text: <mark>like this</mark>.
+Like keyboard keys: <kbd>Ctrl</kbd>. Marked text: <mark>like this</mark>. A variable <var>x</var>, sample output <samp>OK</samp>, an <ins>insertion</ins>, a date: <time datetime="2026-10-21">2027-12-30</time>, and Japanese emphasis <em><span lang="ja">漢字</span></em>.
