@@ -16,6 +16,10 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 - Draft items (`draft: true`) now build only in dev (`SITE_ENV=dev`) and are excluded from prod builds; standalone pages now respect `draft:` too.
 
+### Fixed
+
+- `TOC: true` now renders a table of contents (it was generated but never included in the output).
+
 
 ## [1.0.0.0] - 2026-10-20
 
