@@ -61,7 +61,6 @@
   padding: 0;
   display: grid;
   grid-auto-rows: 1fr;
-  gap: 1rem;
 }
 .experience li {
   display: grid;

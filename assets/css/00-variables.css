@@ -1,5 +1,6 @@
 /* variables */
 :root {
+  /* COLORS *******************************************************************/
   --color-bg:           hsl(210,75%,99%);
   --color-main-white:   hsl(210, 75%, 95%);
   --color-main-light:   hsl(210, 75%, 75%);
@@ -12,8 +13,94 @@
   --color-accent-dark:  hsl(30, 75%, 30%);
   --color-accent-black: hsl(30, 75%, 10%);
 
-  --font-mono: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, 'Courier New', monospace;
-  --font-sans: 'Noto Sans JP', 'Roboto', 'Helvetica', sans-serif;
-
+  /* BORDERS ******************************************************************/
   --round-corners: 5px;
+
+
+  /* FONTS ********************************************************************/
+
+  --font-mono: "Cascadia Code", "SF Mono", Consolas, Menlo, "Liberation Mono", monospace;
+
+  /* Latin Stacks */
+  --font-latin-sans: 'Noto Sans', sans-serif;
+  --font-latin-serif: 'Noto Serif', serif;
+
+  /* CJK Sans Stacks */
+  --font-cjk-ja-sans:
+    'Noto Sans CJK JP',
+    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo',
+    sans-serif;
+  --font-cjk-ko-sans:
+    'Noto Sans CJK KR',
+    'Apple SD Gothic Neo', 'Malgun Gothic',
+    sans-serif;
+  --font-cjk-zh-hant-sans:
+    'Noto Sans CJK TC',
+    'PingFang TC', 'PingFang HK', 'Microsoft JhengHei',
+    sans-serif;
+  --font-cjk-zh-hans-sans:
+    'Noto Sans CJK SC',
+    'PingFang SC', 'Microsoft YaHei',
+    sans-serif;
+
+  /* CJK Serif Stacks */
+  --font-cjk-ja-serif:
+    'Noto Serif CJK JP',
+    'Hiragino Mincho ProN', 'Yu Mincho', 'MS PMincho',
+    serif;
+  --font-cjk-ko-serif:
+    'Noto Serif CJK KR',
+    'AppleMyungjo', 'Batang',
+    serif;
+  --font-cjk-zh-hant-serif:
+    'Noto Serif CJK TC',
+    'Songti TC', 'Songti HK', 'PMingLiU',
+    serif;
+  --font-cjk-zh-hans-serif:
+    'Noto Serif CJK SC',
+    'Songti SC', 'SimSun',
+    serif;
+
+  /* ====================================================================
+  In Linux, the defacto standard seems to be Noto.
+  But in other OSs, things change a bit...
+
+  Grouped by family. CJK lists the regional variants:
+  JP = Japanese, KR = Korean, SC = Simplified Chinese,
+  TC = Traditional Chinese, HK = Hong Kong.
+  "Hiragino Sans" = Hiragino Kaku Gothic ProN.
+
+  CJK             | Font                 | macOS/iOS | Windows | Linux
+  --------------- + -------------------- + --------- + ------- + -----
+  -               | -apple-system        |     O     |    -    |   -
+  -               | BlinkMacSystemFont   |     O     |    -    |   -
+  -               | Georgia              |     O     |    O    |   -
+  -               | Times New Roman      |     O     |    O    |   -
+  -               | Segoe UI             |     -     |    O    |   -
+  -               | Noto Sans            |     -     |    -    |   O
+  -               | Noto Serif           |     -     |    -    |   O
+
+  JP, KR, SC, TC  | Noto Sans CJK        |     -     |    -    |   O
+  JP, KR, SC, TC  | Noto Serif CJK       |     -     |    -    |   O
+
+  JP              | Hiragino Sans        |     O     |    -    |   -
+  JP              | Hiragino Mincho ProN |     O     |    -    |   -
+  JP              | Yu Mincho            |     O     |    -    |   -
+  JP              | Meiryo               |     -     |    O    |   -
+  JP              | MS PMincho           |     -     |    O    |   -
+
+  KR              | Apple SD Gothic Neo  |     O     |    -    |   -
+  KR              | AppleMyungjo         |     O     |    -    |   -
+  KR              | Malgun Gothic        |     -     |    O    |   -
+  KR              | Batang               |     -     |    O    |   -
+  KR              | Nanum Gothic         |     -     |    -    |   O
+  KR              | NanumMyeongjo        |     -     |    -    |   O
+
+  SC, TC, HK      | PingFang             |     O     |    -    |   -
+  SC, TC, HK      | Songti               |     O     |    -    |   -
+  TC              | Microsoft JhengHei   |     -     |    O    |   -
+  TC              | PMingLiU             |     -     |    O    |   -
+  SC              | Microsoft YaHei      |     -     |    O    |   -
+  SC              | SimSun               |     -     |    O    |   -
+  */
 }

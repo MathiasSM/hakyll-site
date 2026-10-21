@@ -41,3 +41,7 @@ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deseru
   <p>This is raw HTML, inserted verbatim.</p>
 </details>
 ```
+
+## Inline HTML
+
+Like keyboard keys: <kbd>Ctrl</kbd>. Marked text: <mark>like this</mark>.

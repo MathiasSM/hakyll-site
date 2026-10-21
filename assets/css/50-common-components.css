@@ -13,10 +13,9 @@ a:active[href^=http]::after { opacity: .8; }
 
 /* Figures and images in content **********************************************/
 figure {
-    margin: 0 auto;
     width: 45%;
     float: right;
-    margin: 0 0 0 .5em;
+    margin: 0 0 .5rem .5em;
     padding: .5rem;
     background-color: var(--color-main-white);
     border-radius: var(--round-corners);
@@ -26,13 +25,13 @@ figure:has(> .full) { width: 100%; height: auto; float: none; margin: 0}
 figure:has(> .wide) { width: 80%; height: auto; float: none; margin: 0; }
 figure > * { width: auto; height: auto; max-height: 80ex; max-width: 100%; margin: 0 auto; }
 figure > img { object-fit: contain; display: block; }
-.figures { display: flex; justify-content: space-around; gap: .5rem; flex-wrap: wrap;}
+.figures { display: flex; justify-content: space-around; gap: .5rem; flex-wrap: wrap; margin: 1rem 0;}
 .figures figure {margin: 0;flex: 0 1 auto;}
 
 figcaption {
   font-size: 0.8rem;
   line-height: 1.25;
-  color: #555555;
+  color: var(--color-main-black);
   text-align: center;
   margin-top: .5em;
   padding: 0 0.5rem;
@@ -69,3 +68,6 @@ nav#TOC a:hover,
 nav#TOC a:active {
   color: var(--color-accent);
 }
+
+/* Other pandoc/markdown generated stuff */
+div.line-block { margin: 1rem 0;}
