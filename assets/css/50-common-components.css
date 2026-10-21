@@ -17,7 +17,7 @@ figure {
     float: right;
     margin: 0 0 .5rem .5em;
     padding: .5rem;
-    background-color: var(--color-main-white);
+    background-color: var(--color-surface);
     border-radius: var(--round-corners);
 }
 figure:has(> .full) { width: 100%; height: auto; float: none; margin: 0}
@@ -29,7 +29,7 @@ figure > img { object-fit: contain; display: block; }
 figcaption {
   font-size: 0.8rem;
   line-height: 1.25;
-  color: var(--color-main-black);
+  color: var(--color-text);
   text-align: center;
   margin-top: .5em;
   padding: 0 0.5rem;
@@ -38,15 +38,15 @@ figcaption {
 }
 
 /* common classes *************************************************************/
-.post-date-header {font-style:normal;opacity:.6}
+.post-date-header {font-style:normal;color:var(--color-text-muted)}
 .unbreakable {white-space: nowrap;}
 .ipa {font-style: italic;}
 
 
 /* table of contents **********************************************************/
 nav#TOC {
-  background: var(--color-accent-white);
-  border: 1px solid var(--color-accent-light);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--round-corners);
   padding: 0.5em 1em;
   margin: 0 0 1.5em;
@@ -75,4 +75,4 @@ div.line-block { margin: 1rem 0;}
 .footnotes { margin-top: 2em; font-size: .9em; }
 .footnotes hr { width: 30%; margin-left: 0; }
 .footnote-ref { white-space: nowrap; }
-.footnote-back { opacity: .6; }
+.footnote-back { color: var(--color-text-muted); }

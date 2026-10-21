@@ -1,12 +1,12 @@
 /* site header ****************************************************************/
 .site-header {
-  background: var(--color-main);
-  color: var(--color-bg);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
   display: flex;
   flex-direction: column;
   text-align: center
 }
-.site-header svg * {fill: var(--color-bg);}
+.site-header svg * {fill: var(--color-on-brand);}
 .site-header a {color: currentcolor}
 
 .site-logo {
@@ -33,8 +33,8 @@
   flex-wrap:wrap;
 }
 .site-header nav a { padding: .4em; flex:1;}
-.site-header nav a:hover {color:var(--color-main);background: var(--color-main-white)}
-.site-header nav a:active, .site-header nav a.active {color:var(--color-accent);background: var(--color-main-white)}
+.site-header nav a:hover {color:var(--color-link);background: var(--color-surface)}
+.site-header nav a:active, .site-header nav a.active {color:var(--color-accent);background: var(--color-surface)}
 .site-header nav mark {background:none;color:currentcolor}
 .site-header nav mark::before {content:'('}
 .site-header nav mark::after {content:')'}
@@ -43,8 +43,8 @@
 .main-article {padding: 0 1em;max-width:68ch;margin:0 auto; font-size:1.1em}
 .main-article > header {margin-bottom:1em;}
 .main-article > header > div {font-style:italic}
-.main-article .post-date-header {font-style:normal;opacity:.6}
-.main-article > footer {padding:1em 0;margin-top:2em;border-top:1px solid var(--color-main-dark)}
+.main-article .post-date-header {font-style:normal;color:var(--color-text-muted)}
+.main-article > footer {padding:1em 0;margin-top:2em;border-top:1px solid var(--color-border-strong)}
 
 /* about *******************************************************************/
 .intro img {
@@ -87,9 +87,9 @@
   grid-template-columns: 2rem 1fr;
   align-items: center;
   padding: .5rem 1rem;
-  box-shadow: 5px 5px 0 var(--color-main-light);
+  box-shadow: 5px 5px 0 var(--color-border);
 }
-.hobbies ul a.item { box-shadow: 5px 5px 0 var(--color-main); }
+.hobbies ul a.item { box-shadow: 5px 5px 0 var(--color-brand); }
 .hobbies ul a.item:hover { box-shadow: 5px 5px 0 var(--color-accent);}
 .hobbies ul .item > * + * { padding-left: 1rem;}
 .hobbies ul .item > .icon {
@@ -101,7 +101,7 @@
 /* postlist *******************************************************************/
 .main-list {
   list-style-type: none;
-  margin: 3em 0 0;
+  margin-block: 2em;
   padding:0;
   display: flex;
   flex-direction: column;
@@ -110,9 +110,9 @@
 .main-list a {color:currentcolor}
 .main-list header > div {font-style: italic}
 
-.main-list li {margin: 0 -1rem; border-left: .5rem solid var(--color-main);}
+.main-list li {border-left: .5rem solid var(--color-brand);}
 .main-list li a {padding: .5rem 1rem; display:block;}
-.main-list li:hover {background-color:var(--color-accent-white); border-color: var(--color-accent);}
+.main-list li:hover {background-color:var(--color-surface); border-color: var(--color-accent);}
 .main-list li:hover .status {color:var(--color-accent)}
 
 .main-list h2 {clear: none; margin: 0;}
@@ -121,7 +121,7 @@ a.project::after { content: none;}
 .project .status {
   float:right;
   font-style:normal;font-weight:bold;
-  color:var(--color-main);
+  color:var(--color-brand);
   margin:.3em 0
 }
 .project .status::before {content:'['}
@@ -129,8 +129,8 @@ a.project::after { content: none;}
 
 /* site footer ****************************************************************/
 .site-footer {
-  color:var(--color-main-white);
-  background: var(--color-main);
+  color:var(--color-on-brand);
+  background: var(--color-brand);
   text-align:right;
   padding: .5rem 1rem;
 }
@@ -151,11 +151,11 @@ a.project::after { content: none;}
 .social-contact a {
   display: flex;
   padding: .5rem 1rem;
-  background: var(--color-main-white);
-  color: var(--color-main-black)
+  background: var(--color-surface);
+  color: var(--color-text)
 }
 .social-contact a:hover {
-  background: var(--color-accent-white);
+  background: var(--color-surface);
   /* color: var(--color-accent) */
 }
 .social-contact a > div:first-child  {
