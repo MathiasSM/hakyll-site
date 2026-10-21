@@ -47,6 +47,7 @@ library
                   , MathiasSM.Content
                   , MathiasSM.Feeds
                   , MathiasSM.Filters
+                  , MathiasSM.Html
                   , MathiasSM.Cli
                   , MathiasSM.Context
                   , MathiasSM.Context.Feeds
@@ -110,6 +111,7 @@ test-suite spec
                   , MathiasSM.ContentSpec
                   , MathiasSM.DataSpec
                   , MathiasSM.FeedsSpec
+                  , MathiasSM.HtmlSpec
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
                   , MathiasSM.YamlSpec
