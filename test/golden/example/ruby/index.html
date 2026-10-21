@@ -62,10 +62,26 @@
   <header>
     <h1>Ruby</h1>
   </header>
+  
+    <menu>
+      <li><label class="ruby-toggle">
+  <input type="checkbox" checked />
+  <span>ruby</span>
+</label>
+<script>
+(() => {
+  const input = document.querySelector('.ruby-toggle input');
+  if (!input) return;
+  const update = () => document.documentElement.classList.toggle('no-ruby', !input.checked);
+  input.addEventListener('change', update);
+})();
+</script>
+</li>
+    </menu>
   <div>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The site renders a special link form as ruby annotations: <code>[kanji](-reading)</code>.</p>
-<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. The word <ruby lang="jp">日本語<rp>(</rp><rt>にほんご</rt><rp>)</rp></ruby> means “Japanese”, while <ruby lang="jp">漢字<rp>(</rp><rt>かんじ</rt><rp>)</rp></ruby> are Chinese characters. You can annotate a single character too, like <ruby lang="jp">猫<rp>(</rp><rt>ねこ</rt><rp>)</rp></ruby> for “cat”.</p>
-<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A sentence can mix plain text and annotated words: I am learning <ruby lang="jp">勉強<rp>(</rp><rt>べんきょう</rt><rp>)</rp></ruby> and <ruby lang="jp">読書<rp>(</rp><rt>どくしょ</rt><rp>)</rp></ruby> every day.</p>
+<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. The word <ruby>日本語<rp>(</rp><rt>にほんご</rt><rp>)</rp></ruby> means “Japanese”, while <ruby>漢字<rp>(</rp><rt>かんじ</rt><rp>)</rp></ruby> are Chinese characters. You can annotate a single character too, like <ruby>猫<rp>(</rp><rt>ねこ</rt><rp>)</rp></ruby> for “cat”.</p>
+<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. A sentence can mix plain text and annotated words: I am learning <ruby>勉強<rp>(</rp><rt>べんきょう</rt><rp>)</rp></ruby> and <ruby>読書<rp>(</rp><rt>どくしょ</rt><rp>)</rp></ruby> every day.</p>
 <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 </div>
 

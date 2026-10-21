@@ -8,6 +8,7 @@ module MathiasSM.Content (
     isHidden,
     isIndex,
     isSitemapExcluded,
+    isTemplated,
     groupOf,
     aliasesOf,
     parseAliasesYaml,
@@ -99,6 +100,12 @@ isIndex o = runCheck (optional o K.Index) == Right (Just True)
 -- | Whether an item is marked `sitemap: false`, and so left out of the sitemap
 isSitemapExcluded :: Metadata -> Bool
 isSitemapExcluded o = runCheck (optional o K.Sitemap) == Right (Just False)
+
+-- | Whether the current item is marked `templated: true`, and so may use template syntax in its body
+isTemplated :: Compiler Bool
+isTemplated = do
+    metadata <- getUnderlying >>= getMetadata
+    return $ K.lookupKey K.Templated metadata == Just "true"
 
 -- | The group an item belongs to: its `group:` front matter, or the folder it sits in under `writings/`
 groupOf :: FilePath -> Identifier -> Metadata -> Maybe String

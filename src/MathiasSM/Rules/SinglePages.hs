@@ -9,9 +9,7 @@ import Hakyll (
     Rules,
     applyAsTemplate,
     compile,
-    getMetadata,
     getResourceString,
-    getUnderlying,
     matchMetadata,
     metadataRoute,
     route,
@@ -19,10 +17,9 @@ import Hakyll (
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (SiteConfig, minimalTemplate, pageTemplate, pagesPattern, siteEnv)
-import MathiasSM.Content (isHidden)
+import MathiasSM.Content (isHidden, isTemplated)
 import MathiasSM.Context (globalContext)
 import MathiasSM.Context.Nav (navContext)
-import MathiasSM.Metadata (Key (Templated), lookupKey)
 
 -- | A standalone page, backed by content/writings/<pageName>.* and routed by its `path:`
 data Page = Page
@@ -47,11 +44,6 @@ pageCompiler cfg Page{pageName, pageContext, pageTemplates} = do
         >>= runPandoc
         >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
         >>= finish (navContext cfg pageName <> ctx)
-  where
-    -- Pages with `templated: true` may use template syntax in their body
-    isTemplated = do
-        metadata <- getUnderlying >>= getMetadata
-        return $ lookupKey Templated metadata == Just "true"
 
 -- | Processes a standalone page, routed by its `path:` front matter
 processPage :: SiteConfig -> Page -> Rules ()

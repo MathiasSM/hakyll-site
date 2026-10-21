@@ -5,6 +5,7 @@ import Hakyll (
     Compiler,
     Context,
     Rules,
+    applyAsTemplate,
     compile,
     getResourceString,
     listField,
@@ -18,7 +19,7 @@ import Hakyll (
 import MathiasSM.CleanURL (pathRoute)
 import MathiasSM.Compile (applyTemplates, finish, runPandoc)
 import MathiasSM.Config (SiteConfig, minimalTemplate, postSnapshot, postTemplate, postsPattern, siteEnv)
-import MathiasSM.Content (isHidden, requirePost)
+import MathiasSM.Content (isHidden, isTemplated, requirePost)
 import MathiasSM.Context (globalContext, postSocialTagsContext)
 import MathiasSM.Context.Nav (navContext)
 import MathiasSM.Rules.SinglePages (Page (..), page, processPage)
@@ -42,9 +43,11 @@ processPostGroupItems :: SiteConfig -> String -> Rules ()
 processPostGroupItems cfg groupName =
     matchMetadata (postsPattern cfg groupName) (not . isHidden (siteEnv cfg)) $ do
         route $ metadataRoute pathRoute
-        compile $
-            requirePost
-                >> getResourceString
+        compile $ do
+            _ <- requirePost
+            templated <- isTemplated
+            getResourceString
+                >>= (if templated then applyAsTemplate (globalContext cfg) else return)
                 >>= runPandoc
                 >>= saveSnapshot (postSnapshot groupName)
                 >>= applyTemplates (globalContext cfg) [minimalTemplate, postTemplate]

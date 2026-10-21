@@ -18,6 +18,8 @@ body {
 img, iframe, figure {border: none; max-width:100%; margin:0;}
 p:first-child {margin-top:0}
 
+menu { list-style: none; padding-inline:0; }
+
 /* headers */
 h1,h2,h3,h4,h5,h6 {margin: 1em 0 0.5em; clear: both;}
 h1 {font-size: 1.6em; font-weight: bold;}
@@ -99,7 +101,11 @@ details[open] summary {background: var(--color-main-light);}
 ruby {line-height: 2;}
 rt {opacity: .8; ruby-align: center; margin-bottom: .2em;}
 
-/* Task lists: pandoc checkboxes are read-only unless opted in via `.interactive` */
+/* Ruby toggle: see ruby-toggle.html template */
+.ruby-toggle {padding:.5rem; background: var(--color-accent-white);}
+.no-ruby rt {visibility: hidden;}
+
+/* Have pandoc checkboxes readonly by default */
 input[type="checkbox"][aria-readonly="true"],
 label:has(> input[type="checkbox"][aria-readonly="true"]) {
     pointer-events: none;
