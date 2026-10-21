@@ -41,6 +41,7 @@ where
 
 import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
+import MathiasSM.Yaml.Website (HighlightStyle)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
 -- | The build environment: 'Dev' also publishes the preview pages under @/example/@
@@ -68,6 +69,8 @@ data SiteConfig = SiteConfig
 
     I might some day decide not to use the CDN and rather vend the bundle.
     -}
+    , highlightStyle :: HighlightStyle
+    -- ^ Pandoc syntax-highlighting style (from @highlight.style@ in @website.yaml@), driving the generated CSS
     , contentDir :: FilePath
     -- ^ Where the actual content lives
     , assetsDir :: FilePath

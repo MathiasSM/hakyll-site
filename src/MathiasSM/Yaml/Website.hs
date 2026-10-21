@@ -21,6 +21,13 @@ module MathiasSM.Yaml.Website (
     -- ** mathjax:
     Mathjax (..),
 
+    -- ** highlight:
+    Highlight (..),
+    HighlightStyle (..),
+    highlightStyleName,
+    parseHighlightStyle,
+    toPandocStyle,
+
     -- ** feed:
     FeedConfig (..),
 
@@ -47,9 +54,11 @@ import Data.Time (getCurrentTime, utctDay)
 import Data.Time.Calendar (Day, addDays)
 import Data.Time.Format (defaultTimeLocale, parseTimeM)
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
+import MathiasSM.Yaml (enumFromJSON)
 import System.Directory (doesFileExist)
 import System.Exit (die)
 import System.FilePath.Posix ((</>))
+import Text.Pandoc.Highlighting (Style, breezeDark, espresso, haddock, kate, monochrome, pygments, tango, zenburn)
 
 -- | The @site:@ section: the site's identity
 data Site = Site
@@ -81,6 +90,49 @@ data Mathjax = Mathjax
     { mathjaxVersion :: String
     }
     deriving (Eq, Show)
+
+-- | The @highlight:@ section: which pandoc style renders code blocks
+data Highlight = Highlight
+    { highlightStyle :: HighlightStyle
+    }
+    deriving (Eq, Show)
+
+-- | A pandoc syntax-highlighting style, as spelled in @highlight.style@
+data HighlightStyle = Pygments | Espresso | Zenburn | Tango | Kate | Monochrome | BreezeDark | Haddock
+    deriving (Eq, Show, Enum, Bounded)
+
+-- | How a highlight style is spelled
+highlightStyleName :: HighlightStyle -> String
+highlightStyleName Pygments = "pygments"
+highlightStyleName Espresso = "espresso"
+highlightStyleName Zenburn = "zenburn"
+highlightStyleName Tango = "tango"
+highlightStyleName Kate = "kate"
+highlightStyleName Monochrome = "monochrome"
+highlightStyleName BreezeDark = "breezeDark"
+highlightStyleName Haddock = "haddock"
+
+instance FromJSON HighlightStyle where
+    parseJSON = enumFromJSON "highlight style" highlightStyleName
+
+-- | Resolves a 'HighlightStyle' from its @highlight.style@ spelling, if known
+parseHighlightStyle :: String -> Maybe HighlightStyle
+parseHighlightStyle name = lookup name [(highlightStyleName style, style) | style <- [minBound .. maxBound]]
+
+-- | The pandoc 'Style' backing a 'HighlightStyle'
+toPandocStyle :: HighlightStyle -> Style
+toPandocStyle Pygments = pygments
+toPandocStyle Espresso = espresso
+toPandocStyle Zenburn = zenburn
+toPandocStyle Tango = tango
+toPandocStyle Kate = kate
+toPandocStyle Monochrome = monochrome
+toPandocStyle BreezeDark = breezeDark
+toPandocStyle Haddock = haddock
+
+instance FromJSON Highlight where
+    parseJSON = withObject "highlight" $ \o ->
+        Highlight <$> o .: "style"
 
 -- | The @funding:@ section: data behind @funding.json@
 data Funding = Funding
@@ -158,6 +210,7 @@ data Website = Website
     , websiteContact :: Contact
     , websiteManifest :: Manifest
     , websiteMathjax :: Mathjax
+    , websiteHighlight :: Highlight
     , websiteFunding :: Funding
     , websiteSecurity :: Security
     , websiteRobots :: Robots
@@ -255,6 +308,7 @@ instance FromJSON Website where
             <*> o .: "contact"
             <*> o .: "manifest"
             <*> o .: "mathjax"
+            <*> o .: "highlight"
             <*> o .: "funding"
             <*> o .: "security"
             <*> o .: "robots"

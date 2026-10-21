@@ -29,6 +29,11 @@ manifest:
 mathjax:
   version: "4.1.3"
 
+# Pandoc syntax-highlighting style used to render code blocks. Required.
+# One of: pygments, espresso, zenburn, tango, kate, monochrome, breezeDark, haddock.
+highlight:
+  style: pygments
+
 # atom feed 
 feed:
   size: 20

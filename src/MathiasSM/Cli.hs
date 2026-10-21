@@ -67,6 +67,7 @@ loadSiteConfig contentDir website = do
     domain <- override "SITE_DOMAIN" (Web.siteDomain site)
     twitter <- override "TWITTER_HANDLE" (Web.siteTwitterHandle site)
     mathjax <- override "MATHJAX_VERSION" (Web.mathjaxVersion (Web.websiteMathjax website))
+    highlight <- highlightStyleFromEnv (Web.websiteHighlight website)
     pure
         SiteConfig
             { siteName = name
@@ -76,6 +77,7 @@ loadSiteConfig contentDir website = do
             , siteDomain = domain
             , twitterHandle = twitter
             , mathjaxVersion = mathjax
+            , highlightStyle = highlight
             , contentDir = contentDir
             , assetsDir = "assets" -- TODO
             , templatesDir = "templates" -- TODO
@@ -84,6 +86,14 @@ loadSiteConfig contentDir website = do
   where
     override :: (Read a) => String -> a -> IO a
     override var fallback = fromMaybe fallback . (>>= readMaybe) <$> lookupEnv var
+
+    -- Unlike 'override', unknown values fail (matching the strict @website.yaml@ parsing)
+    highlightStyleFromEnv :: Web.Highlight -> IO Web.HighlightStyle
+    highlightStyleFromEnv section = do
+        value <- lookupEnv "HIGHLIGHT_STYLE"
+        case value of
+            Nothing -> pure (Web.highlightStyle section)
+            Just name -> maybe (die $ "unknown HIGHLIGHT_STYLE \"" ++ name ++ "\"") pure (Web.parseHighlightStyle name)
 
     -- Defaults to Prod; unknown values currently also fall through to Prod.
     -- TODO: Let's have a stricter parse; unknown values should fail
