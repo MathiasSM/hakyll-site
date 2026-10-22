@@ -44,7 +44,12 @@
 }
 
 /* main-article ***************************************************************/
-.main-article {padding: 0 1em;max-width:68ch;margin:0 auto; font-size:1.1em}
+.main-article {
+  padding: 0 1em;
+  max-width:75ch;
+  margin:0 auto;
+  font-size:1.1em
+}
 .main-article > header {margin-bottom:1em;}
 .main-article > header > div {font-style:italic}
 .main-article .post-date-header {font-style:normal;color:var(--color-text-muted)}
