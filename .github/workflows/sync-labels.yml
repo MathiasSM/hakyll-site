@@ -1,0 +1,30 @@
+name: Sync labels.yaml
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/labels.yaml'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sync-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Sync labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LABELS_PRUNE: ${{ vars.LABELS_PRUNE || 'false' }}
+          LABELS_DRY_RUN: ${{ vars.LABELS_DRY_RUN || 'false' }}
+        run: .github/scripts/sync-labels.sh

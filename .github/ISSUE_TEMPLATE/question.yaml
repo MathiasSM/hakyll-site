@@ -1,0 +1,60 @@
+name: Question
+description: Ask a question about using or understanding the project.
+title: "[Question]: "
+labels:
+  - TRIAGE
+  - "type: question"
+assignees:
+  - MathiasSM
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Happy to help! What would you like to know?
+
+  - type: markdown
+    attributes:
+      value: |
+        Before you continue, please go over the [README](https://github.com/MathiasSM/hakyll-site/blob/master/README.md) for general usage and the [CHANGELOG](https://github.com/MathiasSM/hakyll-site/blob/master/CHANGELOG.md) to be aware of the latest changes.
+
+        The API is documented. You can generate the docs using `cabal haddock-project --hackage`, or browse the [docs for the latest release](https://hakyll-site.mathiassm.dev).
+
+  - type: checkboxes
+    id: existing
+    attributes:
+      label: Related Issues
+      description: |
+        Please search to make sure this hasn't been asked or answered already.
+      options:
+        - label: I have searched existing Issues and this is a new question
+          required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What's your question?
+      description: Ask away! The more specific, the better.
+      placeholder: How do I ... ?
+    validations:
+      required: true
+      min_length: 10
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: |
+        Tell me what you're trying to accomplish and what you've already tried.
+
+        This helps me give you a useful answer without too much back-and-forth.
+      placeholder: I'm trying to ..., and I've already tried ...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/MathiasSM/hakyll-site/blob/master/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
