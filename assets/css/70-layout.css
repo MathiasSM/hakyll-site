@@ -35,8 +35,8 @@ main { flex:1; }
       margin-inline: 1em 0;
       padding: 1rem;
   }
-  .site-header {grid-area: header; min-width:10em; padding:0 1em;}
-  main {grid-area: main; overflow-y:scroll;scroll-behavior:smooth}
+  .site-header {grid-area: header; padding:0 1em;}
+  main {grid-area: main; overflow-y:auto;scroll-behavior:smooth}
   .site-footer {
     grid-area: footer;
     text-align: start;
@@ -52,17 +52,8 @@ main { flex:1; }
   .site-header nav a { padding: .5em;}
   .main-article  {margin:4rem auto 1rem 4em}
 }
-@media (width >= 1200px) and (height >= 600px) {
-  .site-header {padding:0 2em;}
-}
 @media (width >= 1000px) and (height >= 830px) {
   .site-header nav a { padding: 1em;}
-}
-@media (width >= 1200px) and (height >= 830px) {
-  .site-header nav a { padding: .5em;}
-}
-@media (width >= 1400px) and (height >= 830px) {
-  .site-header nav a { padding: .5em;}
 }
 @media (width >= 1000px) and (height >= 1000px) {
   .site-header nav{margin:5em 0;font-size:1.3em;}
