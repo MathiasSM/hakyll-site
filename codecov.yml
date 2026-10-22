@@ -16,7 +16,5 @@ coverage:
           - unit
 
 comment:
-  # Trying out everything first
-  layout: "header, files, condensed_header, condensed_files, tree, diff, footer, condensed_footer"
   behavior: default
   require_changes: false
