@@ -6,8 +6,10 @@ body {
 }
 main { flex:1; }
 
-@media (min-width: 340px) { .site-description {font-size: 1.2em;} }
-@media (min-width: 340px) { .site-header nav {flex-direction: row;} }
+@media (min-width: 340px) {
+  .site-description {font-size: 1.2em;}
+  .site-header nav {flex-direction: row;}
+}
 
 @media (min-width: 500px) {
   .social-contact {
@@ -52,8 +54,6 @@ main { flex:1; }
 }
 @media (min-width: 1200px) and (min-height: 600px) {
   .site-header {padding:0 2em;}
-}
-@media (min-width: 1400px) and (min-height: 600px) {
 }
 @media (min-width: 1000px) and (min-height: 830px) {
   .site-header nav a { padding: 1em;}
