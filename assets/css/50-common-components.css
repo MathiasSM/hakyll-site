@@ -3,7 +3,7 @@
 a[href^=http]::after {
   width:.5em;
   display:inline-block;
-  padding-left: .25em;
+  padding-inline-start: .25em;
   content: url("data:image/svg+xml;charset=UTF-8,%3c?xml version='1.0' encoding='UTF-8'?%3e%3csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z'/%3e%3c/svg%3e");
   opacity: .2;
   vertical-align: .15em;
@@ -14,8 +14,9 @@ a:active[href^=http]::after { opacity: .8; }
 /* Figures and images in content **********************************************/
 figure {
     width: 45%;
-    float: right;
-    margin: 0 0 .5rem .5em;
+    float: inline-end;
+    margin-block: 0 .5rem;
+    margin-inline: .5em 0;
     padding: .5rem;
     background-color: var(--color-surface);
     border-radius: var(--round-corners);
@@ -50,29 +51,24 @@ nav#TOC {
   border-radius: var(--round-corners);
   padding: 0.5em 1em;
   margin: 0 0 1.5em;
-}
-nav#TOC ul {
-  list-style: none;
-  padding-left: 1.2em;
-  margin: 0.25em 0;
-}
-nav#TOC > ul {
-  padding-left: 0;
-}
-nav#TOC a {
-  color: inherit;
-}
-nav#TOC a:hover,
-nav#TOC a:active {
-  color: var(--color-accent);
+
+  ul {
+    list-style: none;
+    padding-inline-start: 1.2em;
+    margin: 0.25em 0;
+  }
+  > ul { padding-inline-start: 0; }
+  a { color: inherit;
+    &:hover, &:active { color: var(--color-accent); }
+  }
 }
 
 /* Other pandoc/markdown generated stuff */
 div.line-block { margin: 1rem 0;}
-.task-list { list-style: none; padding-left: 0; }
+.task-list { list-style: none; padding-inline-start: 0; }
 
 /* Footnotes */
 .footnotes { margin-top: 2em; font-size: .9em; }
-.footnotes hr { width: 30%; margin-left: 0; }
+.footnotes hr { width: 30%; margin-inline-start: 0; }
 .footnote-ref { white-space: nowrap; }
 .footnote-back { color: var(--color-text-muted); }
