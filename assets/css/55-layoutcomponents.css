@@ -76,6 +76,7 @@
     height: 100%;
     object-fit: contain;
   }
+  svg { stroke: var(--color-border-strong); fill:none;}
 }
 
 .hobbies ul {
@@ -100,6 +101,7 @@
       height: 100%;
       object-fit: contain;
     }
+    svg { stroke: var(--color-border-strong); fill:none;}
   }
   a.item {
     box-shadow: 5px 5px 0 var(--color-brand);
@@ -156,7 +158,7 @@ a.project::after { content: none;}
 
   a[href^=http]::after { display:none }
 
-  svg {width: 1em}
+  svg {width: 1em; fill: var(--color-border-strong);}
   li {
     margin:.5rem;
     display: inline-block;
