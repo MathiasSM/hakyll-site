@@ -154,6 +154,33 @@ summary {
     user-select: none;
 }
 
+/* Figures and images in content **********************************************/
+figure {
+    width: 45%;
+    float: inline-end;
+    margin-block: 0 .5rem;
+    margin-inline: .5em 0;
+    padding: .5rem;
+    background-color: var(--color-surface);
+    border-radius: var(--round-corners);
+}
+figure:has(> .full) { width: 100%; height: auto; float: none; margin: 0}
+figure > * { width: auto; height: auto; max-height: 80ex; max-width: 100%; margin: 0 auto; }
+figure > img { object-fit: contain; display: block; }
+.figures { display: flex; justify-content: space-around; gap: .5rem; flex-wrap: wrap; margin: 1rem 0;}
+.figures figure {margin: 0;flex: 0 1 auto;}
+
+figcaption {
+  font-size: 0.8rem;
+  line-height: 1.25;
+  color: var(--color-text);
+  text-align: center;
+  margin-top: .5em;
+  padding: 0 0.5rem;
+  max-width: 90%;
+  font-style: italic;
+}
+
 /* Ruby text */
 ruby {line-height: 2;}
 rt {ruby-align: center; margin-bottom: .2em;}

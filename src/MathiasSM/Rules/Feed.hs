@@ -26,7 +26,7 @@ import Hakyll (
     withUrls,
  )
 import MathiasSM.CleanURL (cleanIndex)
-import MathiasSM.Config (SiteConfig, baseUrl, postSnapshot, postsPattern, siteAuthor)
+import MathiasSM.Config (SiteConfig, baseUrl, postSnapshot, postsPattern, resolveTemplate, siteAuthor)
 import MathiasSM.Content (Post (..), requirePostOf)
 import MathiasSM.Feeds (Feed (..), absoluteUrl, feeds)
 import MathiasSM.Yaml.Website (Website (websiteFeed), feedSize)
@@ -43,8 +43,8 @@ processFeeds cfg website = do
                 route idRoute
                 compile $ do
                     posts <- recentFirst =<< loadAllSnapshots (postsPattern cfg $ feedGroup feed) (postSnapshot $ feedGroup feed)
-                    feedTemplate <- loadBody "templates/atom-feed.xml"
-                    itemTemplate <- loadBody "templates/atom-item.xml"
+                    feedTemplate <- loadBody (resolveTemplate cfg "atom-feed.xml")
+                    itemTemplate <- loadBody (resolveTemplate cfg "atom-item.xml")
                     renderAtomWithTemplates feedTemplate itemTemplate (configuration cfg feed) (itemContext cfg) (take feedSize' posts)
 
 configuration :: SiteConfig -> Feed -> FeedConfiguration

@@ -22,6 +22,8 @@ module MathiasSM.Config (
     socialsPattern,
     dataPattern,
     dataSchemaPattern,
+    templatePattern,
+    contentCssPattern,
 
     -- * Directories
     dataDir,
@@ -33,6 +35,7 @@ module MathiasSM.Config (
     minimalTemplate,
     pageTemplate,
     postTemplate,
+    resolveTemplate,
 
     -- ** Data files
     socialsFile,
@@ -40,7 +43,7 @@ module MathiasSM.Config (
 where
 
 import Data.String (fromString)
-import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath)
+import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath, (.||.))
 import MathiasSM.Yaml.Website (HighlightStyle)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
@@ -77,6 +80,12 @@ data SiteConfig = SiteConfig
     -- ^ Where the assests live (@/assets/@ by default)
     , templatesDir :: FilePath
     -- ^ Where the templates live (@/templates/@ by default)
+    , contentTemplatesDir :: FilePath
+    -- ^ Content-provided templates (@content/templates/@), overriding the vendored set file by file
+    , contentCssDir :: FilePath
+    -- ^ Content-provided styles (@content/css/@), loaded after the vendored styles
+    , contentTemplateNames :: [FilePath]
+    -- ^ The template names (relative to 'contentTemplatesDir') the content provides
     , siteEnv :: Env
     -- ^ Whether this is a dev build (which publishes @/example/@ preview pages)
     }
@@ -140,6 +149,14 @@ dataPattern cfg = fromString $ dataDir cfg </> "**.yaml"
 dataSchemaPattern :: SiteConfig -> Pattern
 dataSchemaPattern cfg = fromString $ dataDir cfg </> "**.schema.json"
 
+-- | Every template the site can use: the vendored defaults plus any content-provided overrides
+templatePattern :: SiteConfig -> Pattern
+templatePattern cfg = fromString (templatesDir cfg </> "*") .||. fromString (contentTemplatesDir cfg </> "*")
+
+-- | Content-provided styles, loaded after the vendored ones
+contentCssPattern :: SiteConfig -> Pattern
+contentCssPattern cfg = fromString $ contentCssDir cfg </> "*.css"
+
 -- | The snapshot holding each published post of a single group, as rendered HTML (before templates)
 postSnapshot :: String -> Snapshot
 postSnapshot group = "published-" ++ group
@@ -149,8 +166,16 @@ socialsFile :: SiteConfig -> Identifier
 socialsFile cfg = fromFilePath $ contentDir cfg </> "socials.yaml"
 
 -- | Templates every kind of page goes through
-siteTemplate, minimalTemplate, pageTemplate, postTemplate :: Identifier
-siteTemplate = "templates/site.html"
-minimalTemplate = "templates/minimal.html"
-pageTemplate = "templates/as-page.html"
-postTemplate = "templates/as-post.html"
+siteTemplate, minimalTemplate, pageTemplate, postTemplate :: SiteConfig -> Identifier
+siteTemplate cfg = resolveTemplate cfg "site.html"
+minimalTemplate cfg = resolveTemplate cfg "minimal.html"
+pageTemplate cfg = resolveTemplate cfg "as-page.html"
+postTemplate cfg = resolveTemplate cfg "as-post.html"
+
+{- | Resolves a template's bare name (@\"site.html\"@) to the identifier to load:
+the content-provided override when one exists, else the vendored default.
+-}
+resolveTemplate :: SiteConfig -> FilePath -> Identifier
+resolveTemplate cfg name
+    | name `elem` contentTemplateNames cfg = fromFilePath (contentTemplatesDir cfg </> name)
+    | otherwise = fromFilePath (templatesDir cfg </> name)

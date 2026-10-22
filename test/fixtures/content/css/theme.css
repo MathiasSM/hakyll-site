@@ -1,0 +1,4 @@
+/* Content-provided theme override, loaded after the vendored styles. */
+.ruby-toggle span {
+    font-style: italic;
+}

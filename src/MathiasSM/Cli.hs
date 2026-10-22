@@ -8,10 +8,12 @@ import Data.Maybe (fromMaybe)
 import Hakyll (hakyllWith)
 import MathiasSM.Config (Env (..), SiteConfig (..), requiredContent, siteConfiguration)
 import MathiasSM.Rules (rules)
+import MathiasSM.Theme (discoverContentTemplateNames)
 import MathiasSM.Yaml.Website qualified as Web
 import System.Directory (doesDirectoryExist, doesFileExist)
 import System.Environment (getArgs, lookupEnv)
 import System.Exit (die)
+import System.FilePath.Posix ((</>))
 import Text.Read (readMaybe)
 
 {- | Main entrypoint for the cli subcommands (usually called like @cabal run site SUBCMD@)
@@ -68,6 +70,7 @@ loadSiteConfig contentDir website = do
     twitter <- override "TWITTER_HANDLE" (Web.siteTwitterHandle site)
     mathjax <- override "MATHJAX_VERSION" (Web.mathjaxVersion (Web.websiteMathjax website))
     highlight <- highlightStyleFromEnv (Web.websiteHighlight website)
+    contentTemplates <- discoverContentTemplateNames (contentDir </> "templates")
     pure
         SiteConfig
             { siteName = name
@@ -81,6 +84,9 @@ loadSiteConfig contentDir website = do
             , contentDir = contentDir
             , assetsDir = "assets" -- TODO
             , templatesDir = "templates" -- TODO
+            , contentTemplatesDir = contentDir </> "templates"
+            , contentCssDir = contentDir </> "css"
+            , contentTemplateNames = contentTemplates
             , siteEnv = env
             }
   where

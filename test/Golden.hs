@@ -21,6 +21,7 @@ import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
 import MathiasSM.Config (Env (Dev), SiteConfig (..), siteConfiguration)
 import MathiasSM.Rules (rules)
+import MathiasSM.Theme (discoverContentTemplateNames)
 import MathiasSM.Yaml.Website (loadWebsite)
 import MathiasSM.Yaml.Website qualified as Web
 import System.Directory (
@@ -37,8 +38,8 @@ import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.Golden (goldenVsFile, writeBinaryFile)
 
 -- | Builds a 'SiteConfig' from a parsed @website.yaml@ (no environment overrides)
-mkSiteConfig :: Web.Website -> SiteConfig
-mkSiteConfig website =
+mkSiteConfig :: Web.Website -> [FilePath] -> SiteConfig
+mkSiteConfig website contentTemplateNames =
     let site = Web.websiteSite website
      in SiteConfig
             { siteName = Web.siteName site
@@ -52,6 +53,9 @@ mkSiteConfig website =
             , contentDir = "content"
             , assetsDir = "assets"
             , templatesDir = "templates"
+            , contentTemplatesDir = "content/templates"
+            , contentCssDir = "content/css"
+            , contentTemplateNames = contentTemplateNames
             , siteEnv = Dev
             }
 
@@ -67,7 +71,8 @@ buildSiteSnapshot root = do
         snapshot = work </> "snapshot"
     -- The fixture's own website.yaml drives the build, so the golden output does not depend on the environment
     website <- loadWebsite (root </> "test" </> "fixtures" </> "content")
-    let cfg = mkSiteConfig website
+    contentTemplateNames <- discoverContentTemplateNames (root </> "test" </> "fixtures" </> "content" </> "templates")
+    let cfg = mkSiteConfig website contentTemplateNames
     createDirectoryIfMissing True buildDir
     copyTree (root </> "templates") (buildDir </> "templates")
     copyTree (root </> "assets") (buildDir </> "assets")

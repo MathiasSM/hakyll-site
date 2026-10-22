@@ -13,7 +13,7 @@ import Hakyll (
     loadAll,
     match,
  )
-import MathiasSM.Config (SiteConfig, projectsGroup, projectsPattern)
+import MathiasSM.Config (SiteConfig, projectsGroup, projectsPattern, resolveTemplate)
 import MathiasSM.Content (requireProject, showcaseKey)
 import MathiasSM.Context (globalContext)
 import MathiasSM.Context.Project (projectContext)
@@ -28,7 +28,7 @@ processShowcaseGroup cfg = do
 -- | Builds the index page, listing all projects
 processShowcaseIndex :: SiteConfig -> Rules ()
 processShowcaseIndex cfg =
-    processPage cfg (page cfg projectsGroup){pageContext = getProjectsCtx cfg, pageTemplates = ["templates/with-projects.html"]}
+    processPage cfg (page cfg projectsGroup){pageContext = getProjectsCtx cfg, pageTemplates = [resolveTemplate cfg "with-projects.html"]}
 
 {- | Compiles each project (not routed), so the index can list it
 

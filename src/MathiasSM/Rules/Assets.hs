@@ -30,7 +30,7 @@ import Hakyll (
     (.||.),
  )
 import Hakyll.Web.CompressCss (compressCss)
-import MathiasSM.Config (SiteConfig, assetsDir, dataPattern, dataSchemaPattern, highlightStyle, mediaDir, socialsPattern)
+import MathiasSM.Config (SiteConfig, assetsDir, contentCssPattern, dataPattern, dataSchemaPattern, highlightStyle, mediaDir, socialsPattern)
 import MathiasSM.Rules.Favicon (faviconRules)
 import MathiasSM.Yaml.Website (toPandocStyle)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
@@ -56,11 +56,15 @@ processDataFiles cfg = do
 processCss :: SiteConfig -> Rules ()
 processCss cfg = do
     match (cssFiles cfg) (compile compressCssCompiler)
+    match (contentCssPattern cfg) (compile compressCssCompiler)
     create ["styles.css"] $ do
         route idRoute
         compile $ do
-            css <- loadAll $ cssFiles cfg
-            makeItem $ unlines (map itemBody css) ++ compressCss (styleToCss (toPandocStyle (highlightStyle cfg)))
+            vendored <- loadAll $ cssFiles cfg
+            content <- loadAll $ contentCssPattern cfg
+            makeItem $
+                unlines (map itemBody (vendored ++ content))
+                    ++ compressCss (styleToCss (toPandocStyle (highlightStyle cfg)))
 
 -- | Uses unix external filter (dot) to compile them as png
 processDotImages :: SiteConfig -> Rules ()

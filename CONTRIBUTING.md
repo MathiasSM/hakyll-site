@@ -7,6 +7,21 @@ to `master` ONLY via a pull request. You may use
 the [Conventional Commits](https://www.conventionalcommits.org/) types
 (`feat/`, `fix/`, `docs/`, `chore/`, `ci/`, `refactor/`, `test/`, ...); not a strict policy.
 
+## Theme override
+
+Templates and styles are split between a vendored generic default (this repo's
+`templates/` and `assets/css/`) and the content repository. A content repo
+overrides either, file by file:
+
+- `content/templates/<name>` shadows `templates/<name>` — including `$partial`
+  references inside other templates. Missing files fall back to the vendored set.
+- `content/css/*.css` is concatenated after the vendored styles, so it overrides
+  them through the cascade.
+
+Templates read a fixed set of fields (the site identity, `nav`, `socials-*`,
+`posts`, `projects`, `feeds`, `math`, and the data-file names under
+`content/data/`); the vendored templates are the reference for that contract.
+
 ## Development tools
 
 Install these with ghcup, or via `cabal install PKG-VERSION`:
