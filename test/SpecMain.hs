@@ -11,6 +11,7 @@ import MathiasSM.FeedsSpec qualified as Feeds
 import MathiasSM.HtmlSpec qualified as Html
 import MathiasSM.MetadataSpec qualified as Metadata
 import MathiasSM.RedirectsSpec qualified as Redirects
+import MathiasSM.ThemeSpec qualified as Theme
 import MathiasSM.YamlSpec qualified as Yaml
 import Test.Tasty (defaultIngredients, defaultMainWithIngredients, testGroup)
 import Test.Tasty.Runners.AntXML (antXMLRunner)
@@ -29,6 +30,7 @@ main =
             , Html.tests
             , Metadata.tests
             , Redirects.tests
+            , Theme.tests
             , Yaml.tests
             ]
         )

@@ -18,7 +18,7 @@ import Hakyll (
  )
 import MathiasSM.Accessibility (checkAccessibility)
 import MathiasSM.CleanURL (cleanIndexHtmls, cleanIndexUrls)
-import MathiasSM.Config (siteTemplate)
+import MathiasSM.Config (SiteConfig, siteTemplate)
 import MathiasSM.Filters (processRubyText)
 import MathiasSM.Html (readonlyCheckboxes)
 import MathiasSM.Metadata (Key (TOC), lookupKey)
@@ -60,9 +60,9 @@ applyTemplates :: Context String -> [Identifier] -> Item String -> Compiler (Ite
 applyTemplates ctx templates item = foldM (\i t -> loadAndApplyTemplate t ctx i) item templates
 
 -- | Factors out the final common default steps for basically all pages
-finish :: Context String -> Item String -> Compiler (Item String)
-finish context item =
-    applyTemplates context [siteTemplate] item
+finish :: SiteConfig -> Context String -> Item String -> Compiler (Item String)
+finish cfg context item =
+    applyTemplates context [siteTemplate cfg] item
         >>= relativizeUrls
         >>= cleanIndexUrls
         >>= cleanIndexHtmls

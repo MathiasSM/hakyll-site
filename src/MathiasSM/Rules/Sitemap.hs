@@ -19,7 +19,7 @@ import Hakyll (
     route,
  )
 import MathiasSM.CleanURL (cleanIndexHtmls)
-import MathiasSM.Config (SiteConfig, pagesPattern, postsPattern)
+import MathiasSM.Config (SiteConfig, pagesPattern, postsPattern, resolveTemplate)
 import MathiasSM.Content (isSitemapExcluded)
 import MathiasSM.Context (globalContext)
 import MathiasSM.Writings (discoverGroups)
@@ -35,7 +35,7 @@ processSitemap cfg = create ["sitemap.xml"] $ do
         let allItems = filterM isIndexable (pages <> concat posts)
             sitemapCtx = listField "entries" (globalContext cfg) allItems <> globalContext cfg
         makeItem ""
-            >>= loadAndApplyTemplate "templates/sitemap.xml" sitemapCtx
+            >>= loadAndApplyTemplate (resolveTemplate cfg "sitemap.xml") sitemapCtx
             >>= cleanIndexHtmls
 
 -- | Whether an item should appear in the sitemap (not marked `sitemap: false`)

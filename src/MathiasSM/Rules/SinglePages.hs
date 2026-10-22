@@ -7,7 +7,6 @@ import Hakyll (
     Identifier,
     Item,
     Rules,
-    applyAsTemplate,
     compile,
     getResourceString,
     matchMetadata,
@@ -20,6 +19,7 @@ import MathiasSM.Config (SiteConfig, minimalTemplate, pageTemplate, pagesPattern
 import MathiasSM.Content (isHidden, isTemplated)
 import MathiasSM.Context (globalContext)
 import MathiasSM.Context.Nav (navContext)
+import MathiasSM.Theme (applyContentAsTemplate)
 
 -- | A standalone page, backed by content/writings/<pageName>.* and routed by its `path:`
 data Page = Page
@@ -40,10 +40,10 @@ pageCompiler cfg Page{pageName, pageContext, pageTemplates} = do
     ctx <- pageContext
     templated <- isTemplated
     getResourceString
-        >>= (if templated then applyAsTemplate ctx else return)
+        >>= (if templated then applyContentAsTemplate cfg ctx else return)
         >>= runPandoc
-        >>= applyTemplates ctx ([minimalTemplate] <> pageTemplates <> [pageTemplate])
-        >>= finish (navContext cfg pageName <> ctx)
+        >>= applyTemplates ctx ([minimalTemplate cfg] <> pageTemplates <> [pageTemplate cfg])
+        >>= finish cfg (navContext cfg pageName <> ctx)
 
 -- | Processes a standalone page, routed by its `path:` front matter
 processPage :: SiteConfig -> Page -> Rules ()

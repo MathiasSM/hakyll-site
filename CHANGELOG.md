@@ -13,6 +13,7 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 - Task-list checkboxes (from pandoc) are read-only by default; wrapping them in an `interactive` div keeps them editable.
 - A ruby-text toggle: `showRubyToggle: true` front matter renders `templates/ruby-toggle.html` (a checkbox + inline script) above a post or page body, to hide/show reading annotations.
 - Syntax-highlighting CSS is now generated at build time from pandoc (`styleToCss`), configurable via `highlight.style` in `website.yaml` (default `pygments`), with a `HIGHLIGHT_STYLE` env override.
+- The content repository can now override the theme: `content/templates/<name>` shadows the vendored `templates/<name>` (file by file, including `$partial` references), and `content/css/*.css` is concatenated after the vendored styles. The generator keeps generic defaults so a bare content repo still builds.
 
 ### Changed
 

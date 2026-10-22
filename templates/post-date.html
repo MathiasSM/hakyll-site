@@ -1,9 +1,4 @@
-<div class="post-date-header" lang="$language$">
-  $if(lang-es)$
-    <span>Escrito en <time datetime="$date$">$date$</time>.</span>
-    $if(lastModifiedAt)$<span>Última modificación: <time datetime="$lastModifiedAt$">$lastModifiedAt$</time>.</span>$endif$
-  $else$
-    <span>Written on <time datetime="$date$">$date$</time>.</span>
-    $if(lastModifiedAt)$<span>Last updated on <time datetime="$lastModifiedAt$">$lastModifiedAt$</time>.</span>$endif$
-  $endif$
+<div class="post-date-header">
+  <time datetime="$date$">$date$</time>
+  $if(lastModifiedAt)$<span> (Updated on <time datetime="$lastModifiedAt$">$lastModifiedAt$</time>)</span>$endif$
 </div>

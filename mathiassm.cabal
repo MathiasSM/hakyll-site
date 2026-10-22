@@ -68,6 +68,7 @@ library
                   , MathiasSM.Rules.Sitemap
                   , MathiasSM.Rules.Static
                   , MathiasSM.Rules
+                  , MathiasSM.Theme
                   , MathiasSM.Validate
                   , MathiasSM.Writings
                   , MathiasSM.Yaml
@@ -114,6 +115,7 @@ test-suite spec
                   , MathiasSM.HtmlSpec
                   , MathiasSM.MetadataSpec
                   , MathiasSM.RedirectsSpec
+                  , MathiasSM.ThemeSpec
                   , MathiasSM.YamlSpec
   build-depends:    base
                   , hakyll

@@ -2,9 +2,9 @@
 module MathiasSM.Rules (rules) where
 
 import Control.Monad (when)
-import Hakyll (Rules, compile, match, metadataRoute, route, templateBodyCompiler)
+import Hakyll (Rules, compile, match, metadataRoute, route)
 import MathiasSM.CleanURL (pathRoute)
-import MathiasSM.Config (Env (Dev), SiteConfig, projectsGroup, siteEnv)
+import MathiasSM.Config (Env (Dev), SiteConfig, projectsGroup, siteEnv, templatePattern)
 import MathiasSM.Rules.Assets (processAssets)
 import MathiasSM.Rules.Feed (processFeeds)
 import MathiasSM.Rules.PostGroup (processPostGroup)
@@ -13,6 +13,7 @@ import MathiasSM.Rules.Showcase (processShowcaseGroup)
 import MathiasSM.Rules.SinglePages (page, pageCompiler, processPage)
 import MathiasSM.Rules.Sitemap (processSitemap)
 import MathiasSM.Rules.Static (processStaticFiles)
+import MathiasSM.Theme (rewritingTemplateCompiler)
 import MathiasSM.Validate (validateNavEntries)
 import MathiasSM.Writings (discoverGroups, discoverStandalonePages)
 import MathiasSM.Yaml.Website (Website)
@@ -20,7 +21,7 @@ import MathiasSM.Yaml.Website (Website)
 -- | Assembles the whole site from the content and configuration
 rules :: SiteConfig -> Website -> Rules ()
 rules cfg website = do
-    match "templates/*" $ compile templateBodyCompiler
+    match (templatePattern cfg) $ compile (rewritingTemplateCompiler cfg)
     validateNavEntries cfg
     processAssets cfg
     processStaticFiles cfg website
