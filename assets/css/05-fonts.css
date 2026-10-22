@@ -73,3 +73,10 @@ em :lang(ja), em :lang(ko), em :lang(zh),
   text-emphasis: filled dot;
   text-emphasis-position: over right;
 }
+
+/* Chinese/Japanese characters tend to need a bit more space to breath */
+:lang(ja), :lang(zh) {
+  font-size: max(1em, 20px);
+  rt { font-size: .5em; }
+  vertical-align: central;
+}
