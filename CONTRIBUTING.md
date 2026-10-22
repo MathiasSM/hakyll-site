@@ -11,8 +11,8 @@ the [Conventional Commits](https://www.conventionalcommits.org/) types
 
 Install these with ghcup, or via `cabal install PKG-VERSION`:
 
-- **fourmolu** `0.20.1.0` — pinned to match CI (`FOURMOLU_VERSION`).
-- **hlint** — use the **latest** if in doubt. It's intentionally not pinned
+- **fourmolu** `0.20.1.0` - pinned to match CI (`FOURMOLU_VERSION`).
+- **hlint** - use the **latest** if in doubt. It's intentionally not pinned
   here: CI runs hlint from inside the `haskell-actions/hlint-scan` action
   image, which bundles its own hlint version, so there's no in-repo version
   to mirror. Any recent hlint is fine for local use.

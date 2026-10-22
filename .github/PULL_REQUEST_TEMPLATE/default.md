@@ -20,6 +20,26 @@
 - [ ] `CHANGELOG.md` updated
 - [ ] Docs updated (`README.md` / `CONTRIBUTING.md`) if the behavior changed
 
+## Accessibility
+
+If your change touches user-facing output, review [ACCESSIBILITY.md](ACCESSIBILITY.md) and check the items below that apply. Items are optional and only some will be relevant to your change.
+
+### Content (docs, README, dev/example)
+
+- [ ] Headings follow a logical hierarchy and don't skip levels.
+- [ ] Link text is descriptive (no "click here" / "read more").
+- [ ] Images have meaningful alternative text or are marked decorative.
+
+### UI / code (templates, styles, markup-emitting Haskell)
+
+- [ ] Semantic HTML is used (landmarks, headings, lists).
+- [ ] Interactive elements are keyboard-operable with a visible focus indicator.
+- [ ] Forms have associated labels.
+- [ ] Color isn't the only way meaning is conveyed.
+- [ ] `prefers-reduced-motion` is respected (if animations were added).
+- [ ] Screen reader behavior was checked at least once.
+- [ ] The automated accessibility checks pass (`cabal test`).
+
 ## Follow-ups
 
 <!-- Deferred work this PR intentionally leaves out, if any. -->
