@@ -14,6 +14,7 @@
 
 ## Checklist
 
+- [ ] I have read `CONTRIBUTING.md`
 - [ ] `fourmolu` and `hlint` clean
 - [ ] Tests pass (`cabal test`)
 - [ ] `CHANGELOG.md` updated

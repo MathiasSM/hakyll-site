@@ -1,0 +1,119 @@
+name: Bug Report
+description: Report a bug, or something that isn't working as expected.
+title: "[Bug Report]: "
+labels:
+  - TRIAGE
+  - "type: bug report"
+assignees:
+  - MathiasSM
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+  - type: markdown
+    attributes:
+      value: |
+        Before you continue, please go over the [README](https://github.com/MathiasSM/hakyll-site/blob/master/README.md) for general usage, the [CHANGELOG](https://github.com/MathiasSM/hakyll-site/blob/master/CHANGELOG.md) to be aware of the latest changes, and the [CONTRIBUTING](https://github.com/MathiasSM/hakyll-site/blob/master/CONTRIBUTING.md) guide if you intend to help beyond reporting.
+
+  - type: checkboxes
+    id: existing
+    attributes:
+      label: Related Issues & PRs
+      description: |
+        Please search to make sure this hasn't been reported or fixed already.
+      options:
+        - label: I have searched existing Issues and this is a new report
+          required: true
+        - label: I have searched existing PRs and this is a new report
+          required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: What happened?
+      description: Describe what you observed. Include any error messages you saw.
+      placeholder: When I ran ..., I got ... instead of ...
+    validations:
+      required: true
+      min_length: 10
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: What did you expect to happen?
+      description: A clear description of what you expected instead.
+      placeholder: I expected the site to ...
+    validations:
+      required: true
+      min_length: 10
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Provide a minimal, ordered list of steps that reliably trigger the bug.
+
+        The easier it is to reproduce, the faster it can be fixed.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Tell us about your setup. The more specific, the better.
+      value: |
+        - OS:
+        - GHC version:
+        - cabal version:
+        - Project version (branch/commit):
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste any relevant terminal output here. It will be formatted as code, so no backticks are needed.
+      render: shell
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: If the bug is visual (e.g. a rendering issue on the generated site), add a screenshot or short recording here.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: |
+        Anything else we should know? Add links, references, or any other context that might help.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      description: |
+        I'd be happy to work with you on this or other issues. Do you want to help?
+      options:
+        - label: I'd be willing to open a PR to fix this
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/MathiasSM/hakyll-site/blob/master/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

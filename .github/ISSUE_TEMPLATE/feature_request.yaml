@@ -1,0 +1,88 @@
+name: Feature Request
+description: Request a new feature, or a change to an existing one.
+title: "[Feature Request]: "
+labels:
+  - TRIAGE
+  - "type: feature request"
+assignees:
+  - MathiasSM
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Let's see what this idea is about!
+
+  - type: markdown
+    attributes:
+      value: |
+        Before you continue, please go over the [README](https://github.com/MathiasSM/hakyll-site/blob/master/README.md) for general usage, the [CHANGELOG](https://github.com/MathiasSM/hakyll-site/blob/master/CHANGELOG.md) to be aware of the latest changes, and the [CONTRIBUTING](https://github.com/MathiasSM/hakyll-site/blob/master/CONTRIBUTING.md) guide if you intend to help beyond reporting.
+
+  - type: checkboxes
+    id: existing
+    attributes:
+      label: Related Issues & PRs
+      description: |
+        Please search to make sure this hasn't been requested or implemented already.
+      options:
+        - label: I have searched existing Issues and this is a new request
+          required: true
+        - label: I have searched existing PRs and this is a new request
+          required: true
+
+  - type: textarea
+    id: usecase
+    attributes:
+      label: What's the motivation / usecase?
+      description: Please briefly explain why this feature fits this project.
+      placeholder: A user might want to do X, or need Y, so...
+    validations:
+      required: true
+      min_length: 10
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Describe how the feature would work
+      description: |
+        Please provide details about what you expect the feature would require (configuration, input), and what you would expect it to produce (results, output).
+
+        Be specific when you can. Don't mix unrelated features; if in doubt, it's probably better to open 2 different issues that mention each other as reference.
+    validations:
+      required: true
+      min_length: 10
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What workarounds or existing features have you tried instead? Why don't they work?
+
+  - type: textarea
+    id: technical-details
+    attributes:
+      label: Technical details
+      description: |
+        If you're able to, provide a high-level approach to implementing this change. It doesn't need to be perfect, and it can be simply a "I think it would involve X and Y changes". 
+
+        What modules do you expect it to touch? Does it require new ones? Try to not over-engineer your solution.
+      placeholder: A change in X would likely be enough, although we might need...
+  
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      description: |
+        I'd be happy to work with you on this or other features. Do you want to help?
+      options:
+        - label: I'd be willing to open a PR for this
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/MathiasSM/hakyll-site/blob/master/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
+
