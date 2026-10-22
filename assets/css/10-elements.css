@@ -66,11 +66,6 @@ kbd {
     border-radius: var(--round-corners);
     box-shadow: 0 1px 1px rgb(0 0 0 / 0.2), 0 2px 0 0 rgb(255 255 255 / 0.7) inset;
 }
-@media (prefers-color-scheme: dark) {
-    kbd {
-        box-shadow: 0 1px 1px rgb(0 0 0 / 0.2) inset, 0 2px 0 0 rgb(255 255 255 / 0.7);
-    }
-}
 
 /* quotes */
 blockquote {
@@ -113,7 +108,8 @@ label:has(> input[type="checkbox"][aria-readonly="true"]) {
 
 /* other elements */
 hr {
-    color: var(--color-main);
+    border: none;
+    border-top: 1px solid var(--color-main);
     width:90%;
     margin: 1rem auto;
 }
@@ -123,12 +119,4 @@ mark {
     background: linear-gradient(120deg, var(--color-accent-light) 0%, var(--color-accent-light) 100%) no-repeat;
     background-size: 100% 40%;
     background-position: 0 88%;
-}
-@media (prefers-color-scheme: dark) {
-  mark {
-    background: linear-gradient(120deg, var(--color-accent) 0%, var(--color-accent) 100%) no-repeat;
-    background-size: 100% 40%;
-    background-position: 0 88%;
-    color: white;
-  }
 }

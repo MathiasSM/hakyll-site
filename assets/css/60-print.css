@@ -1,7 +1,7 @@
 /* Print */
 @media print   {
   body {
-    font: 90%/1.5 var(--font-sans);
+    font: 90%/1.5 var(--font-latin-sans), var(--font-cjk-ja-sans);
     color:black;
   }
 
