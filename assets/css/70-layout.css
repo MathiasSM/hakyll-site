@@ -6,12 +6,12 @@ body {
 }
 main { flex:1; }
 
-@media (min-width: 340px) {
+@media (width >= 340px) {
   .site-description {font-size: 1.2em;}
   .site-header nav {flex-direction: row;}
 }
 
-@media (min-width: 500px) {
+@media (width >= 500px) {
   .social-contact {
     display: flex;
     flex-wrap: wrap;
@@ -19,7 +19,7 @@ main { flex:1; }
 }
 
 /* Desktop layout */
-@media (min-width: 1000px) and (min-height: 600px) {
+@media (width >= 1000px) and (height >= 600px) {
   body {
     display: grid;
     grid-template-areas:
@@ -31,15 +31,15 @@ main { flex:1; }
     height:100%;
   }
   figure {
-      width: 30%;
-      margin: 0 0 1rem 1em;
+      margin-block: 0 1rem;
+      margin-inline: 1em 0;
       padding: 1rem;
   }
   .site-header {grid-area: header; min-width:10em; padding:0 1em;}
   main {grid-area: main; overflow-y:scroll;scroll-behavior:smooth}
   .site-footer {
     grid-area: footer;
-    text-align: left;
+    text-align: start;
   }
   .site-header > a {
     flex-direction:column;
@@ -47,26 +47,26 @@ main { flex:1; }
     padding-top:0
   }
   .site-header > a > svg {width: 40%; height: auto;}
-  .site-header > a > div {margin-left: 0;}
+  .site-header > a > div {margin-inline-start: 0;}
   .site-header nav {flex-direction: column;margin:1em 0;}
   .site-header nav a { padding: .5em;}
   .main-article  {margin:4rem auto 1rem 4em}
 }
-@media (min-width: 1200px) and (min-height: 600px) {
+@media (width >= 1200px) and (height >= 600px) {
   .site-header {padding:0 2em;}
 }
-@media (min-width: 1000px) and (min-height: 830px) {
+@media (width >= 1000px) and (height >= 830px) {
   .site-header nav a { padding: 1em;}
 }
-@media (min-width: 1200px) and (min-height: 830px) {
+@media (width >= 1200px) and (height >= 830px) {
   .site-header nav a { padding: .5em;}
 }
-@media (min-width: 1400px) and (min-height: 830px) {
+@media (width >= 1400px) and (height >= 830px) {
   .site-header nav a { padding: .5em;}
 }
-@media (min-width: 1000px) and (min-height: 1000px) {
+@media (width >= 1000px) and (height >= 1000px) {
   .site-header nav{margin:5em 0;font-size:1.3em;}
 }
-@media (min-width: 1000px) and (min-height: 1200px) {
+@media (width >= 1000px) and (height >= 1200px) {
   .site-header nav{margin:5em 0;font-size:1.5em;}
 }
