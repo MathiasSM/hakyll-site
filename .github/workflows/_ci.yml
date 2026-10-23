@@ -112,8 +112,8 @@ jobs:
       - name: Require a changelog entry for version bumps
         run: |
           BASE="${{ github.event.pull_request.base.sha }}"
-          old_version="$(git show "$BASE:mathiassm.cabal" | awk '/^version:/{print $2}')"
-          new_version="$(awk '/^version:/{print $2}' mathiassm.cabal)"
+          old_version="$(git show "$BASE:cozyll.cabal" | awk '/^version:/{print $2}')"
+          new_version="$(awk '/^version:/{print $2}' cozyll.cabal)"
 
           if [ "$old_version" = "$new_version" ]; then
             echo "Version unchanged ($new_version); no changelog entry required."

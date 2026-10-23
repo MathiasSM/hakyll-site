@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/socials.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/MathiasSM/Cozyll/master/schema/socials.schema.json
 # Example social accounts. A content repo needs a proper socials.yaml.
 #
 # One account per list item. Each item links to an account and opts into where

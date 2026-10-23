@@ -1,6 +1,6 @@
 # Release checklist
 
-1. **Bump the version** in `mathiassm.cabal` (four-component PVP).
+1. **Bump the version** in `cozyll.cabal` (four-component PVP).
 
 2. **Update `CHANGELOG.md`**: rename `[Unreleased]` to `[version]`, add its
    reference link, and add a fresh empty `[Unreleased]` section on top.

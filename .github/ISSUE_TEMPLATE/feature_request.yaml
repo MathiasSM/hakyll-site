@@ -5,7 +5,7 @@ labels:
   - TRIAGE
   - "type: feature request"
 assignees:
-  - MathiasSM
+  - Cozyll
 body:
 
   - type: markdown
@@ -16,7 +16,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before you continue, please go over the [README](https://github.com/MathiasSM/hakyll-site/blob/master/README.md) for general usage, the [CHANGELOG](https://github.com/MathiasSM/hakyll-site/blob/master/CHANGELOG.md) to be aware of the latest changes, and the [CONTRIBUTING](https://github.com/MathiasSM/hakyll-site/blob/master/CONTRIBUTING.md) guide if you intend to help beyond reporting.
+        Before you continue, please go over the [README](https://github.com/MathiasSM/Cozyll/blob/master/README.md) for general usage, the [CHANGELOG](https://github.com/MathiasSM/Cozyll/blob/master/CHANGELOG.md) to be aware of the latest changes, and the [CONTRIBUTING](https://github.com/MathiasSM/Cozyll/blob/master/CONTRIBUTING.md) guide if you intend to help beyond reporting.
 
   - type: checkboxes
     id: existing
@@ -81,7 +81,7 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/MathiasSM/hakyll-site/blob/master/CODE_OF_CONDUCT.md).
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/MathiasSM/Cozyll/blob/master/CODE_OF_CONDUCT.md).
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true

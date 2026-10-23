@@ -55,7 +55,7 @@ jobs:
           key: ${{ runner.os }}-ghc-${{ inputs.ghc-version }}-cabal-${{ steps.setup.outputs.cabal-version }}-nodocs-tests-bench-coverage
         with:
           path: ${{ steps.setup.outputs.cabal-store }}
-          key: ${{ env.key }}-${{ hashFiles('cabal.project', 'cabal.project.freeze', 'mathiassm.cabal') }}
+          key: ${{ env.key }}-${{ hashFiles('cabal.project', 'cabal.project.freeze', 'cozyll.cabal') }}
           restore-keys: ${{ env.key }}-
 
       - name: Install dependencies
@@ -66,7 +66,7 @@ jobs:
       - name: Build
         run: |
           cabal build all
-          cp "$(cabal list-bin exe:site)" artifact-executable
+          cp "$(cabal list-bin exe:cozyll)" artifact-executable
 
       - name: Upload executable as artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -90,10 +90,10 @@ jobs:
           if-no-files-found: warn
 
       - name: Transform unit coverage file
-        run: hpc-codecov cabal:spec -x Paths_mathiassm -f cobertura -o cobertura.xml
+        run: hpc-codecov cabal:spec -x Paths_cozyll -f cobertura -o cobertura.xml
 
       - name: Transform golden coverage file
-        run: hpc-codecov cabal:golden -x Paths_mathiassm -f cobertura -o cobertura-golden.xml
+        run: hpc-codecov cabal:golden -x Paths_cozyll -f cobertura -o cobertura-golden.xml
 
       - name: Upload coverage reports as artifacts
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

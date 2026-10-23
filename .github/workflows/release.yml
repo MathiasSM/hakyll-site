@@ -32,14 +32,14 @@ jobs:
         id: tag
         run: |
           git fetch --tags --force
-          VERSION="$(grep '^version:' mathiassm.cabal | awk '{print $2}')"
+          VERSION="$(grep '^version:' cozyll.cabal | awk '{print $2}')"
           TAG="v${VERSION}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG already exists."
             echo "created=false" >> "$GITHUB_OUTPUT"
           else
             # Tag the commit that bumped the version, not HEAD.
-            COMMIT="$(git log -1 --format='%H' -G "^version:.*${VERSION}" -- mathiassm.cabal)"
+            COMMIT="$(git log -1 --format='%H' -G "^version:.*${VERSION}" -- cozyll.cabal)"
             [ -n "$COMMIT" ] || COMMIT="$GITHUB_SHA"
             git tag "$TAG" "$COMMIT"
             git push origin "$TAG"
@@ -78,11 +78,11 @@ jobs:
         run: |
           chmod +x artifact-executable
           mkdir -p kit
-          cp artifact-executable kit/site
+          cp artifact-executable kit/cozyll
           cp -r templates kit/
           cp -r assets kit/
-          tar -czf site-kit.tar.gz -C kit .
-          sha256sum site-kit.tar.gz > site-kit.tar.gz.sha256
+          tar -czf cozyll-kit.tar.gz -C kit .
+          sha256sum cozyll-kit.tar.gz > cozyll-kit.tar.gz.sha256
 
       - name: Publish versioned release
         uses: step-security/action-gh-release@44319d37c8b7966bf07f89f0cbf63408141446df # v3.0.3
@@ -92,8 +92,8 @@ jobs:
           make_latest: true
           generate_release_notes: true
           files: |
-            site-kit.tar.gz
-            site-kit.tar.gz.sha256
+            cozyll-kit.tar.gz
+            cozyll-kit.tar.gz.sha256
 
   hackage:
     name: Publish Hackage candidate

@@ -1,0 +1,155 @@
+cabal-version:      3.14
+
+name:               cozyll
+version:            1.0.0.0
+synopsis:           Custom site generator engine using Hakyll
+description:
+    Custom static site generator built with Hakyll.
+    Source: <https://github.com/MathiasSM/Cozyll>
+
+homepage:           https://cozyll.mathiassm.dev
+bug-reports:        github.com/MathiasSM/Cozyll/issues
+category:           Data, Web
+
+author:             Mathias San Miguel
+maintainer:         mathiassanmiguel@gmail.com
+
+extra-doc-files:    README.md, CHANGELOG.md
+extra-source-files:
+    templates/*.html
+    templates/*.xml
+    assets/css/*.css
+    schema/*.json
+    schema/*.yaml
+
+license:            BSD-3-Clause
+license-file:       LICENSE.txt
+
+build-type:         Simple
+
+source-repository head
+  type:     git
+  location: https://github.com/MathiasSM/Cozyll
+
+common shared
+  default-language: GHC2024
+  default-extensions:
+    OverloadedStrings
+    DeriveGeneric
+  ghc-options:      -Wall -Wcompat -Wincomplete-record-updates
+
+library
+  import:           shared
+  hs-source-dirs:   src
+  exposed-modules:  Cozyll.Accessibility
+                  , Cozyll.CleanURL
+                  , Cozyll.Cli
+                  , Cozyll.Compile
+                  , Cozyll.Config
+                  , Cozyll.Content
+                  , Cozyll.Context
+                  , Cozyll.Context.Data
+                  , Cozyll.Context.Feed
+                  , Cozyll.Context.Language
+                  , Cozyll.Context.Nav
+                  , Cozyll.Context.Project
+                  , Cozyll.Context.Site
+                  , Cozyll.Context.Social
+                  , Cozyll.Discover
+                  , Cozyll.Domain.Feed
+                  , Cozyll.Domain.Language
+                  , Cozyll.Domain.Nav
+                  , Cozyll.Domain.Post
+                  , Cozyll.Domain.Project
+                  , Cozyll.Domain.Social
+                  , Cozyll.Domain.Website
+                  , Cozyll.Filters
+                  , Cozyll.Html
+                  , Cozyll.Metadata
+                  , Cozyll.Rules
+                  , Cozyll.Rules.Assets
+                  , Cozyll.Rules.Favicon
+                  , Cozyll.Rules.Feed
+                  , Cozyll.Rules.PostGroup
+                  , Cozyll.Rules.Redirects
+                  , Cozyll.Rules.Showcase
+                  , Cozyll.Rules.SinglePages
+                  , Cozyll.Rules.Sitemap
+                  , Cozyll.Rules.Validate
+                  , Cozyll.Rules.WellKnown
+                  , Cozyll.Theme
+                  , Cozyll.Yaml
+  other-modules: Paths_cozyll
+  autogen-modules: Paths_cozyll
+  build-depends:    base         >= 4 && < 5
+                  , aeson        >= 2.2 && < 3
+                  , directory    >= 1.3 && < 2
+                  , filepath     >= 1.5 && < 2
+                  , jsonschema   >= 0.3 && < 0.4
+                  , mtl          >= 2.3 && < 3
+                  , scientific   >= 0.3 && < 0.4
+                  , text         >= 2.1 && < 3
+                  , time         >= 1.12 && < 2
+                  , pandoc       >= 3.12 && < 4
+                  , pandoc-types >= 1.23 && < 2
+                  , tagsoup      >= 0.14 && < 1
+                  , yaml         >= 0.11 && < 1
+                  , hakyll       == 4.17.*
+
+executable cozyll
+  import:           shared
+  main-is:          Main.hs
+  hs-source-dirs:   app
+  build-depends:    base
+                  , hakyll
+                  , cozyll
+  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
+
+test-suite spec
+  import:           shared
+  type:             exitcode-stdio-1.0
+  main-is:          SpecMain.hs
+  hs-source-dirs:   test
+  other-modules:    Cozyll.TestUtils
+                  , Cozyll.AccessibilitySpec
+                  , Cozyll.CleanURLSpec
+                  , Cozyll.ContentSpec
+                  , Cozyll.DataSpec
+                  , Cozyll.FeedSpec
+                  , Cozyll.HtmlSpec
+                  , Cozyll.LanguageSpec
+                  , Cozyll.MetadataSpec
+                  , Cozyll.NavSpec
+                  , Cozyll.PostSpec
+                  , Cozyll.ProjectSpec
+                  , Cozyll.RedirectsSpec
+                  , Cozyll.SocialSpec
+                  , Cozyll.ThemeSpec
+  build-depends:    base
+                  , hakyll
+                  , cozyll
+                  , aeson
+                  , tasty
+                  , tasty-ant-xml
+                  , tasty-hunit
+                  , tasty-quickcheck
+                  , time
+  ghc-options:      -threaded
+
+test-suite golden
+  import:           shared
+  type:             exitcode-stdio-1.0
+  main-is:          GoldenMain.hs
+  hs-source-dirs:   test
+  other-modules:    Golden
+  build-depends:    base
+                  , hakyll
+                  , cozyll
+                  , tasty
+                  , tasty-ant-xml
+                  , tasty-golden
+                  , bytestring
+                  , directory
+                  , filepath
+                  , temporary
+  ghc-options:      -threaded

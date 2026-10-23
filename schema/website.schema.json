@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/website.schema.json",
+  "$id": "https://raw.githubusercontent.com/MathiasSM/Cozyll/master/schema/website.schema.json",
   "title": "Website",
   "description": "Site configuration, as read from website.yaml.",
   "type": "object",

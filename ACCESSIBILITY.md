@@ -22,7 +22,7 @@ Custom templates, styles, and content you provide are processed on a best-effort
 
 ## How we verify
 
-The generator runs automated accessibility checks on the final rendered HTML of every page at build time, and fails the build if a page violates them. The checks cover: image alternative text, the page `<title>`, the `<html lang>` attribute, heading structure and order, link accessible names, duplicate `id`s, and the presence of a `<main>` landmark. See `src/MathiasSM/Accessibility.hs` and `test/MathiasSM/AccessibilitySpec.hs`.
+The generator runs automated accessibility checks on the final rendered HTML of every page at build time, and fails the build if a page violates them. The checks cover: image alternative text, the page `<title>`, the `<html lang>` attribute, heading structure and order, link accessible names, duplicate `id`s, and the presence of a `<main>` landmark. See `src/Cozyll/Accessibility.hs` and `test/Cozyll/AccessibilitySpec.hs`.
 
 These checks catch structural issues, not everything. Color contrast and focus visibility are verified by review rather than automation.
 
@@ -34,7 +34,7 @@ If your change touches templates, styles, or code that emits markup, review the 
 
 If you run into a barrier, please let us know. We treat accessibility reports as expertise, not complaints.
 
-1. Open an issue using the [accessibility issue template](https://github.com/MathiasSM/hakyll-site/issues/new?template=accessibility.yml).
+1. Open an issue using the [accessibility issue template](https://github.com/MathiasSM/Cozyll/issues/new?template=accessibility.yml).
 2. Include, when possible:
    - What you were trying to do and what went wrong.
    - The page URL.

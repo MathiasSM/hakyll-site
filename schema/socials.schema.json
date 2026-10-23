@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/MathiasSM/hakyll-site/master/schema/socials.schema.json",
+  "$id": "https://raw.githubusercontent.com/MathiasSM/Cozyll/master/schema/socials.schema.json",
   "title": "Socials",
   "description": "All social accounts, as a single list.",
   "type": "array",

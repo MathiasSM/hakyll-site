@@ -21,8 +21,8 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 - Draft items (`draft: true`) now build only in dev (`SITE_ENV=dev`) and are excluded from prod builds; standalone pages now respect `draft:` too.
 - Posts now honor `templated: true` (template syntax in their body), matching standalone pages.
-- Ruby annotations render as `<ruby>` without a hardcoded `lang="ja"`; the transform now lives in `MathiasSM.Filters`.
 - Japanese `language` code corrected from `jp` to `ja` (the `Language` constructor `Jp` is now `Ja`).
+- Ruby annotations render as `<ruby>` without a hardcoded `lang="ja"`; the transform now lives in `Cozyll.Filters`.
 
 ### Fixed
 
@@ -172,12 +172,12 @@ and this project adheres to the [Haskell Package Versioning Policy](https://pvp.
 
 
 
-[Unreleased]: https://github.com/MathiasSM/hakyll-site/compare/v2.0.0.0...master
-[2.0.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v1.0.0.0...v2.0.0.0
-[1.0.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.5.0.0...v1.0.0.0
-[0.5.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.2...v0.5.0.0
-[0.4.0.2]: https://github.com/MathiasSM/hakyll-site/compare/v0.4.0.0...v0.4.0.2
-[0.4.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.3.0.0...v0.4.0.0
-[0.3.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.2.0.0...v0.3.0.0
-[0.2.0.0]: https://github.com/MathiasSM/hakyll-site/compare/v0.1.0.0...v0.2.0.0
-[0.1.0.0]: https://github.com/MathiasSM/hakyll-site/releases/tag/v0.1.0.0
+[Unreleased]: https://github.com/MathiasSM/Cozyll/compare/v2.0.0.0...master
+[2.0.0.0]: https://github.com/MathiasSM/Cozyll/compare/v1.0.0.0...v2.0.0.0
+[1.0.0.0]: https://github.com/MathiasSM/Cozyll/compare/v0.5.0.0...v1.0.0.0
+[0.5.0.0]: https://github.com/MathiasSM/Cozyll/compare/v0.4.0.2...v0.5.0.0
+[0.4.0.2]: https://github.com/MathiasSM/Cozyll/compare/v0.4.0.0...v0.4.0.2
+[0.4.0.0]: https://github.com/MathiasSM/Cozyll/compare/v0.3.0.0...v0.4.0.0
+[0.3.0.0]: https://github.com/MathiasSM/Cozyll/compare/v0.2.0.0...v0.3.0.0
+[0.2.0.0]: https://github.com/MathiasSM/Cozyll/compare/v0.1.0.0...v0.2.0.0
+[0.1.0.0]: https://github.com/MathiasSM/Cozyll/releases/tag/v0.1.0.0

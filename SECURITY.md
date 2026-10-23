@@ -7,7 +7,7 @@ how reports are handled.
 
 Use GitHub's **private vulnerability reporting**:
 
-1. Open the [Security tab](https://github.com/MathiasSM/hakyll-site/security).
+1. Open the [Security tab](https://github.com/MathiasSM/Cozyll/security).
 2. Click **Report a vulnerability**.
 3. Fill in the advisory with the details below.
 

@@ -48,6 +48,6 @@ Run it manually over the whole tree with `pre-commit run --all-files`.
 ## Releases
 
 Version bumps happen only in a dedicated release PR: bump `version:` in
-`mathiassm.cabal` and add a matching `[version]` entry to `CHANGELOG.md`.
+`cozyll.cabal` and add a matching `[version]` entry to `CHANGELOG.md`.
 
 Follow [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) for details.

@@ -13,17 +13,17 @@ module Golden (
 where
 
 import Control.Monad (forM, forM_)
+import Cozyll.Config (Env (Dev), SiteConfig (..), siteConfiguration)
+import Cozyll.Domain.Website (loadWebsite)
+import Cozyll.Domain.Website qualified as Web
+import Cozyll.Rules (rules)
+import Cozyll.Theme (discoverContentTemplateNames)
 import Data.ByteString (ByteString)
 import Data.ByteString qualified as BS
 import Data.List (sort)
 import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
-import MathiasSM.Config (Env (Dev), SiteConfig (..), siteConfiguration)
-import MathiasSM.Domain.Website (loadWebsite)
-import MathiasSM.Domain.Website qualified as Web
-import MathiasSM.Rules (rules)
-import MathiasSM.Theme (discoverContentTemplateNames)
 import System.Directory (
     copyFile,
     createDirectoryIfMissing,

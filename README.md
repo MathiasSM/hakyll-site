@@ -1,19 +1,19 @@
-# Mathias' personal site
-[![License](https://badgen.net/github/license/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
-[![Top language](https://img.shields.io/github/languages/top/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+# Cozyll
+[![License](https://badgen.net/github/license/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll)
+[![Top language](https://img.shields.io/github/languages/top/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll)
 
-[![CI](https://github.com/MathiasSM/hakyll-site/actions/workflows/_ci.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/_ci.yml)
-[![codecov](https://codecov.io/github/MathiasSM/hakyll-site/graph/badge.svg)](https://app.codecov.io/github/MathiasSM/hakyll-site)
-[![CodeQL](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/hakyll-site/actions/workflows/codeql.yml)
-[![Dependabot](https://badgen.net/github/dependabot/MathiasSM/hakyll-site)](https://github.com/MathiasSM/hakyll-site)
+[![CI](https://github.com/MathiasSM/Cozyll/actions/workflows/_ci.yml/badge.svg)](https://github.com/MathiasSM/Cozyll/actions/workflows/_ci.yml)
+[![codecov](https://codecov.io/github/MathiasSM/Cozyll/graph/badge.svg)](https://app.codecov.io/github/MathiasSM/Cozyll)
+[![CodeQL](https://github.com/MathiasSM/Cozyll/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/Cozyll/actions/workflows/codeql.yml)
+[![Dependabot](https://badgen.net/github/dependabot/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15535/badge)](https://www.bestpractices.dev/projects/15535)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/MathiasSM/hakyll-site/badge)](https://scorecard.dev/viewer/?uri=github.com/MathiasSM/hakyll-site)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/MathiasSM/Cozyll/badge)](https://scorecard.dev/viewer/?uri=github.com/MathiasSM/Cozyll)
 
 This is a [hakyll](https://hackage.haskell.org/package/hakyll)-based site generator. It's main purpose is to build [mathiassm.dev (my personal site)](https://mathiassm.dev), but it can be used to build other kinds of sites with similar needs. In essence, it's a thin-ish layer of extra logic, some premade templates and styling, on top of the actual generator library by [jaspervdj](https://jaspervdj.be/).
 
 ## Usage
 
-You may download the [latest release](https://github.com/MathiasSM/hakyll-site/releases/latest), which should include an executable for ubuntu (I can tweak the release thing to provide statically-linked executables, or builds for other platforms, but I don't know of anyone needing them as of writing). You may run the executable in a directory like:
+You may download the [latest release](https://github.com/MathiasSM/Cozyll/releases/latest), which should include an executable for ubuntu (I can tweak the release thing to provide statically-linked executables, or builds for other platforms, but I don't know of anyone needing them as of writing). You may run the executable in a directory like:
 
 - `templates/` hakyll templates that define components of each (usually html) pages. There are included files in the release tarball and this repo, but you may change them as you need to.
 - `assets/` holds styles and potentially other files that are logically coupled with templates/ and it didn't make much sense to "extract" into the content repo. Same as with templates, there's a bundle included, which is the one I use for my personal site; feel free to change to your liking.
@@ -21,7 +21,7 @@ You may download the [latest release](https://github.com/MathiasSM/hakyll-site/r
   - The directory must hold a `website.yaml` file with metadata about the site (see `schema/example.website.yaml`) and a `socials.yaml` file with the list of accounts (see `schema/example.socials.yaml`); the build fails if either is missing.
   - Any other YAML data lives under `content/data/` and is exposed to templates automatically (see [Data files](#data-files)).
 
-The way to execute this is same as any hakyll site: `executable <CMD>`; if you build it from source, you can use `cabal exec site <CMD>` instead.
+The way to execute this is same as any hakyll site: `executable <CMD>`; if you build it from source, you can use `cabal exec cozyll <CMD>` instead.
 
 - CMD is any of:
   - `build` (generate site)
