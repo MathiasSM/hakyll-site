@@ -17,7 +17,9 @@ import Hakyll (
     toFilePath,
  )
 import MathiasSM.Config (SiteConfig, pagesPattern, siteEnv)
-import MathiasSM.Content (Language (En), NavEntry (..), isHidden, languageCode, requireNav)
+import MathiasSM.Content (isHidden, requireNav)
+import MathiasSM.Domain.Language (Language (En), languageCode)
+import MathiasSM.Domain.Nav (NavEntry (..))
 import System.FilePath.Posix (takeBaseName)
 
 {- | The site menu as a @nav@ list (@label@, @href@, @active@, @lang@), built from the

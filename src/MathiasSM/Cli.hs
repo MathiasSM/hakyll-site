@@ -7,9 +7,9 @@ import Control.Monad (filterM, unless)
 import Data.Maybe (fromMaybe)
 import Hakyll (hakyllWith)
 import MathiasSM.Config (Env (..), SiteConfig (..), requiredContent, siteConfiguration)
+import MathiasSM.Domain.Website qualified as Web
 import MathiasSM.Rules (rules)
 import MathiasSM.Theme (discoverContentTemplateNames)
-import MathiasSM.Yaml.Website qualified as Web
 import System.Directory (doesDirectoryExist, doesFileExist)
 import System.Environment (getArgs, lookupEnv)
 import System.Exit (die)

@@ -1,9 +1,5 @@
--- | Typed views of the content files: posts and pages (front matter)
+-- | Front-matter queries and content-loading helpers (the Hakyll-facing side of the domain)
 module MathiasSM.Content (
-    Language (..),
-    languageCode,
-    Post (..),
-    NavEntry (..),
     isDraft,
     isHidden,
     isIndex,
@@ -12,10 +8,6 @@ module MathiasSM.Content (
     groupOf,
     aliasesOf,
     parseAliasesYaml,
-    parsePost,
-    parsePostYaml,
-    parseNavEntry,
-    parseNavYaml,
     showcaseKey,
     requirePost,
     requirePostOf,
@@ -31,58 +23,24 @@ import Data.List (intercalate, stripPrefix)
 import Data.Maybe (fromMaybe)
 import Data.Ord (Down (Down))
 import Data.Time (Day)
-import Hakyll (Compiler, Identifier, Item (itemBody), Metadata, getMetadata, getUnderlying, toFilePath)
+import Hakyll (
+    Compiler,
+    Identifier,
+    Item (itemBody),
+    Metadata,
+    getMetadata,
+    getUnderlying,
+    toFilePath,
+ )
 import MathiasSM.Config (Env (..))
+import MathiasSM.Domain.Language (Language, languageOf)
+import MathiasSM.Domain.Nav (NavEntry, parseNavEntry)
+import MathiasSM.Domain.Post (Post, parsePost)
+import MathiasSM.Domain.Project (Project (..), parseProjectYaml)
+import MathiasSM.Domain.Social (Social, parseSocialsYaml)
 import MathiasSM.Metadata qualified as K
-import MathiasSM.Yaml (Check (runCheck), decodeYaml, enumFromJSON, optional, required)
-import MathiasSM.Yaml.Project (Project (..), parseProjectYaml)
-import MathiasSM.Yaml.Social (Social (..), parseSocialsYaml)
+import MathiasSM.Yaml (Check (runCheck), decodeYaml, optional)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
-
--- | Language a page is written in
-data Language = En | Es | Ja
-    deriving (Eq, Show, Enum, Bounded)
-
--- | The code used in front matter and in @lang@ attributes
-languageCode :: Language -> String
-languageCode En = "en"
-languageCode Es = "es"
-languageCode Ja = "ja"
-
-instance FromJSON Language where
-    parseJSON = enumFromJSON "language" languageCode
-
--- | What a post (blog, creative-writing) needs to be published
-data Post = Post
-    { postTitle :: String
-    , postDate :: Day
-    , postPath :: FilePath
-    , postLanguage :: Language
-    , postLastModified :: Maybe Day
-    , postDraft :: Bool
-    }
-    deriving (Eq, Show)
-
--- | Parses front matter, reporting every problem (not just the first)
-parsePost :: Metadata -> Either [String] Post
-parsePost o = do
-    post <-
-        runCheck $
-            Post
-                <$> required o K.Title
-                <*> required o K.Date
-                <*> required o K.Path
-                <*> languageOf o
-                <*> optional o K.LastModifiedAt
-                <*> (fromMaybe False <$> optional o K.Draft)
-    case postLastModified post of
-        Just modified
-            | modified < postDate post -> Left ["lastModifiedAt: is before date"]
-        _ -> Right post
-
--- | The language of an item (English unless stated)
-languageOf :: Metadata -> Check Language
-languageOf o = fromMaybe En <$> optional o K.Language
 
 -- | Whether an item is marked `draft: true`, and so left out of the site
 isDraft :: Metadata -> Bool
@@ -145,45 +103,11 @@ instance FromJSON AliasList where
 parseAliasesYaml :: String -> Either [String] [FilePath]
 parseAliasesYaml = decodeYaml >=> aliasesOf
 
--- | A page that appears in the site menu (`nav: <label>`, `navOrder: <n>` in its front matter)
-data NavEntry = NavEntry
-    { navLabel :: String
-    -- ^ What the menu link says; may contain HTML
-    , navOrder :: Int
-    , navHref :: FilePath
-    -- ^ The page's @path@
-    , navLanguage :: Language
-    }
-    deriving (Eq, Show)
-
-{- | The menu entry a page asks for, if it has a `nav:` label (it then also needs `navOrder`
-and @path@)
--}
-parseNavEntry :: Metadata -> Either [String] (Maybe NavEntry)
-parseNavEntry o = do
-    label <- runCheck (optional o K.Nav)
-    case label of
-        Nothing -> Right Nothing
-        Just text ->
-            runCheck $
-                (\order path language -> Just (NavEntry text order path language))
-                    <$> required o K.NavOrder
-                    <*> required o K.Path
-                    <*> languageOf o
-
 {- | Sort key for the showcase: projects with a @priority@ first (lowest number
 first), then the rest, newest start first
 -}
 showcaseKey :: Project -> (Int, Down Day)
 showcaseKey p = (fromMaybe maxBound (projectPriority p), Down (projectStart p))
-
--- | 'parseNavEntry' on YAML text (the same shape as front matter)
-parseNavYaml :: String -> Either [String] (Maybe NavEntry)
-parseNavYaml = decodeYaml >=> parseNavEntry
-
--- | 'parsePost' on YAML text (the same shape as front matter)
-parsePostYaml :: String -> Either [String] Post
-parsePostYaml = decodeYaml >=> parsePost
 
 -- | Parses the current item's front matter, failing the build with the problems found
 requirePost :: Compiler Post

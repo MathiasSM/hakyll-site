@@ -22,7 +22,7 @@ import MathiasSM.CleanURL (cleanIndexHtmls)
 import MathiasSM.Config (SiteConfig, pagesPattern, postsPattern, resolveTemplate)
 import MathiasSM.Content (isSitemapExcluded)
 import MathiasSM.Context (globalContext)
-import MathiasSM.Writings (discoverGroups)
+import MathiasSM.Discover (discoverGroups)
 
 -- | Builds sitemap.xml from the standalone pages and every post group
 processSitemap :: SiteConfig -> Rules ()

@@ -1,5 +1,5 @@
 -- | A social account, as read from the single socials YAML list
-module MathiasSM.Yaml.Social (
+module MathiasSM.Domain.Social (
     Social (..),
     parseSocial,
     parseSocialsYaml,

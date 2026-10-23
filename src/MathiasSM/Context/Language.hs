@@ -2,7 +2,8 @@
 module MathiasSM.Context.Language (languageContext) where
 
 import Hakyll (Context, Item (itemIdentifier), field, noResult)
-import MathiasSM.Content (languageCode, requireLanguage)
+import MathiasSM.Content (requireLanguage)
+import MathiasSM.Domain.Language (languageCode)
 
 -- | Sets a language variable for choosing strings and using in html
 languageContext :: Context a

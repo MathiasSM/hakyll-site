@@ -3,8 +3,8 @@ module MathiasSM.ThemeSpec (tests) where
 
 import Hakyll (toFilePath)
 import MathiasSM.Config (Env (Dev), SiteConfig (..), resolveTemplate)
+import MathiasSM.Domain.Website (HighlightStyle (Pygments))
 import MathiasSM.Theme (rewritePartials)
-import MathiasSM.Yaml.Website (HighlightStyle (Pygments))
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 

@@ -3,7 +3,7 @@ module MathiasSM.Context.Project (projectContext) where
 
 import Hakyll (Context, Item (itemBody), field, noResult)
 import MathiasSM.Context.Language (languageContext)
-import MathiasSM.Yaml.Project (Project (..), statusName)
+import MathiasSM.Domain.Project (Project (..), statusName)
 
 -- | A showcase project's fields, as read by the project templates
 projectContext :: Context Project

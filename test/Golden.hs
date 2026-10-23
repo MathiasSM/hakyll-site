@@ -20,10 +20,10 @@ import Hakyll.Commands qualified as Commands
 import Hakyll.Core.Logger qualified as Logger
 import Hakyll.Core.Runtime (RunMode (RunModeNormal))
 import MathiasSM.Config (Env (Dev), SiteConfig (..), siteConfiguration)
+import MathiasSM.Domain.Website (loadWebsite)
+import MathiasSM.Domain.Website qualified as Web
 import MathiasSM.Rules (rules)
 import MathiasSM.Theme (discoverContentTemplateNames)
-import MathiasSM.Yaml.Website (loadWebsite)
-import MathiasSM.Yaml.Website qualified as Web
 import System.Directory (
     copyFile,
     createDirectoryIfMissing,

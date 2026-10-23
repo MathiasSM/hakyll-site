@@ -1,5 +1,5 @@
 -- | The socials data file, as the lists read by the social templates
-module MathiasSM.Context.Lists (socialMediaContext) where
+module MathiasSM.Context.Social (socialMediaContext) where
 
 import Data.List (stripPrefix)
 import Data.Maybe (fromMaybe)
@@ -16,7 +16,7 @@ import Hakyll (
  )
 import MathiasSM.Config (SiteConfig, mediaDir, socialsFile)
 import MathiasSM.Content (requireSocials)
-import MathiasSM.Yaml.Social (Social (..))
+import MathiasSM.Domain.Social (Social (..))
 import System.FilePath.Posix ((</>))
 
 -- | The social accounts, in the lists read by the social templates

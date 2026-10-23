@@ -27,9 +27,10 @@ import Hakyll (
  )
 import MathiasSM.CleanURL (cleanIndex)
 import MathiasSM.Config (SiteConfig, baseUrl, postSnapshot, postsPattern, resolveTemplate, siteAuthor)
-import MathiasSM.Content (Post (..), requirePostOf)
-import MathiasSM.Feeds (Feed (..), absoluteUrl, feeds)
-import MathiasSM.Yaml.Website (Website (websiteFeed), feedSize)
+import MathiasSM.Content (requirePostOf)
+import MathiasSM.Domain.Feed (Feed (..), absoluteUrl, feeds)
+import MathiasSM.Domain.Post (Post (..))
+import MathiasSM.Domain.Website (Website (websiteFeed), feedSize)
 
 -- | Builds the Atom feed of every post group: its newest posts, in full
 processFeeds :: SiteConfig -> Website -> Rules ()
@@ -50,8 +51,8 @@ processFeeds cfg website = do
 configuration :: SiteConfig -> Feed -> FeedConfiguration
 configuration cfg feed =
     FeedConfiguration
-        { feedTitle = MathiasSM.Feeds.feedTitle feed
-        , feedDescription = MathiasSM.Feeds.feedDescription feed
+        { feedTitle = MathiasSM.Domain.Feed.feedTitle feed
+        , feedDescription = MathiasSM.Domain.Feed.feedDescription feed
         , feedAuthorName = siteAuthor cfg
         , feedAuthorEmail = ""
         , feedRoot = baseUrl cfg

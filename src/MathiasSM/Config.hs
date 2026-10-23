@@ -44,7 +44,7 @@ where
 
 import Data.String (fromString)
 import Hakyll (Configuration (ignoreFile), Identifier, Pattern, Snapshot, defaultConfiguration, fromFilePath, (.||.))
-import MathiasSM.Yaml.Website (HighlightStyle)
+import MathiasSM.Domain.Website (HighlightStyle)
 import System.FilePath.Posix (takeFileName, (<.>), (</>))
 
 -- | The build environment: 'Dev' also publishes the preview pages under @/example/@
@@ -108,7 +108,7 @@ mediaDir :: SiteConfig -> FilePath
 mediaDir cfg = contentDir cfg </> "media"
 
 {- | Files the site cannot build without, relative to the repo root
-(@website.yaml@ is loaded separately by "MathiasSM.Yaml.Website")
+(@website.yaml@ is loaded separately by "MathiasSM.Domain.Website")
 -}
 requiredContent :: SiteConfig -> [FilePath]
 requiredContent cfg = [contentDir cfg </> "socials.yaml"]

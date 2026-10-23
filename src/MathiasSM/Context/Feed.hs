@@ -1,9 +1,9 @@
 -- | The site's Atom feeds as a context, for the page head
-module MathiasSM.Context.Feeds (feedsContext) where
+module MathiasSM.Context.Feed (feedsContext) where
 
 import Hakyll (Context, Item (Item, itemBody), field, fromFilePath, listField)
 import MathiasSM.Config (SiteConfig)
-import MathiasSM.Feeds (Feed (..), feedHref, feeds)
+import MathiasSM.Domain.Feed (Feed (..), feedHref, feeds)
 
 -- | The site's Atom feeds as a `feeds` list (@title@, @href@), for the page head
 feedsContext :: SiteConfig -> Context a
