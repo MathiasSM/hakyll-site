@@ -1,7 +1,7 @@
 cabal-version:      3.14
 
 name:               mathiassm
-version:            1.0.0.0
+version:            2.0.0.0
 synopsis:           Custom site generator engine using Hakyll
 description:
     Custom static site generator built with Hakyll.
@@ -19,7 +19,8 @@ extra-source-files:
     templates/*.html
     templates/*.xml
     assets/css/*.css
-    schema/*
+    schema/*.json
+    schema/*.yaml
 
 license:            BSD-3-Clause
 license-file:       LICENSE.txt
