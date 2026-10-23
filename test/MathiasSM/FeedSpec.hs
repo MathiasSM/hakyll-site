@@ -1,7 +1,7 @@
 -- | Tests for the feed helpers
-module MathiasSM.FeedsSpec (tests) where
+module MathiasSM.FeedSpec (tests) where
 
-import MathiasSM.Feeds (absoluteUrl)
+import MathiasSM.Domain.Feed (absoluteUrl)
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=))
 import Test.Tasty.QuickCheck (testProperty)

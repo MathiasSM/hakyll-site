@@ -1,5 +1,5 @@
--- | Generates the site's static files (robots.txt, funding.json, …) from @website.yaml@
-module MathiasSM.Rules.Static (processStaticFiles) where
+-- | Generates the site's well-known and metadata files (robots.txt, funding.json, …) from @website.yaml@
+module MathiasSM.Rules.WellKnown (processWellKnownFiles) where
 
 import Data.List (intercalate)
 import Hakyll (
@@ -15,8 +15,8 @@ import Hakyll (
  )
 import MathiasSM.Config (SiteConfig, baseUrl, siteAuthor, siteName, socialsFile)
 import MathiasSM.Content (requireSocials)
-import MathiasSM.Yaml.Social (Social (..))
-import MathiasSM.Yaml.Website (
+import MathiasSM.Domain.Social (Social (..))
+import MathiasSM.Domain.Website (
     Contact (..),
     Funding (..),
     FundingChannel (..),
@@ -31,8 +31,8 @@ import MathiasSM.Yaml.Website (
  )
 
 -- | Emits the files that the site generates from @website.yaml@ (rather than copies)
-processStaticFiles :: SiteConfig -> Website -> Rules ()
-processStaticFiles cfg website = do
+processWellKnownFiles :: SiteConfig -> Website -> Rules ()
+processWellKnownFiles cfg website = do
     let url = baseUrl cfg
         contact = websiteContact website
     createFile "robots.txt" (robotsTxt url (robotsDisallow (websiteRobots website)))

@@ -1,5 +1,5 @@
 -- | The site configuration read from @website.yaml@ in the content repo
-module MathiasSM.Yaml.Website (
+module MathiasSM.Domain.Website (
     -- * Main logic
     loadWebsite,
     validateSecurityExpiration,

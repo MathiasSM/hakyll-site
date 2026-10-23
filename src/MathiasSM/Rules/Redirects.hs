@@ -15,8 +15,8 @@ import Hakyll (
 import MathiasSM.CleanURL (outputPath)
 import MathiasSM.Config (SiteConfig, pagesPattern, postsPattern)
 import MathiasSM.Content (aliasesOf, isDraft)
+import MathiasSM.Discover (discoverGroups)
 import MathiasSM.Metadata (Key (Path), lookupKey)
-import MathiasSM.Writings (discoverGroups)
 
 -- | A published page or post, with the old paths that should lead to it
 data Entry = Entry

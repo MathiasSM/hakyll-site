@@ -14,10 +14,10 @@ import Hakyll (
  )
 import MathiasSM.Config (SiteConfig, twitterHandle)
 import MathiasSM.Context.Data (dataContext)
-import MathiasSM.Context.Feeds (feedsContext)
+import MathiasSM.Context.Feed (feedsContext)
 import MathiasSM.Context.Language (languageContext)
-import MathiasSM.Context.Lists (socialMediaContext)
 import MathiasSM.Context.Site (siteContext)
+import MathiasSM.Context.Social (socialMediaContext)
 
 -- | Every field available to all pages and list items
 globalContext :: SiteConfig -> Context String

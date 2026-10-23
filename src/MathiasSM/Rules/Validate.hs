@@ -1,10 +1,10 @@
 -- | Build-time checks that content is consistent across files
-module MathiasSM.Validate (validateNavEntries) where
+module MathiasSM.Rules.Validate (validateNavEntries) where
 
 import Control.Monad (unless)
 import Hakyll (Rules, getAllMetadata, preprocess, toFilePath)
 import MathiasSM.Config (SiteConfig, pagesPattern)
-import MathiasSM.Content (parseNavEntry)
+import MathiasSM.Domain.Nav (parseNavEntry)
 
 {- | Fails the build, once, listing every page whose menu entry (`nav:`) is invalid
 

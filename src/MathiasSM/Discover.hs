@@ -1,5 +1,5 @@
 -- | Discovers the site's writings: its groups and standalone pages
-module MathiasSM.Writings (discoverGroups, discoverStandalonePages) where
+module MathiasSM.Discover (discoverGroups, discoverStandalonePages) where
 
 import Data.List (nub, sort)
 import Data.Maybe (mapMaybe)

@@ -1,5 +1,5 @@
 -- | The Atom feeds: one per post group, described by the group's index page
-module MathiasSM.Feeds (Feed (..), feedHref, feeds, absoluteUrl) where
+module MathiasSM.Domain.Feed (Feed (..), feedHref, feeds, absoluteUrl) where
 
 import Data.Either (lefts, rights)
 import Data.List (isPrefixOf)
@@ -7,8 +7,8 @@ import Data.Maybe (fromMaybe)
 import Hakyll (MonadMetadata (getMatches, getMetadata), toFilePath)
 import MathiasSM.CleanURL (outputPath)
 import MathiasSM.Config (SiteConfig, pagesPattern, projectsGroup, siteName)
+import MathiasSM.Discover (discoverGroups)
 import MathiasSM.Metadata (Key (Description, Path, Title), lookupKey)
-import MathiasSM.Writings (discoverGroups)
 import System.FilePath.Posix (takeDirectory, (</>))
 
 -- | An Atom feed, described by its group's index page

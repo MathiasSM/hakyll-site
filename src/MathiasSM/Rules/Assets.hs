@@ -31,8 +31,8 @@ import Hakyll (
  )
 import Hakyll.Web.CompressCss (compressCss)
 import MathiasSM.Config (SiteConfig, assetsDir, contentCssPattern, dataPattern, dataSchemaPattern, highlightStyle, mediaDir, socialsPattern)
+import MathiasSM.Domain.Website (toPandocStyle)
 import MathiasSM.Rules.Favicon (faviconRules)
-import MathiasSM.Yaml.Website (toPandocStyle)
 import System.FilePath.Posix (addTrailingPathSeparator, (</>))
 import Text.Pandoc.Highlighting (styleToCss)
 

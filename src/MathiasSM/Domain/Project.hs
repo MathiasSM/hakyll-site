@@ -1,5 +1,5 @@
 -- | A showcase project, as read from a project YAML file
-module MathiasSM.Yaml.Project (
+module MathiasSM.Domain.Project (
     Status (..),
     statusName,
     Project (..),

@@ -43,22 +43,30 @@ library
   hs-source-dirs:   src
   exposed-modules:  MathiasSM.Accessibility
                   , MathiasSM.CleanURL
+                  , MathiasSM.Cli
                   , MathiasSM.Compile
                   , MathiasSM.Config
                   , MathiasSM.Content
-                  , MathiasSM.Feeds
-                  , MathiasSM.Filters
-                  , MathiasSM.Html
-                  , MathiasSM.Cli
                   , MathiasSM.Context
-                  , MathiasSM.Context.Feeds
+                  , MathiasSM.Context.Data
+                  , MathiasSM.Context.Feed
                   , MathiasSM.Context.Language
                   , MathiasSM.Context.Nav
                   , MathiasSM.Context.Project
                   , MathiasSM.Context.Site
-                  , MathiasSM.Context.Lists
-                  , MathiasSM.Context.Data
+                  , MathiasSM.Context.Social
+                  , MathiasSM.Discover
+                  , MathiasSM.Domain.Feed
+                  , MathiasSM.Domain.Language
+                  , MathiasSM.Domain.Nav
+                  , MathiasSM.Domain.Post
+                  , MathiasSM.Domain.Project
+                  , MathiasSM.Domain.Social
+                  , MathiasSM.Domain.Website
+                  , MathiasSM.Filters
+                  , MathiasSM.Html
                   , MathiasSM.Metadata
+                  , MathiasSM.Rules
                   , MathiasSM.Rules.Assets
                   , MathiasSM.Rules.Favicon
                   , MathiasSM.Rules.Feed
@@ -67,15 +75,10 @@ library
                   , MathiasSM.Rules.Showcase
                   , MathiasSM.Rules.SinglePages
                   , MathiasSM.Rules.Sitemap
-                  , MathiasSM.Rules.Static
-                  , MathiasSM.Rules
+                  , MathiasSM.Rules.Validate
+                  , MathiasSM.Rules.WellKnown
                   , MathiasSM.Theme
-                  , MathiasSM.Validate
-                  , MathiasSM.Writings
                   , MathiasSM.Yaml
-                  , MathiasSM.Yaml.Project
-                  , MathiasSM.Yaml.Social
-                  , MathiasSM.Yaml.Website
   other-modules: Paths_mathiassm
   autogen-modules: Paths_mathiassm
   build-depends:    base         >= 4 && < 5
@@ -112,12 +115,16 @@ test-suite spec
                   , MathiasSM.CleanURLSpec
                   , MathiasSM.ContentSpec
                   , MathiasSM.DataSpec
-                  , MathiasSM.FeedsSpec
+                  , MathiasSM.FeedSpec
                   , MathiasSM.HtmlSpec
+                  , MathiasSM.LanguageSpec
                   , MathiasSM.MetadataSpec
+                  , MathiasSM.NavSpec
+                  , MathiasSM.PostSpec
+                  , MathiasSM.ProjectSpec
                   , MathiasSM.RedirectsSpec
+                  , MathiasSM.SocialSpec
                   , MathiasSM.ThemeSpec
-                  , MathiasSM.YamlSpec
   build-depends:    base
                   , hakyll
                   , mathiassm
