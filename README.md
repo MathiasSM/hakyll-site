@@ -1,29 +1,41 @@
 # Cozyll
-[![License](https://badgen.net/github/license/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll)
-[![Top language](https://img.shields.io/github/languages/top/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll)
 
-[![CI](https://github.com/MathiasSM/Cozyll/actions/workflows/_ci.yml/badge.svg)](https://github.com/MathiasSM/Cozyll/actions/workflows/_ci.yml)
-[![codecov](https://codecov.io/github/MathiasSM/Cozyll/graph/badge.svg)](https://app.codecov.io/github/MathiasSM/Cozyll)
-[![CodeQL](https://github.com/MathiasSM/Cozyll/actions/workflows/codeql.yml/badge.svg)](https://github.com/MathiasSM/Cozyll/actions/workflows/codeql.yml)
-[![Dependabot](https://badgen.net/github/dependabot/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll)
+[![Haskell](https://img.shields.io/badge/Haskell-5e5086?logo=haskell&logoColor=white)](https://www.haskell.org/)
+[![License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://github.com/MathiasSM/Cozyll/blob/master/LICENSE.txt)
+[![GitHub release](https://img.shields.io/github/v/release/MathiasSM/Cozyll)](https://github.com/MathiasSM/Cozyll/releases/latest)
+[![Hackage](https://img.shields.io/hackage/v/mathiassm?label=Hackage)](https://hackage.haskell.org/package/cozyll)
+
+[![CI](https://img.shields.io/github/actions/workflow/status/MathiasSM/Cozyll/_ci.yml?label=CI)](https://github.com/MathiasSM/Cozyll/actions/workflows/_ci.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/MathiasSM/Cozyll/codeql.yml?label=CodeQL)](https://github.com/MathiasSM/Cozyll/actions/workflows/codeql.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/MathiasSM/Cozyll)](https://app.codecov.io/github/MathiasSM/Cozyll)
+[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C?logo=dependabot&logoColor=white)](https://github.com/MathiasSM/Cozyll/blob/master/.github/dependabot.yml)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](.pre-commit-config.yaml)
+
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15535/badge)](https://www.bestpractices.dev/projects/15535)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/MathiasSM/Cozyll/badge)](https://scorecard.dev/viewer/?uri=github.com/MathiasSM/Cozyll)
+
 
 This is a [hakyll](https://hackage.haskell.org/package/hakyll)-based site generator. It's main purpose is to build [mathiassm.dev (my personal site)](https://mathiassm.dev), but it can be used to build other kinds of sites with similar needs. In essence, it's a thin-ish layer of extra logic, some premade templates and styling, on top of the actual generator library by [jaspervdj](https://jaspervdj.be/).
 
 ## Usage
 
-You may download the [latest release](https://github.com/MathiasSM/Cozyll/releases/latest), which should include an executable for ubuntu (I can tweak the release thing to provide statically-linked executables, or builds for other platforms, but I don't know of anyone needing them as of writing). You may run the executable in a directory like:
+You may download the [latest release](https://github.com/MathiasSM/Cozyll/releases/latest), which should include an executable for ubuntu (I can tweak the release thing to provide statically-linked executables, or builds for other platforms, but I don't know of anyone needing them as of writing). Keep in mind the main reason for the release is more easy integration with Github actions to publish a "content repo" using this. You may run the executable in a directory with:
 
-- `templates/` hakyll templates that define components of each (usually html) pages. There are included files in the release tarball and this repo, but you may change them as you need to.
-- `assets/` holds styles and potentially other files that are logically coupled with templates/ and it didn't make much sense to "extract" into the content repo. Same as with templates, there's a bundle included, which is the one I use for my personal site; feel free to change to your liking.
-- `content/` where all writing, images and other stuff lives. To build my personal site, I use a separate repo that holds these files.
-  - The directory must hold a `website.yaml` file with metadata about the site (see `schema/example.website.yaml`) and a `socials.yaml` file with the list of accounts (see `schema/example.socials.yaml`); the build fails if either is missing.
-  - Any other YAML data lives under `content/data/` and is exposed to templates automatically (see [Data files](#data-files)).
+- `templates/` vended hakyll templates that define components of each (usually html) pages. There are included files in the release tarball and this repo, but you may change them as you need to.
+- `assets/` vended styles and potentially other files, either too basic or coupled with the vended templates.
+- `content/` where all writing, images and other stuff lives. To build my personal site, I use a separate repo that holds these files. It expects some files:
+  - `website.yaml` (see `schema/example.website.yaml`), a file with metadata about the site, for use during generation.
+  - `socials.yaml` (see `schema/example.socials.yaml`), a file with a list of accounts linked to you/your site, used for templates to build links to those profiles, and for some `.well-known` files.
+  - `writings/` shall contain any and all markdown/djot/whatever files, each of which will become a specific page in your site. Each file has a frontmatter yaml which adds some metadata to the processed page (see [Frontmatter](#frontmatter)). 
+  - `data/` may hold yaml files, which are translated into usable context fields, usable in templates or templated pages (see [Data Files](#data-files)).
+  - `media/` may hold images and other binary files which can be included in the site and linked to.
+  - Optionally, a `templates/` directory may hold additional templates, or override existing ones (by using the same name). 
+  - Optionally, a `css/` directory may hold additional stylesheets, or override existing ones (by using the same name). 
 
-The way to execute this is same as any hakyll site: `executable <CMD>`; if you build it from source, you can use `cabal exec cozyll <CMD>` instead.
 
-- CMD is any of:
+The way to execute this is same as any hakyll site; if you build it from source, you can use `cabal exec cozyll <CMD>` instead.
+
+- `<CMD>` is any of:
   - `build` (generate site)
   - `clean` (cleanup and remove cache)
   - `rebuild` (clean and build again)
@@ -32,15 +44,16 @@ The way to execute this is same as any hakyll site: `executable <CMD>`; if you b
   - `check` (check the built html for broken links)
     - Note: By default hakyll checks external links as well, but due to some broken external sites, I decided to disable it via compilation flags.
 
-You may set environment variables to override `website.yaml` fields; export them manually, use a `.env` file, or your preferred method. See `.env.example`.
+You may set environment variables to override some `website.yaml` fields; export them manually, use a `.env` file, or your preferred method. See `.env.example`.
 
 ```sh
-# Environment.
+# Environment:
+
 # dev: building might skip optimization steps, and create example/ pages
 SITE_ENV=dev
+
 # prod: building will run all optimizations and validations
 # SITE_ENV=prod
-
 ```
 
 ## Development
@@ -51,13 +64,13 @@ SITE_ENV=dev
 
 1. Install ImageMagick (e.g. via `sudo apt install imagemagick`).
 2. Install ghcup (e.g. using `mise use -g ghcup`).
-3. Install the repo's `mise.toml` tools (`pre-commit`, `actionlint`):
+3. Use ghcup to install `ghc`, `cabal` (both required)
+4. Install the repo's `mise.toml` tools (`pre-commit`, `actionlint`):
 
    ```sh
    mise install
    ```
 
-4. Use ghcup to install `ghc`, `cabal` (both required)
   - You may install `hls`, `fourmolu`, `hlint`, `apply-refact` with it, or use `cabal install PKG-VERSION` (see [CONTRIBUTING.md](CONTRIBUTING.md) for the expected `fourmolu`/`hlint` versions)
   - Remember to `ghcup set <TOOL>` (in particular, you might need to `ghcup set cabal 3.14` because of hlint support)
 5. Enable the git hooks (runs `fourmolu` and `hlint` before each commit) via
@@ -106,26 +119,14 @@ branches named `type/description`. See [CONTRIBUTING.md](CONTRIBUTING.md) for
 details, and [RELEASE-CHECKLIST.md](RELEASE-CHECKLIST.md) for the release
 process.
 
-### CI
+### CI / CD
 
 Configured via Github Actions within `.github` directory.
 
-- `_ci.yml` holds the main CI logic, while other files are either reusable pieces or workflows triggered separatedly. 
-- Github doesn't support Haskell dependencies, so most dependency checks are focused on actions dependencies.
-- `notify-content.yml` announces a newly published kit to `web-writings` so it can rebuild and deploy.
-  - Note: I haven't figured out a trivial or native way to avoid having _this_ repo notify the content repo, but rather have the content repo listen to or poll this one directly.
-
-### CD / Deployment
-
-This project "deploys" as a release, via the CI workflow. Content repos can pull the latest release and execute it against their files. The release includes both the executable (not statically linked as of writing), as well as templates and assets.
+This project "deploys" as a release, via the CI workflow. Content repos can pull their preferred release (ideally latest, I suppose) and execute it against their files. The release includes both the executable (not statically linked as of writing), as well as templates and assets.
 
 ---
 
-## Content-agnostic repo
-
-The idea is for this repo to be content-agnostic. It only _requires_ `content/website.yaml` (site identity) and `content/socials.yaml` (the accounts); every other piece of YAML is optional and read from `content/data/`. See [Data files](#data-files).
-
-Any release includes `templates/` and `assets/` alongside the executable; take them as the default structure and style of the built site. You may edit/bring your own templates/assets to build a site to your liking.
 
 ## Data files
 
@@ -138,3 +139,7 @@ Any YAML under `content/data/**/*.yaml` becomes a template context named after i
 Any scalar field whose name contains `icon` also gets two derived fields: `<field>Href` (the icon URL, a bare name resolved to `images/icons/<name>.svg`) and `<field>Raw` (the SVG markup, inlined). For example, `icon: book` provides `$icon$`, `$iconHref$` and `$iconRaw$`.
 
 A data file may ship a JSON Schema, co-located as `content/data/name.schema.json` next to `content/data/name.yaml`; it is validated at build time (and the YAML's `$schema` points at the local file for editor hints).
+
+## Frontmatter
+
+See `src/Cozyll/Metadata.hs` or its documentation for a full list of supported fields. Other fields become available as part of the page/post's context, which you may use in templates or templates markup.
